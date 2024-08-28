@@ -11,8 +11,8 @@ import DetailExamResult from '@/views/DetailExamResult.vue'
 import CheckAnswerResult from '@/views/CheckAnswerResult.vue'
 
 // src admin
-import LayoutAdmin from '@/Layout/LayoutAdmin.vue'
 import HomeAdmin from '@/views/AdminView/HomeAdmin.vue'
+import User from '@/views/AdminView/User/User.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -72,12 +72,22 @@ const router = createRouter({
     // layout admin
     {
       path: '/admin',
-      component: LayoutAdmin,
       children: [
         {
           path: '/',
           name: 'homeAdmin',
-          component: HomeAdmin
+          component: HomeAdmin,
+          meta : {
+            layout : 'admin'
+          }
+        },
+        {
+          path: 'user',
+          name: 'user',
+          component: User,
+          meta : {
+            layout : 'admin'
+          }
         }
       ]
     }

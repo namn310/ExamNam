@@ -1,8 +1,10 @@
-<template>
-    nam
-</template>
-<script>
 
-</script>
-<style>
-</style>
+
+
+<template>
+    <p>Header</p>
+
+    <slot />
+
+    <p>Footer</p>
+</template>
