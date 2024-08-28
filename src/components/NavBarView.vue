@@ -3,180 +3,292 @@
     <div class="topnav-container">
       <nav class="navbar navbar-expand-lg">
         <span class="navbar-brand">
-          <a class="topnav-brand" href="/">
-            <img class="topnav-logo"/>ExamTutor
-          </a>
+          <a class="topnav-brand ms-4" href="/"> <img class="topnav-logo"/>ExamTutor </a>
         </span>
-        <button
-          class="navbar-toggler pull-xs-right d-lg-none"
-          type="button"
-          data-toggle="collapse"
-          data-target="#navbar-collapse">☰ </button>
+        <button @click=" toggleMenu " class="navbar-toggler pull-xs-right d-lg-none" type="button"
+          data-toggle="collapse" data-target="#navbar-collapse">
+          ☰
+        </button>
+        <!-- small menu -->
+        <div v-show=" visible " class="menuSmallContainer">
+          <div class="menuSmall pt-3">
+            <ul>
+              <li class="nav-item">
+                <RouterLink class="nav-link" :to=" { name: 'home' } ">Đề thi online</RouterLink>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link">Kết quả thi</a>
+              </li>
+              <li>
+                <RouterLink :to=" { name: 'login' } ">Đăng nhập</RouterLink>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <!-- end small menu -->
         <div class="d-lg-block navbar-collapse justify-content-end collapse" id="navbar-collapse">
           <ul class="nav">
             <li class="nav-item">
-              <RouterLink class="nav-link" :to="{ name: 'home' }">Đề thi online</RouterLink>
+              <RouterLink class="nav-link" :to=" { name: 'home' } ">Đề thi online</RouterLink>
             </li>
             <li class="nav-item">
               <a class="nav-link">Kết quả thi</a>
             </li>
             <li>
-              <RouterLink :to="{ name: 'login'}">Đăng nhập</RouterLink>
+              <RouterLink :to=" { name: 'login' } ">Đăng nhập</RouterLink>
             </li>
-            <li class="nav-item user-topnav dropdown d-none d-lg-block">
-              <a class="nav-link dropdown-toggle user-topnav-profile"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="account-profile-img">
-                  <img />
-                </span>
-              </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="/my-account/">Trang cá nhân</a>
-                <a class="dropdown-item" href="/logout/">Đăng xuất</a>
+            <!-- toogle khi user đã đăng nhập -->
+            <li class="ms-3">
+              <button class="btn btn-white" @click="toggleUser">
+                <i class="fa-solid fa-circle-user fa-xl" style="color: #000000"></i><i
+                  class="fa-solid fa-chevron-down fa-xs ms-3"></i>
+              </button>
+            </li>
+            <!-- toggle user function -->
+              <div v-show=" UserToggleVisible ">
+            <div class="toggleFunctionUserContainer">
+                <ul>
+                  <li>Tài khoản</li>
+                  <RouterLink :to="{name:'ResultExam'}"><li>Kết quả làm bài</li></RouterLink>
+                  <li>Đăng xuất</li>
+                </ul>
               </div>
-            </li>
-            <li class="nav-item d-lg-none">
-              <a class="nav-link" href="/notifications/">Thông báo </a>
-            </li>
-            <li class="nav-item d-lg-none">
-              <a class="nav-link" href="/studyplan/">Lịch học của tôi</a>
-            </li>
-            <li class="nav-item d-lg-none">
-              <a class="nav-link" href="/my-account/">Trang cá nhân</a>
-            </li>
-            <li class="nav-item d-lg-none">
-              <a class="nav-link" href="/logout/">Đăng xuất</a>
-            </li>
+            </div>
+            <!-- end toggle user function -->
           </ul>
         </div>
       </nav>
     </div>
   </div>
-  <!-- <nav class="nav">
-    <RouterLink to="/">ExamTest</RouterLink>
-    <RouterLink :to="{ name: 'home' }">Home</RouterLink>
-    <RouterLink :to="{ name: 'about' }">About</RouterLink>
-    <RouterLink :to="{ name: 'login' }">Login</RouterLink>
-    <RouterLink to="/">Over View</RouterLink>
-  </nav> -->
 </template>
 <script>
-export default {}
+export default {
+  name: 'NavBarView',
+  data () {
+    return {
+      visible: false,
+      UserToggleVisible: false
+    }
+  },
+  methods: {
+    toggleMenu () {
+      this.visible = !this.visible
+    },
+    toggleUser () {
+      this.UserToggleVisible = !this.UserToggleVisible
+    }
+  }
+}
 </script>
 <style scoped lang="css">
 .topnav1 {
-    box-shadow: 0 4px 4px -4px rgba(0,0,0,.2);
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+  box-shadow: 0 4px 4px -4px rgba(0, 0, 0, 0.2);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
 }
+
 .topnav-wrapper {
-    background-color: #fff;
-    z-index: 1001;
+  background-color: #fff;
+  z-index: 1001;
 }
+
 .topnav-container {
-    width: 100%;
-    max-width: 100%;
-    margin: 0 auto;
-    padding-right: .775rem;
-    padding-left: .775rem;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding-right: 0.775rem;
+  padding-left: 0.775rem;
 }
+
 .topnav1 .navbar {
-    padding: 0;
+  padding: 0;
 }
-@media (min-width: 992px){
-.navbar-expand-lg {
+
+@media (min-width: 992px) {
+  .navbar-expand-lg {
     flex-flow: row nowrap;
     justify-content: flex-start;
+  }
 }
-}
+
 .navbar {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
 }
+
 .topnav1 .navbar-brand {
-    height: 60px;
-    padding-top: 0;
-    padding-bottom: 0;
-    display: flex;
-    align-items: center;
-    margin-right: 0;
+  height: 60px;
+  padding-top: 0;
+  padding-bottom: 0;
+  display: flex;
+  align-items: center;
+  margin-right: 0;
 }
+
 .navbar-brand {
-    display: inline-block;
-    padding-top: .3125rem;
-    padding-bottom: .3125rem;
-    margin-right: 1rem;
-    font-size: 1.25rem;
-    line-height: inherit;
-    white-space: nowrap;
+  display: inline-block;
+  padding-top: 0.3125rem;
+  padding-bottom: 0.3125rem;
+  margin-right: 1rem;
+  font-size: 1.25rem;
+  line-height: inherit;
+  white-space: nowrap;
 }
+
 .topnav1 .navbar-brand .topnav-brand:visited {
-    text-decoration: none;
+  text-decoration: none;
 }
+
 .topnav1 .navbar-brand .topnav-brand {
-    font-size: 28px;
-    line-height: 60px;
-    letter-spacing: -.75px;
-    color: #0a0a0a;
-    font-weight: 600;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
+  font-size: 28px;
+  line-height: 60px;
+  letter-spacing: -0.75px;
+  color: #0a0a0a;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
 }
+
+/* nav small */
+.menuSmallContainer {
+  height: 10000px;
+  width: 30%;
+  background-color: darkgrey;
+  opacity: 1;
+  position: absolute;
+  top: 69px;
+  right: 0;
+}
+
+.menuSmal {}
+
+.menuSmallContainer ul li {
+  color: black;
+  z-index: 4;
+  list-style-type: none;
+  font-size: 2vw;
+  font-size: 2vh;
+  margin-bottom: 10px;
+}
+
+.menuSmallContainer ul li a {
+  text-decoration: none;
+  color: #35509a;
+}
+
+/* end nav small */
+
+/* toggleFunctionUserContainer */
+.toggleFunctionUserContainer {
+  position: absolute;
+  top: 65px;
+  right: 25px;
+  border-radius: 10px;
+  max-width: 265px;
+  padding: 12px;
+  border: 0;
+  background: #fff;
+  -webkit-box-shadow:
+    0 3px 5px -1px rgba(0, 0, 0, 0.2),
+    0 5px 8px 0 rgba(0, 0, 0, 0.14),
+    0 1px 14px 0 rgba(0, 0, 0, 0.12);
+  box-shadow:
+    0 3px 5px -1px rgba(0, 0, 0, 0.2),
+    0 5px 8px 0 rgba(0, 0, 0, 0.14),
+    0 1px 14px 0 rgba(0, 0, 0, 0.12);
+}
+
+.toggleFunctionUserContainer ul {
+  list-style-type: none;
+}
+
+.toggleFunctionUserContainer ul li {
+  margin-bottom: 15px;
+}
+
+/* end toggleFunctionUserContainer */
 a {
-    cursor: pointer;
+  cursor: pointer;
+  color: #35509a;
+  text-decoration: none;
+  background-color: transparent;
 }
-a {
-    color: #35509a;
-    text-decoration: none;
-    background-color: transparent;
-}
-@media (min-width: 992px){
-.navbar-expand-lg .navbar-collapse {
+
+@media (min-width: 992px) {
+  .navbar-expand-lg .navbar-collapse {
     display: flex !important;
     flex-basis: auto;
-}
-.collapse:not(.show) {
+  }
+
+  .collapse:not(.show) {
     display: none;
-}
-.justify-content-end {
+  }
+
+  .justify-content-end {
     justify-content: flex-end !important;
+  }
 }
-}
-@media (min-width: 992px){
-.d-lg-block {
+
+@media (min-width: 992px) {
+  .d-lg-block {
     display: block !important;
-}
-.navbar-collapse {
+  }
+
+  .navbar-collapse {
     flex-basis: 100%;
     flex-grow: 1;
     align-items: center;
+  }
 }
-}
+
 .topnav1 .nav {
-    align-items: center;
+  align-items: center;
 }
+
 .nav {
-    display: flex;
-    flex-wrap: wrap;
-    padding-left: 0;
-    margin-bottom: 0;
-    list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
 }
-ol, p, ul {
-    margin-bottom: 1rem;
+
+ol,
+p,
+ul {
+  margin-bottom: 1rem;
 }
-.form-control, .form-control:focus, body, html, input, input:focus, li, ol, p, textarea, textarea:focus, ul {
-    color: #1a1a1a;
+
+.form-control,
+.form-control:focus,
+body,
+html,
+input,
+input:focus,
+li,
+ol,
+p,
+textarea,
+textarea:focus,
+ul {
+  color: #1a1a1a;
 }
-dl, ol, ul {
-    margin-top: 0;
+
+dl,
+ol,
+ul {
+  margin-top: 0;
 }
-address, dl, ol, ul {
-    margin-bottom: 1rem;
+
+address,
+dl,
+ol,
+ul {
+  margin-bottom: 1rem;
 }
 </style>

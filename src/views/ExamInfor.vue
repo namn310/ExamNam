@@ -16,16 +16,9 @@
             </div>
 
             <div>
-              <span class="fad fa-user-edit mr-1"></span>
+               <i class="fa-solid fa-user-pen me-2"></i>
               567453 người đã luyện tập đề thi này
             </div>
-
-            <p class="text-danger mt-2">
-              <i
-                >Chú ý: để được quy đổi sang scaled score (ví dụ trên thang điểm 990 cho TOEIC hoặc
-                9.0 cho IELTS), vui lòng chọn chế độ làm FULL TEST.</i
-              >
-            </p>
             <br />
             <div class="tab-content" id="nav-tabContent">
               <div class="tab-pane fade show active" id="nav-practice" role="tabpanel">
@@ -36,9 +29,6 @@
                 </div>
                 <br />
                 <button class="btn btn-primary" type="submit" @click="toggleModal" >LÀM BÀI</button>
-                <RouterLink :to="{ name: 'testStart', params: { id: 1 } }"
-                  ><button class="btn btn-primary" type="submit" @click="toggleModal">LÀM BÀI</button></RouterLink
-                >
               </div>
             <!-- Modal here -->
              <ModalView :visible="showModal" @close="toggleModal">
@@ -46,15 +36,14 @@
                     <p>Xác nhận làm bài thi này </p>
                 </template>
                 <template v-slot:buttonConfirm>
-                    <button class="ms-3 btn btn-primary">Xác nhận</button>
+                   <RouterLink :to="{ name: 'testStart', params: { id: 1 } }"><button class="ms-3 btn btn-primary">Xác nhận</button></RouterLink>
                 </template>
              </ModalView>
             </div>
           </div>
         </div>
       </div>
-
-      <br />
+      <br/>
     </div>
   </div>
 </template>

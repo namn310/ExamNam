@@ -1,20 +1,20 @@
 <template class="app">
-  <Navbar></Navbar>
+  <!-- <Navbar></Navbar> -->
   <RouterView></RouterView>
-  <Footer></Footer>
+  <!-- <Footer></Footer> -->
 </template>
 <script>
-import NavBarView from './components/NavBarView.vue';
+// import NavBarView from './components/NavBarView.vue';
 // import MainView from './components/MainView.vue';
-import FooterView from './components/FooterView.vue';
+// import FooterView from './components/FooterView.vue';
 export default {
   name: "App",
   components: {
-    Navbar: NavBarView,
+    // Navbar: NavBarView,
     // eslint-disable-next-line vue/no-reserved-component-names
     // Main: MainView,
     // eslint-disable-next-line vue/no-reserved-component-names
-    Footer:FooterView,
+    // Footer:FooterView,
   },
 };
 </script>
