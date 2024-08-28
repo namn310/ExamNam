@@ -9,6 +9,7 @@ import 'bootstrap/dist/js/bootstrap.bundle'
 import '@fortawesome/fontawesome-free/css/all.min.css'
 import router from './router'
 import { registerGlobalComponents } from "./utils/import"
+import "./style.css"
 
 // const app = createApp(App)
 const app = createApp(App)
