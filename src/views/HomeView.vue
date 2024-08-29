@@ -288,7 +288,7 @@ export default {}
 </script>
 <style scoped>
 .site-content-wrapper {
-  padding-top: 60px;
+  padding-top: 80px;
   position: relative;
 }
 

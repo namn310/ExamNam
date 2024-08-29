@@ -3,7 +3,7 @@
     <div class="topnav-container">
       <nav class="navbar navbar-expand-lg">
         <span class="navbar-brand">
-          <a class="topnav-brand ms-4" href="/"> <img class="topnav-logo"/>ExamTutor </a>
+          <a class="topnav-brand ms-4" href="/"> <img :src="imgageLogo" style="width:90px;height:90px" class="topnav-logo image-fluid"/>ExamTutor </a>
         </span>
         <button @click=" toggleMenu " class="navbar-toggler pull-xs-right d-lg-none" type="button"
           data-toggle="collapse" data-target="#navbar-collapse">
@@ -20,7 +20,7 @@
                 <a class="nav-link">Kết quả thi</a>
               </li>
               <li>
-                <RouterLink :to=" { name: 'login' } ">Đăng nhập</RouterLink>
+                <RouterLink :to=" { name: 'Login' } ">Đăng nhập</RouterLink>
               </li>
             </ul>
           </div>
@@ -35,7 +35,7 @@
               <a class="nav-link">Kết quả thi</a>
             </li>
             <li>
-              <RouterLink :to=" { name: 'login' } ">Đăng nhập</RouterLink>
+              <RouterLink :to=" { name: 'Login' } ">Đăng nhập</RouterLink>
             </li>
             <!-- toogle khi user đã đăng nhập -->
             <li class="ms-3">
@@ -62,12 +62,16 @@
   </div>
 </template>
 <script>
+// nếu để ảnh ở trong mục src thì để tránh lỗi không hiển thị đc ảnh khi load trang thì ta nên import ảnh 
+import LogoWeb from '@/assets/img/LogoWeb.png'
+// nếu không thì để ảnh ở trong file public thì có thể dùng đường dẫn tuyệt đối để dẫn truyền file
 export default {
   name: 'NavBarView',
   data () {
     return {
       visible: false,
-      UserToggleVisible: false
+      UserToggleVisible: false,
+      imgageLogo: LogoWeb
     }
   },
   methods: {
@@ -121,7 +125,7 @@ export default {
 }
 
 .topnav1 .navbar-brand {
-  height: 60px;
+  height: 90px;
   padding-top: 0;
   padding-bottom: 0;
   display: flex;

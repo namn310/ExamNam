@@ -37,13 +37,16 @@
                 <div class="test-questions-wrapper" v-for="(   question, index) in questions" :key=" index ">
 
                   <div class="question-wrapper" data-qid="144565" id="question-wrapper-144565">
-                    <div class="question-number text-center" data-qid="144565" style="width:30px;height:30px;border:1px solid black;border-radius:5px;cursor: pointer;">
-                      <strong @dblclick="HighlightQuestion( index )" v-if=" question.highlighted "
-                        class="hightlightQuestion"
+                    <div  class="question-number text-center hightlightQuestion" v-if=" question.highlighted " @dblclick="HighlightQuestion( index )"
+                       data-qid="144565" style="width:30px;height:30px;border:1px solid black;border-radius:5px;cursor: pointer;">
+                      <strong
                         style="width:100%;height:100%;border-radius:5px;cursor: pointer">{{
                           index + 1
                         }}</strong>
-                      <strong @dblclick="HighlightQuestion( index )" v-else
+                    </div>
+                    <!--  -->
+                      <div @dblclick="HighlightQuestion( index )" class="question-number text-center" v-else data-qid="144565" style="width:30px;height:30px;border:1px solid black;border-radius:5px;cursor: pointer;">
+                      <strong
                        style="width:100%;height:100%;border-radius:5px;cursor: pointer">{{
                           index + 1
                         }}</strong>

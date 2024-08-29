@@ -2,13 +2,15 @@ import { createRouter, createWebHistory } from 'vue-router'
 // src client
 import LayoutClient from '@/Layout/LayoutClient.vue'
 import HomeView from '../views/HomeView.vue'
-import LoginView from '../views/LoginView.vue'
+import RegisterView from '@/views/RegisterView.vue'
+import LoginView from '@/views/LoginView.vue'
 import AboutView from '@/views/AboutView.vue'
 import ExamInfor from '@/views/ExamInfor.vue'
 import ExamView from '@/views/ExamView.vue'
 import ExamResult from '@/views/ExamResult.vue'
 import DetailExamResult from '@/views/DetailExamResult.vue'
 import CheckAnswerResult from '@/views/CheckAnswerResult.vue'
+import TestView from '@/views/TestView.vue'
 
 // src admin
 import LayoutAdmin from '@/Layout/LayoutAdmin.vue'
@@ -61,11 +63,23 @@ const router = createRouter({
           name: 'checkAnswer',
           component: CheckAnswerResult
         },
-        // login
+        // Đăng ký
+        {
+          path: '/register',
+          name: 'register',
+          component: RegisterView
+        },
+        // Đăng nhập
         {
           path: '/login',
-          name: 'login',
+          name: 'Login',
           component: LoginView
+        },
+        // test
+        {
+          path: '/testView',
+          name: 'test',
+          component: TestView
         }
       ]
     },

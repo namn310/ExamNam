@@ -1,5 +1,5 @@
 <template>
-    <div class="p-5">
+    <div class="p-5 mt-5">
         <div class="content-wrapper">
             <div class="lg-container">
                 <div class="row">
@@ -20,7 +20,7 @@
                                             <div class="result-stats-item">
                                                 <i class="fa-solid fa-bullseye fa-lg me-2" style="color: #f20707;"></i>
                                                 <span class="result-stats-label me-2">Kết quả làm bài</span>
-                                                <span class="result-stats-text"><strong>127/200</strong></span>
+                                                <span class="result-stats-text"><strong>50/50</strong></span>
                                             </div>
                                             <br>
                                             <br>

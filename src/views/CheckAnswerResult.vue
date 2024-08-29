@@ -1,20 +1,10 @@
 <template>
-    <div class="content-wrapper p-4 mb-4">
+    <div class="content-wrapper p-5 mb-4">
         <div class="xl-container">
             <h1 class="h4 text-center mb-4">
                 Đề thi Toán Trung học phổ thông quốc gia 2023
-                <button class="btn btn-warning btn-sm" @click=" toggleModal2 ">Thoát</button>
-                <ModalView :visible=" showModal2 " @close=" toggleModal2 ">
-                    <template v-slot:modal-body>
-                        <p>Nếu thoát thì kết quả bài thi sẽ không được ghi lại. Bạn có chắc chắn muốn rời khỏi bài làm ?
-                        </p>
-                    </template>
-                    <template v-slot:buttonConfirm>
-                        <RouterLink :to=" { name: 'testDetail', params: { id: 1 } } "><button
-                                class="ms-3 btn btn-primary">Xác
-                                nhận</button></RouterLink>
-                    </template>
-                </ModalView>
+                    <RouterLink :to=" { name: 'ResultExam' } "><button
+                                class="ms-3 btn btn-primary">Thoát</button></RouterLink>
             </h1>
             <hr />
             <form class="test-form" autocomplete="off" @submit.prevent enctype="multipart/form-data">
@@ -41,16 +31,10 @@
 
                                     <div class="question-wrapper" data-qid="144565" id="question-wrapper-144565">
                                         <div class="question-number d-flex justify-content-center text-center" data-qid="144565" style="width:30px;height:30px;border:1px solid black;border-radius:5px;cursor: pointer;">
-                                            <p  v-if="checkAnswer(index)==true"
-                                                class="correctAnswer" style="width:100%;height:100%;border:1px solid black;border-radius:5px;cursor: pointer"
+                                            <p style="width:100%;height:100%;border:1px solid black;border-radius:5px;cursor: pointer"
                                                 >{{
                                                     index + 1 }}</p>
-                                            <p  v-else class="incorrectAnswer" style="width:100%;height:100%;border:1px solid black;border-radius:5px;cursor: pointer;"
-                                               >{{
-                                                    index + 1
-                                                }}</p>
                                         </div>
-
                                         <div class="question-content text-highlightable">
                                             <div class="question-text">
                                                 <div class="boldIntro"></div>
@@ -60,21 +44,64 @@
                                             </div>
 
                                             <div class="question-answers"
-                                                v-for="( ANSWER, index2) in question.answers" :key=" index2 ">
-                                                <div class="form-check">
-                                                    <input @click="ToggleSelected( index )" data-type="question-answer"
+                                                v-for="( ANSWER, index2) in question.answers" :key=" index2">
+                                                <div class="form-check" v-if="getLable(index2)!==question.correctAnswe && getLable(index2) ==question.answerSelect">
+                                                    <input data-type="question-answer"
                                                         class="form-check-input"
                                                         :data-qid=" 'question-' + index + ANSWER " type="radio"
                                                         :name=" 'question-' + index + ANSWER "
                                                         :id=" 'question-' + index + ANSWER "
                                                         :value=" getLable( index2 ) "
-                                                        v-model=" a " />
+                                                        v-model=" question.answerSelect " />
+                                                    <label class="form-check-label text-danger"
+                                                        :for=" 'question-' + index + ANSWER ">{{
+                                                        getLable( index2 )
+                                                        }}.
+                                                        {{ ANSWER }}. </label>
+                                                </div>
+                                                 <div class="form-check" v-else-if="getLable(index2)==question.correctAnswe && getLable(index2) ==question.answerSelect">
+                                                    <input data-type="question-answer"
+                                                        class="form-check-input"
+                                                        :data-qid=" 'question-' + index + ANSWER " type="radio"
+                                                        :name=" 'question-' + index + ANSWER "
+                                                        :id=" 'question-' + index + ANSWER "
+                                                        :value=" getLable( index2 ) "
+                                                        v-model=" question.answerSelect " />
+                                                    <label class="form-check-label text-success"
+                                                        :for=" 'question-' + index + ANSWER ">{{
+                                                        getLable( index2 )
+                                                        }}.
+                                                        {{ ANSWER }}. </label>
+                                                </div>
+                                                 <div class="form-check" v-else-if="getLable(index2)==question.correctAnswe && getLable(index2) !==question.answerSelect">
+                                                    <input data-type="question-answer"
+                                                        class="form-check-input"
+                                                        :data-qid=" 'question-' + index + ANSWER " type="radio"
+                                                        :name=" 'question-' + index + ANSWER "
+                                                        :id=" 'question-' + index + ANSWER "
+                                                        :value=" getLable( index2 ) "
+                                                        v-model=" question.answerSelect " />
+                                                    <label class="form-check-label text-success"
+                                                        :for=" 'question-' + index + ANSWER ">{{
+                                                        getLable( index2 )
+                                                        }}.
+                                                        {{ ANSWER }}. </label>
+                                                </div>
+                                                 <div class="form-check" v-else>
+                                                    <input data-type="question-answer"
+                                                        class="form-check-input"
+                                                        :data-qid=" 'question-' + index + ANSWER " type="radio"
+                                                        :name=" 'question-' + index + ANSWER "
+                                                        :id=" 'question-' + index + ANSWER "
+                                                        :value=" getLable( index2 ) "
+                                                        v-model=" question.answerSelect " />
                                                     <label class="form-check-label"
                                                         :for=" 'question-' + index + ANSWER ">{{
                                                         getLable( index2 )
                                                         }}.
                                                         {{ ANSWER }}. </label>
                                                 </div>
+
                                             </div>
                                         </div>
                                     </div>
@@ -100,7 +127,6 @@
                                             <div v-else>
                                                 <p class="test-questions-listitem" id="incorrectAnswer"> {{ index + 1 }} </p>
                                             </div>
-
                                         </div>
                                     </div>
                                 </div>
@@ -113,11 +139,11 @@
     </div>
 </template>
 <script>
-import ModalView from '@/components/ModalView.vue'
+// import ModalView from '@/components/ModalView.vue'
 export default {
     name: 'ExamView',
     components: {
-        ModalView
+        // ModalView
     },
     data () {
         return {
@@ -126,7 +152,7 @@ export default {
             questions: [
                 {
                     title: 'Crom(III) oxit có công thức hóa học là',
-                    answers: ['X', 'CrO3.', 'CrO', 'Cr2O3'],
+                    answers: ['X', 'CrO3', 'CrO', 'Cr2O3'],
                     correctAnswe: 'A',
                     answerSelect: 'A'
                 },
@@ -149,7 +175,7 @@ export default {
                     answerSelect: 'B'
                 },
             ],
-            answerSelected: [],
+            // answerSelected: [],
         }
     },
     methods: {
@@ -171,12 +197,6 @@ export default {
             }
             else return true;
         },
-            getAllAnswer(){
-                this.questions.forEach((question, index) => {
-                
-            })
-        }
-
     }
 
 }
@@ -210,12 +230,12 @@ export default {
     background-color: yellow;
 }
 .correctAnswer{
-    background-color: green;
-    color:white
+    /* background-color: green; */
+    color:green
 }
 .incorrectAnswer{
-    background-color: red;
-    color:white
+    /* background-color: red; */
+    color:red
 }
 #correctAnswer{
     background-color: green;

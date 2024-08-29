@@ -1,5 +1,5 @@
 <template>
-    <div class="p-5">
+    <div class="p-5 mt-5">
         <div class="sm-container">
             <!-- User Profile Section -->
             <div class="mx-md-auto mb-3 mt-4 text-center">
