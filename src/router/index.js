@@ -13,6 +13,7 @@ import CheckAnswerResult from '@/views/CheckAnswerResult.vue'
 // src admin
 import HomeAdmin from '@/views/AdminView/HomeAdmin.vue'
 import User from '@/views/AdminView/User/User.vue'
+import CreateUser from '@/views/AdminView/User/CreateUser.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -85,6 +86,14 @@ const router = createRouter({
           path: 'user',
           name: 'user',
           component: User,
+          meta : {
+            layout : 'admin'
+          }
+        },
+        {
+          path: 'create-user',
+          name: 'create-user',
+          component: CreateUser,
           meta : {
             layout : 'admin'
           }

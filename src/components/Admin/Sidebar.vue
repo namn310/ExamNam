@@ -1,8 +1,8 @@
 <script lang="ts">
     import { defineComponent, onMounted, PropType, ref } from 'vue';
     import { RouterLink } from 'vue-router';
-    // import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
-    // import { ChevronUpIcon } from '@heroicons/vue/20/solid'
+    import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
+    import { ChevronUpIcon } from '@heroicons/vue/20/solid'
 
     export default defineComponent({
     props: {
@@ -11,12 +11,12 @@
         required: true,
         },
     },
-    // components : {
-    //     Disclosure,
-    //     DisclosureButton, 
-    //     DisclosurePanel,
-    //     // ChevronUpIcon
-    // },
+    components : {
+        Disclosure,
+        DisclosureButton, 
+        DisclosurePanel,
+        ChevronUpIcon
+    },
     });
 
 </script>
@@ -35,7 +35,7 @@
                     <span class="text-sm">Dashboard</span>
                 </RouterLink>
             </li>
-            <!-- <li class="mb-1 group">
+            <li class="mb-1 group">
                 <div class="w-full ">
                     <div class="mx-auto w-full">
                     <Disclosure v-slot="{ open }">
@@ -44,24 +44,24 @@
                             >
                             <Routerlink :to="{ name : 'product'}" class="flex items-center text-gray-300  group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100 sidebar-dropdown-toggle">
                                 <i class="ri-instance-line mr-3 text-lg"></i>
-                                <span class="text-sm">Order</span>
+                                <span class="text-sm">User</span>
                             </Routerlink>
                             <ChevronUpIcon
                                 :class="open ? 'rotate-180 transform' : 'rotate-90 transform'"
-                                class="h-5 w-5 text-color-5"
+                                class="h-5 w-5 text-white"
                             />
                         </DisclosureButton>
                         <DisclosurePanel>
                         
                         <ul class="pl-7 mt-2 group-[.selected]:block">
                     <li class="mb-4">
-                        <RouterLink :to="{ name : 'order'}" class="text-gray-300 text-sm flex items-center hover:text-gray-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-gray-300 before:mr-3">Danh sách đơn hàng</RouterLink>
+                        <RouterLink :to="{ name : 'user'}" class="text-gray-300 text-sm flex items-center hover:text-gray-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-gray-300 before:mr-3">List User</RouterLink>
                     </li> 
                     <li class="mb-4">
-                        <RouterLink :to="{name : 'order-confirmed'}" class="text-gray-300 text-sm flex items-center hover:text-gray-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-gray-300 before:mr-3">Đơn hàng đã xác nhận</RouterLink>
+                        <RouterLink :to="{name : 'create-user'}" class="text-gray-300 text-sm flex items-center hover:text-gray-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-gray-300 before:mr-3">Create User</RouterLink>
                     </li> 
                     <li class="mb-4">
-                        <RouterLink :to="{ name : 'deleted-product'}" class="text-gray-300 text-sm flex items-center hover:text-gray-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-gray-300 before:mr-3">Đơn hàng đã hủy</RouterLink>
+                        <RouterLink :to="{ name : 'user'}" class="text-gray-300 text-sm flex items-center hover:text-gray-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-gray-300 before:mr-3">Đơn hàng đã hủy</RouterLink>
                     </li> 
                 </ul>
                         
@@ -71,7 +71,7 @@
                     </div>
                 </div>
             </li>
-            <li class="mb-1 group">
+            <!-- <li class="mb-1 group">
                 <div class="w-full ">
                     <div class="mx-auto w-full">
                     <Disclosure v-slot="{ open }">
