@@ -26,7 +26,7 @@
           </div>
         </div>
         <!-- end small menu -->
-        <div class="d-lg-block navbar-collapse justify-content-end collapse" id="navbar-collapse">
+        <div class="d-lg-block navbar-collapse justify-content-end collapse-hidden" id="navbar-collapse">
           <ul class="nav">
             <li class="nav-item">
               <RouterLink class="nav-link" :to=" { name: 'home' } ">Đề thi online</RouterLink>
@@ -229,7 +229,7 @@ a {
     flex-basis: auto;
   }
 
-  .collapse:not(.show) {
+  .collapse-hidden:not(.show) {
     display: none;
   }
 
