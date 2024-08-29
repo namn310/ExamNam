@@ -2,7 +2,7 @@
     
     <div class="mx-auto container bg-color-white"> 
         <div class="text-[50px] text-pink-500 font-great text-center">
-            Thêm sản phẩm
+            Thêm câu hỏi
         </div>
         <el-form
             class="w-full p-3"
@@ -10,31 +10,25 @@
             label-width="auto"
             size="large"
         >
-        <el-form-item label="Title">
+        <el-form-item label="Câu hỏi">
             <el-input v-model="sizeForm.title" />
         </el-form-item>
-        <el-form-item label="Description">
+        <el-form-item label="Mô tả">
             <el-input v-model="sizeForm.description" />
         </el-form-item>
         
-        <el-form-item label="Giá">
-            <el-input v-model.number="sizeForm.price" />
+        <el-form-item label="Thời gian tạo">
+            <el-input v-model.number="sizeForm.time" />
         </el-form-item>
-        <el-form-item label="Giá cũ">
-            <el-input v-model.number="sizeForm.oldPrice" />
+        <el-form-item label="Bài kiểm tra">
+            <el-input v-model="sizeForm.oldPrice" />
         </el-form-item>
-        <el-form-item label="Ảnh">
-            <el-button size="small" type="primary">Chọn ảnh</el-button>
+        <el-form-item label="Đáp án">
+            <el-input v-model="sizeForm.description" />
         </el-form-item>
-        <el-form-item label="Vị trí">
-            <el-input v-model.number="sizeForm.position" />
-        </el-form-item>
-        <el-form-item label="Status">
-            <el-radio-group v-model="sizeForm.status">
-            <el-radio border value="active">Hoạt động</el-radio>
-            <el-radio border value="inactive">Dừng hoạt động</el-radio>
-            </el-radio-group>
-        </el-form-item>
+        
+        
+        
         <el-form-item>
             <el-button type="primary">Create</el-button>
             <el-button>Cancel</el-button>
@@ -57,12 +51,8 @@
   const sizeForm = reactive({
     title: '',
     description: '',
-    image: '',
-    price: 0,
-    status: '',
-    position : '',
+    time: '',
     oldPrice : '',
-    parentId : '',
   })
 
 </script>

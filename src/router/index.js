@@ -14,6 +14,10 @@ import CheckAnswerResult from '@/views/CheckAnswerResult.vue'
 import HomeAdmin from '@/views/AdminView/HomeAdmin.vue'
 import User from '@/views/AdminView/User/User.vue'
 import CreateUser from '@/views/AdminView/User/CreateUser.vue'
+import CauHoi from '@/views/AdminView/CauHoi/CauHoi.vue'
+import CreateCauHoi from '@/views/AdminView/CauHoi/CreateCauHoi.vue'
+import Exams from '@/views/AdminView/Exams/Exams.vue'
+import CreateExam from '@/views/AdminView/Exams/CreateExam.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -94,6 +98,39 @@ const router = createRouter({
           path: 'create-user',
           name: 'create-user',
           component: CreateUser,
+          meta : {
+            layout : 'admin'
+          }
+        },
+        {
+          path: 'cauhoi',
+          name: 'cauhoi',
+          component: CauHoi,
+          meta : {
+            layout : 'admin'
+          }
+        },
+        {
+          path: 'create-cauhoi',
+          name: 'create-cauhoi',
+          component: CreateCauHoi,
+          meta : {
+            layout : 'admin'
+          }
+        },
+        {
+          path: 'exams',
+          name: 'exams',
+          component: Exams,
+          meta
+          : {
+            layout : 'admin'
+          }
+        },
+        {
+          path: 'create-exam',
+          name: 'create-exam',
+          component: CreateExam,
           meta : {
             layout : 'admin'
           }

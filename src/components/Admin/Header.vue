@@ -1,3 +1,6 @@
+<!-- eslint-disable vue/multi-word-component-names -->
+<!-- eslint-disable no-unused-vars -->
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { createPopper } from '@popperjs/core';
 import { onMounted, ref } from 'vue';
@@ -23,6 +26,7 @@ export default {
   },
   methods: {
     handleLogout() {
+        // eslint-disable-next-line no-unused-vars
         const router = useRouter()
         localStorage.removeItem('token')
     },
@@ -68,7 +72,7 @@ export default {
   mounted() {
     document.addEventListener('click', this.handleClickOutside);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     document.removeEventListener('click', this.handleClickOutside);
     if (this.popperInstance) {
       this.popperInstance.destroy();
@@ -87,8 +91,8 @@ export default {
             <li class="mr-2">
                 <a href="#" class="text-gray-400 hover:text-gray-600 font-medium">Admin</a>
             </li>
-            <li class="text-gray-600 mr-2 font-medium">/</li>
-            <li class="text-gray-600 mr-2 font-medium">a</li>
+            <li class="text-gray-600 mr-2 font-medium"></li>
+            <li class="text-gray-600 mr-2 font-medium"></li>
         </ul>
         <ul class="ml-auto flex items-center">
             <li class="mr-1 dropdown">
