@@ -9,27 +9,12 @@
         </RouterLink>
     </div>
     <div class="pt-8">
-        <div class="m-4">
-            <el-select
-                v-model="value"
-                value-key="id"
-                placeholder="Sắp xếp"
-                style="width: 240px"
-            >
-            <el-option
-                v-for="item in options"
-                :key="item.id"
-                :label="item.label"
-                :value="item"
-            />
-            </el-select>
-        </div>
         <el-table :data="filterTableData">
             <el-table-column type="selection" width="55" />
-            <el-table-column label="Tên câu hỏi"  />
-            <el-table-column label="Bài kiểm tra"  />
-            <el-table-column label="Thời gian tạo" />
-            <el-table-column label="Đáp án"  />
+            <el-table-column label="Tên câu hỏi"  prop="title"/>
+            <el-table-column label="Bài kiểm tra" prop="Subject" />
+            <el-table-column label="Thời gian tạo" prop="created_at"/>
+            <el-table-column label="Đáp án" prop="correctAns" />
             <el-table-column align="right">
                 <template #header>
                 <el-input v-model="search" size="small" placeholder="Type to search" />
@@ -53,10 +38,44 @@
     </div>
 </template>
 
-<script setup>
-    
+<script lang="ts" setup>
+    import { computed, ref, onMounted } from 'vue'
+    import { ElTable } from 'element-plus'
+    import { RouterLink } from 'vue-router';
+    import { getQuestionList } from '@/service/questionsService';
+
+    interface Questions {
+        id : string
+        title: string
+        Subject : string
+        created_at: Date,
+        correctAns : string
+    }
+
+    const search = ref('')
+    const questions = ref<Questions[]>([]);
+
+
+    const fetchProducts = () => {
+        const fetchApi = async () => {
+            const result = await getQuestionList()
+            if(result){
+                questions.value = result
+            }
+        }
+        fetchApi();
+    };
+
+    onMounted(fetchProducts);
+
+    const filterTableData =  computed(() =>
+        questions.value.filter(
+            (data) =>
+                !search.value ||
+                data.title.toLowerCase().includes(search.value.toLowerCase())
+        )
+    )
+
+
+
 </script>
-
-<style lang="scss" scoped>
-
-</style>
