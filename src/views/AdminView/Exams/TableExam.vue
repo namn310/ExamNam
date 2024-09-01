@@ -9,28 +9,12 @@
         </RouterLink>
     </div>
     <div class="pt-8">
-        <div class="m-4">
-            <el-select
-                v-model="value"
-                value-key="id"
-                placeholder="Sắp xếp"
-                style="width: 240px"
-            >
-            <el-option
-                v-for="item in options"
-                :key="item.id"
-                :label="item.label"
-                :value="item"
-            />
-            </el-select>
-        </div>
         <el-table :data="filterTableData">
             <el-table-column type="selection" width="55" />
-            <el-table-column label="Tên bài kiểm tra"  />
-            <el-table-column label="Môn học"  />
-            <el-table-column label="Mô tả"  />
-            <el-table-column label="Thời gian làm bài" />
-            <el-table-column label="Trạng thái"  />
+            <el-table-column label="Tên bài kiểm tra" prop="title" />
+            <el-table-column label="Môn học" prop="class" />
+            <el-table-column label="Mô tả" prop="description" />
+            <el-table-column label="Thời gian làm bài" prop="expire_time"/>
             <el-table-column align="right">
                 <template #header>
                 <el-input v-model="search" size="small" placeholder="Type to search" />
@@ -54,10 +38,48 @@
     </div>
 </template>
 
-<script setup>
-    
+
+<script lang="ts" setup>
+    import { computed, ref, onMounted } from 'vue'
+    import { ElTable } from 'element-plus'
+    import { RouterLink } from 'vue-router';
+    import { getExamList } from '@/service/examsService';
+
+    interface Exams {
+        id : string
+        title: string
+        class : string,
+        description : string,
+        expire_time : Date,
+        created_at: Date,
+    }
+
+    const search = ref('')
+    const exams = ref<Exams[]>([]);
+
+
+    const fetchProducts = () => {
+        const fetchApi = async () => {
+            const result = await getExamList()
+            if(result){
+                console.log(result['data']);
+                
+                exams.value = result['data']
+            }
+        }
+        fetchApi();
+    };
+
+    onMounted(fetchProducts);
+
+    const filterTableData =  computed(() =>
+        exams.value.filter(
+            (data) =>
+                !search.value ||
+                data.title.toLowerCase().includes(search.value.toLowerCase())
+        )
+    )
+
+
+
 </script>
-
-<style lang="scss" scoped>
-
-</style>

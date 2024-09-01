@@ -1,4 +1,4 @@
-const API_DOMAIN = "http://localhost/php/API_ExamProject/api/"
+const API_DOMAIN = "http://localhost:8080/"
 
 export const get = async (patch) => {
     const response = await fetch(API_DOMAIN + patch);
