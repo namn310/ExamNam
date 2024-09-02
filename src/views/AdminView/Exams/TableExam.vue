@@ -21,7 +21,7 @@
                 </template>
                 <template #default="scope">
                 <el-button size="small">
-                    <RouterLink :to="`/`">
+                    <RouterLink :to="`/admin/edit-exam/${scope.row.id}`">
                         Edit
                     </RouterLink>   
                     </el-button>

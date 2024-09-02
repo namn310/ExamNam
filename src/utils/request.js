@@ -38,3 +38,16 @@ export const patch = async (patch, option) => {
     const result = await response.json()
     return result
 }
+
+export const put = async (patch, option) => {
+    const response = await fetch(API_DOMAIN + patch, {
+        method: "PUT",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(option)
+    });
+    const result = await response.json()
+    return result
+}
