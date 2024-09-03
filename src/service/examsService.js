@@ -15,3 +15,8 @@ export const EditExam = async (id, option) => {
     const result = put(`exams/update/${id}`, option)
     return result;
 }
+
+export const createExam = async (option) => {
+    const result = await post("exams/create",option);
+    return result;
+}
