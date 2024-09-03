@@ -14,7 +14,8 @@
             <el-table-column label="Tên bài kiểm tra" prop="title" />
             <el-table-column label="Môn học" prop="class" />
             <el-table-column label="Mô tả" prop="description" />
-            <el-table-column label="Thời gian làm bài" prop="expire_time"/>
+            <el-table-column label="Thời gian làm bài" prop="duration"/>
+            <el-table-column label="Số lượng câu hỏi" prop="totalQuestion"/>
             <el-table-column align="right">
                 <template #header>
                 <el-input v-model="search" size="small" placeholder="Type to search" />
@@ -50,8 +51,9 @@
         title: string
         class : string,
         description : string,
-        expire_time : Date,
+        duration : Date,
         created_at: Date,
+        totalQuestion : Int16Array
     }
 
     const search = ref('')
@@ -62,8 +64,6 @@
         const fetchApi = async () => {
             const result = await getExamList()
             if(result){
-                console.log(result['data']);
-                
                 exams.value = result['data']
             }
         }

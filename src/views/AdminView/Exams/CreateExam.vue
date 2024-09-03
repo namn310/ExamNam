@@ -13,23 +13,21 @@
         <el-form-item label="Tên bài kiểm tra">
             <el-input v-model="sizeForm.title" />
         </el-form-item>
-        <el-form-item label="Môn học">
-            <el-input v-model="sizeForm.title" />
-        </el-form-item>
         <el-form-item label="Mô tả">
             <el-input v-model="sizeForm.description" />
         </el-form-item>
-        
+        <el-form-item label="Thời hạn làm bài">
+            <el-input v-model="sizeForm.expire_time" />
+        </el-form-item>
         <el-form-item label="Thời gian làm bài">
-            <el-input v-model.number="sizeForm.time" />
+            <el-input v-model.number="sizeForm.duration" />
         </el-form-item>
-        <el-form-item label="Trạng thái">
-            <el-input v-model="sizeForm.description" />
+        <el-form-item label="Lớp học">
+            <el-input v-model="sizeForm.class" />
         </el-form-item>
-        
-        
-        
-        
+        <el-form-item label="Số lượng câu hỏi">
+            <el-input v-model="sizeForm.totalQuestion" />
+        </el-form-item>
         <el-form-item>
             <el-button type="primary">Create</el-button>
             <el-button>Cancel</el-button>
@@ -45,15 +43,17 @@
     import { useRouter } from 'vue-router';
 
 
-    const data = ref({ permissions: [] });
+    const data = ref([]);
 
 
   
   const sizeForm = reactive({
     title: '',
     description: '',
-    time: '',
-    oldPrice : '',
+    class: '',
+    expire_time : '',
+    duration : '',
+    totalQuestion : ''
   })
 
 </script>

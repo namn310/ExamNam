@@ -20,7 +20,10 @@
             <el-input v-model="sizeForm.description" />
         </el-form-item>
         <el-form-item label="Thời gian làm bài">
-            <el-input v-model.number="sizeForm.expire_time" />
+            <el-input v-model.number="sizeForm.duration" />
+        </el-form-item>
+        <el-form-item label="Số lượng câu hỏi">
+            <el-input v-model.number="sizeForm.totalQuestion" />
         </el-form-item>
         <el-form-item>
             <el-button type="primary" @click="onSubmit">Update</el-button>
@@ -46,7 +49,8 @@
         title: '',
         description: '',
         class: '',
-        expire_time : '',
+        duration : '',
+        totalQuestion : ''
     })
     
     const fetchData = () =>{
@@ -55,7 +59,8 @@
             sizeForm.value.title = result.data.title || '';
             sizeForm.value.description = result.data.description || '';
             sizeForm.value.class = result.data.class || '';
-            sizeForm.value.expire_time = result.data.expire_time || '';
+            sizeForm.value.duration = result.data.duration || '';
+            sizeForm.value.totalQuestion = result.data.totalQuestion || '';
         }
         fetchApi();
     }
