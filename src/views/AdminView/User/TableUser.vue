@@ -1,56 +1,44 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { ElTable } from 'element-plus';
 import { RouterLink } from 'vue-router';
+import { getUserList } from '@/service/usersService';
 
-interface Data {
+
+interface Users {
     id: number,
     name: string,
+    password: string;
     email: string,
     role: string,
-    created_at: string,
+    create_at: Date,
 }
 
 const search = ref('')
-const data = ref<Data[]>([
-    {
-        id: 1,
-        name: "manh",
-        email: "manh@example.com",
-        role: "student",
-        created_at: "2024-09-01 12:00:00"
-    },
-    {
-        id: 2,
-        name: "amnh",
-        email: "amnh@example.com",
-        role: "admin",
-        created_at: "2024-09-02 14:30:00"
+const users = ref<Users[]>([])
+
+// Hàm lấy danh sách người dùng
+const fetchUsers = async () => {
+    try {
+        const result = await getUserList();
+        if (result) {
+            users.value = result['data'];
+        }
+    } catch (error) {
+        console.error("Lỗi không thể tải thông tin người dùng:", error);
     }
-])
+};
 
-const filterTableData = computed(() =>
-    data.value.filter(
-        (user) =>
-            !search.value ||
-            user.name.toLowerCase().includes(search.value.toLowerCase()) ||
-            user.email.toLowerCase().includes(search.value.toLowerCase())
+// Gọi hàm lấy danh sách người dùng được gọi khi component được tạo
+    onMounted(fetchUsers);
+// Lọc dữ liệu người dùng theo tên
+    const filterTableData =  computed(() =>
+        users.value.filter(
+            (data) =>
+                !search.value ||
+                data.name.toLowerCase().includes(search.value.toLowerCase())
+        )
     )
-)
-
-type Option = {
-    id: number
-    label: string
-    sort: string
-    value: string
-}
-const value = ref<Option>()
-const options = ref<Option[]>([
-    { id: 1, label: 'Tên A-Z', sort: 'name', value: 'asc' },
-    { id: 2, label: 'Tên Z-A', sort: 'name', value: 'desc' },
-    { id: 3, label: 'Ngày tạo cũ nhất', sort: 'created_at', value: 'asc' },
-    { id: 4, label: 'Ngày tạo mới nhất', sort: 'created_at', value: 'desc' },
-])
 
 </script>
 
@@ -64,27 +52,14 @@ const options = ref<Option[]>([
         </RouterLink>
     </div>
     <div class="pt-8">
-        <div class="m-4">
-            <el-select
-                v-model="value"
-                value-key="id"
-                placeholder="Sắp xếp"
-                style="width: 240px"
-            >
-            <el-option
-                v-for="item in options"
-                :key="item.id"
-                :label="item.label"
-                :value="item"
-            />
-            </el-select>
-        </div>
         <el-table :data="filterTableData">
             <el-table-column type="selection" width="55" />
+            <el-table-column label="ID" prop="id" />
             <el-table-column label="Tên" prop="name" />
+            <el-table-column label="Mật khẩu" prop="password" />
             <el-table-column label="Email" prop="email" />
             <el-table-column label="Vai trò" prop="role" />
-            <el-table-column label="Ngày tạo" prop="created_at" />
+            <el-table-column label="Ngày tạo" prop="create_at" />
             <el-table-column align="right">
                 <template #header>
                     <el-input v-model="search" size="small" placeholder="Type to search" />

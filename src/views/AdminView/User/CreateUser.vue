@@ -9,8 +9,8 @@
         label-width="auto"
         size="large"
       >
-        <el-form-item label="ID">
-          <el-input v-model.number="userForm.id" disabled />
+      <el-form-item label="ID">
+          <el-input v-model="userForm.id" disabled/>
         </el-form-item>
         <el-form-item label="Tên">
           <el-input v-model="userForm.name" />
@@ -29,14 +29,14 @@
         </el-form-item>
         <el-form-item label="Ngày tạo">
           <el-date-picker
-            v-model="userForm.created_at"
+            v-model="userForm.create_at"
             type="datetime"
             placeholder="Chọn ngày"
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">Create</el-button>
-          <el-button>Cancel</el-button>
+          <el-button type="primary" @click="onSubmit">Create</el-button>
+          <el-button @click="onCancel">Cancel</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -44,14 +44,40 @@
   
   <script setup>
   import { reactive } from 'vue'
-  
+  import { useRouter } from 'vue-router'
+  import { createUser } from '@/service/usersService'
+  import { ElMessage } from 'element-plus';
+
+  const router = useRouter()
   const userForm = reactive({
     id: '',
     name: '',
     password: '',
     email: '',
     role: '',
-    created_at: '',
+    create_at: '',
   })
+
+  
+  const onSubmit = () => {
+      const fetchApi = async () => {
+          try {
+              const result = await createUser(userForm)
+              console.log(result);
+              if(result){
+                  ElMessage.success('Tạo thông tin người dùng thành công');
+                  router.replace({name : 'user'});
+              }
+          } catch (error) {
+              console.error("Đã xảy ra lỗi khi tạo thông tin người dùng:", error);
+              ElMessage.error('Tạo thông tin người dùng thất bại');
+          }
+      }
+      fetchApi();
+  }
+
+const onCancel = () => {
+    router.replace({name : 'user'})
+}
   </script>
   

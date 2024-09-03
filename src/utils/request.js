@@ -10,7 +10,7 @@ export const post = async (patch, option) => {
     const response = await fetch(API_DOMAIN + patch, {
         method: "POST",
         headers: {
-            Accept: "appliction/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         body: JSON.stringify(option)
