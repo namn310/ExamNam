@@ -22,7 +22,7 @@ export const del = async (patch) => {
     const response = await fetch(API_DOMAIN + patch, {
         method: "DELETE",
     });
-    const result = response.json()
+    const result = await response.json()
     return result
 }
 

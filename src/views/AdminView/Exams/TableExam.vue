@@ -29,6 +29,7 @@
                 <el-button
                     size="small"
                     type="danger"
+                    @click="handleDelete(scope.row.id)"
                 >
                     Delete
                 </el-button>
@@ -44,7 +45,7 @@
     import { computed, ref, onMounted } from 'vue'
     import { ElTable } from 'element-plus'
     import { RouterLink } from 'vue-router';
-    import { getExamList } from '@/service/examsService';
+    import { deleteExam, getExamList } from '@/service/examsService';
 
     interface Exams {
         id : string
@@ -60,7 +61,7 @@
     const exams = ref<Exams[]>([]);
 
 
-    const fetchProducts = () => {
+    const fetchData = () => {
         const fetchApi = async () => {
             const result = await getExamList()
             if(result){
@@ -70,7 +71,7 @@
         fetchApi();
     };
 
-    onMounted(fetchProducts);
+    onMounted(fetchData);
 
     const filterTableData =  computed(() =>
         exams.value.filter(
@@ -79,6 +80,14 @@
                 data.title.toLowerCase().includes(search.value.toLowerCase())
         )
     )
+
+    const handleDelete = async (row: Exams) => {
+        const result = await deleteExam(row)
+        if(result){
+            fetchData()
+        }
+         
+    } 
 
 
 

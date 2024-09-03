@@ -1,4 +1,4 @@
-import { get, patch, post, put } from "../utils/request";
+import { get, del, post, put } from "../utils/request";
 
 export const getExamList = async () => {
     const result = await get(`exams`);
@@ -18,5 +18,10 @@ export const EditExam = async (id, option) => {
 
 export const createExam = async (option) => {
     const result = await post("exams/create",option);
+    return result;
+}
+
+export const deleteExam = async (id) => {
+    const result = await del(`exams/delete/${id}`);
     return result;
 }
