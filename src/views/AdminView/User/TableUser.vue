@@ -1,63 +1,65 @@
 <script lang="ts" setup>
-    import { computed, ref, onMounted } from 'vue'
-    import { ElTable } from 'element-plus';
-    import { RouterLink } from 'vue-router';
+import { computed, ref } from 'vue'
+import { ElTable } from 'element-plus';
+import { RouterLink } from 'vue-router';
 
-    interface Data {
-        id : string
-        UserName: string
-        email: string,
-        FullName: string,
+interface Data {
+    id: number,
+    name: string,
+    email: string,
+    role: string,
+    created_at: string,
+}
+
+const search = ref('')
+const data = ref<Data[]>([
+    {
+        id: 1,
+        name: "manh",
+        email: "manh@example.com",
+        role: "student",
+        created_at: "2024-09-01 12:00:00"
+    },
+    {
+        id: 2,
+        name: "amnh",
+        email: "amnh@example.com",
+        role: "admin",
+        created_at: "2024-09-02 14:30:00"
     }
+])
 
-    const search = ref('')
-    const data = ref([
-        {
-            id : 1,
-            UserName : "H",
-            email : "s",
-            FullName : "d"
-        },
-        {
-            id : 2,
-            UserName : "H",
-            email : "s",
-            FullName : "V"
-        }
-    ])
-
-
-    const filterTableData =  computed(() =>
-        data.value.filter(
-            (data) =>
-                !search.value ||
-                data.FullName.toLowerCase().includes(search.value.toLowerCase())
-        )
+const filterTableData = computed(() =>
+    data.value.filter(
+        (user) =>
+            !search.value ||
+            user.name.toLowerCase().includes(search.value.toLowerCase()) ||
+            user.email.toLowerCase().includes(search.value.toLowerCase())
     )
-    
-    type Option = {
-        id: number
-        label: string
-        desc: string
-    }
-    const value = ref<Option>()
-    const options = ref([
-        { id: 1, label: 'Tiêu đề giảm dần', sort: 'title', value:'asc' },
-        { id: 2, label: 'Tiêu đề tăng dần', sort: 'title', value: 'desc' },
-        { id: 3, label: 'Giá giảm dần', sort: 'price', value: "desc" },
-        { id: 4, label: 'Giá tăng dần', sort: 'price', value : "asc"},
-        { id: 5, label: 'Vị trí giảm dần', sort: 'position', value : "desc"},
-        { id: 6, label: 'Vị trí tăng dần', sort: 'position', value : "asc"},
-    ])
+)
+
+type Option = {
+    id: number
+    label: string
+    sort: string
+    value: string
+}
+const value = ref<Option>()
+const options = ref<Option[]>([
+    { id: 1, label: 'Tên A-Z', sort: 'name', value: 'asc' },
+    { id: 2, label: 'Tên Z-A', sort: 'name', value: 'desc' },
+    { id: 3, label: 'Ngày tạo cũ nhất', sort: 'created_at', value: 'asc' },
+    { id: 4, label: 'Ngày tạo mới nhất', sort: 'created_at', value: 'desc' },
+])
 
 </script>
 
 <template>
     <div class="text-[50px] text-pink-500 font-great text-center">
-            Danh sách sản phẩm
-        </div>
+        Danh sách người dùng
+    </div>
     <div class="flex justify-between">
-        <RouterLink :to="{ name : 'create-user'}">
+        <RouterLink :to="{ name: 'create-user' }">
             <el-button type="primary" plain>Create User</el-button>
         </RouterLink>
     </div>
@@ -79,30 +81,25 @@
         </div>
         <el-table :data="filterTableData">
             <el-table-column type="selection" width="55" />
-            <el-table-column label="FullName" prop="FullName" />
-            <el-table-column label="email" prop="email" />
-            <el-table-column label="UserName" prop="UserName" />
+            <el-table-column label="Tên" prop="name" />
+            <el-table-column label="Email" prop="email" />
+            <el-table-column label="Vai trò" prop="role" />
+            <el-table-column label="Ngày tạo" prop="created_at" />
             <el-table-column align="right">
                 <template #header>
-                <el-input v-model="search" size="small" placeholder="Type to search" />
+                    <el-input v-model="search" size="small" placeholder="Type to search" />
                 </template>
                 <template #default="scope">
-                <el-button size="small">
-                    <RouterLink :to="`/`">
-                        Edit
-                    </RouterLink>   
+                    <el-button size="small">
+                        <RouterLink :to="`/edit/${scope.row.id}`">
+                            Edit
+                        </RouterLink>   
                     </el-button>
-                <el-button
-                    size="small"
-                    type="danger"
-                >
-                    Delete
-                </el-button>
+                    <el-button size="small" type="danger">
+                        Delete
+                    </el-button>
                 </template>
             </el-table-column>
         </el-table>
-        <!-- <el-pagination background layout="prev, pager, next" :total="totalPage * 10" @current-change="handlePageChange"/> -->
     </div>
-  </template>
-  
-  
+</template>
