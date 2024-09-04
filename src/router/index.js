@@ -20,6 +20,7 @@ import CauHoi from '@/views/AdminView/CauHoi/CauHoi.vue'
 import CreateCauHoi from '@/views/AdminView/CauHoi/CreateCauHoi.vue'
 import Exams from '@/views/AdminView/Exams/Exams.vue'
 import CreateExam from '@/views/AdminView/Exams/CreateExam.vue'
+import EditExam from '../views/AdminView/Exams/EditExam.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -146,6 +147,14 @@ const router = createRouter({
           path: 'create-exam',
           name: 'create-exam',
           component: CreateExam,
+          meta : {
+            layout : 'admin'
+          }
+        },
+        {
+          path: 'edit-exam/:id',
+          name: 'edit-exam',
+          component: EditExam,
           meta : {
             layout : 'admin'
           }

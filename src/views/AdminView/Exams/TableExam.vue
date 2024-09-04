@@ -14,20 +14,22 @@
             <el-table-column label="Tên bài kiểm tra" prop="title" />
             <el-table-column label="Môn học" prop="class" />
             <el-table-column label="Mô tả" prop="description" />
-            <el-table-column label="Thời gian làm bài" prop="expire_time"/>
+            <el-table-column label="Thời gian làm bài" prop="duration"/>
+            <el-table-column label="Số lượng câu hỏi" prop="totalQuestion"/>
             <el-table-column align="right">
                 <template #header>
                 <el-input v-model="search" size="small" placeholder="Type to search" />
                 </template>
                 <template #default="scope">
                 <el-button size="small">
-                    <RouterLink :to="`/`">
+                    <RouterLink :to="`/admin/edit-exam/${scope.row.id}`">
                         Edit
                     </RouterLink>   
                     </el-button>
                 <el-button
                     size="small"
                     type="danger"
+                    @click="handleDelete(scope.row.id)"
                 >
                     Delete
                 </el-button>
@@ -43,34 +45,33 @@
     import { computed, ref, onMounted } from 'vue'
     import { ElTable } from 'element-plus'
     import { RouterLink } from 'vue-router';
-    import { getExamList } from '@/service/examsService';
+    import { deleteExam, getExamList } from '@/service/examsService';
 
     interface Exams {
         id : string
         title: string
         class : string,
         description : string,
-        expire_time : Date,
+        duration : Date,
         created_at: Date,
+        totalQuestion : Int16Array
     }
 
     const search = ref('')
     const exams = ref<Exams[]>([]);
 
 
-    const fetchProducts = () => {
+    const fetchData = () => {
         const fetchApi = async () => {
             const result = await getExamList()
             if(result){
-                console.log(result['data']);
-                
                 exams.value = result['data']
             }
         }
         fetchApi();
     };
 
-    onMounted(fetchProducts);
+    onMounted(fetchData);
 
     const filterTableData =  computed(() =>
         exams.value.filter(
@@ -79,6 +80,14 @@
                 data.title.toLowerCase().includes(search.value.toLowerCase())
         )
     )
+
+    const handleDelete = async (row: Exams) => {
+        const result = await deleteExam(row)
+        if(result){
+            fetchData()
+        }
+         
+    } 
 
 
 

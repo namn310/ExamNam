@@ -57,14 +57,12 @@
                         
                         <ul class="pl-7 mt-2 group-[.selected]:block">
                     <li class="mb-4">
-                        <RouterLink :to="{ name : 'user'}" class="text-gray-300 text-sm flex items-center hover:text-gray-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-gray-300 before:mr-3">List User</RouterLink>
+                        <RouterLink :to="{ name : 'user'}" class="text-gray-300 text-sm flex items-center hover:text-gray-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-gray-300 before:mr-3">Danh sách người dùng</RouterLink>
                     </li> 
                     <li class="mb-4">
-                        <RouterLink :to="{name : 'create-user'}" class="text-gray-300 text-sm flex items-center hover:text-gray-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-gray-300 before:mr-3">Create User</RouterLink>
+                        <RouterLink :to="{name : 'create-user'}" class="text-gray-300 text-sm flex items-center hover:text-gray-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-gray-300 before:mr-3">Tạo thông tin người dùng</RouterLink>
                     </li> 
-                    <li class="mb-4">
-                        <RouterLink :to="{ name : 'cauhoi'}" class="text-gray-300 text-sm flex items-center hover:text-gray-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-gray-300 before:mr-3">Đơn hàng đã hủy</RouterLink>
-                    </li> 
+                    
                 </ul>
                         
                         </DisclosurePanel>
