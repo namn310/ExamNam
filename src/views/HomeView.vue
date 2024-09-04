@@ -3,7 +3,7 @@
     <div class="content-header pb-0 gray-bg">
       <div class="container-fluid pb-0">
         <div class="col-12 col-md-9 order-md-1">
-          <h1 id="thư-viện-đề-thi">Thư viện đề thi</h1>
+          <h1 id="thư-viện-đề-thi" style="font-size:3vh;font-size:3vw;font-weight: 500;">Thư viện đề thi</h1>
           <br />
           <div class="test-exams">
             <ul class="nav nav-pills flex-wrap">

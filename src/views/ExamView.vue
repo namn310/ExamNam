@@ -16,7 +16,7 @@
         </ModalView>
       </h1>
       <hr/>
-      <form class="test-form" autocomplete="off" @submit.prevent enctype="multipart/form-data">
+      <form class="test-form mt-2" autocomplete="off" @submit.prevent enctype="multipart/form-data">
         <input name="csrfmiddlewaretoken" type="hidden"
           value="QawFgl6s0hsbP0zO5BJpzCkoE1f1OGGd0aYfkaOvDLJdGIp7LI3jaqCVVVT1HFA9" />
 
@@ -34,7 +34,7 @@
               <div class="tab-pane active show" id="partcontent-9022" role="tabpanel" aria-labelledby="pills-tab">
                 <div class="context-wrapper"></div>
 
-                <div class="test-questions-wrapper" v-for="(   question, index) in questions" :key=" index ">
+                <div class="test-questions-wrapper" v-for="( question, index) in questions" :key=" index ">
 
                   <div class="question-wrapper" data-qid="144565" id="question-wrapper-144565">
                     <div  class="question-number text-center hightlightQuestion" v-if=" question.highlighted " @dblclick="HighlightQuestion( index )"

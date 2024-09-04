@@ -1,7 +1,6 @@
 <template>
-    <hr>
-  <div class="footer-wrapper p-4">
-    <div class="footer-container">
+  <div class="footerwrapper p-4">
+    <div class="footercontainer">
       <footer>
         <h2>Footer here</h2>
         <div class="row">
@@ -19,7 +18,6 @@
           </div>
           <div class="col-6 col-md">
             <div class="footer-title">ExamTutor</div>
-           
           </div>
         </div>
       </footer>

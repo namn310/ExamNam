@@ -2,7 +2,7 @@
   <div class="row p-5">
     <div class="col-12 col-md-9">
       <div class="practice-test-wrapper contentblock">
-        <h1 id="ielts-simulation-listening-test-1">IELTS Simulation Listening test 1</h1>
+        <h1 id="ielts-simulation-listening-test-1" style="font-size:x-large;font-weight: 700;">IELTS Simulation Listening test 1</h1>
         <div class="tab-content" id="nav-tabContent">
           <div class="tab-pane fade show active" id="test-info" role="tabpanel">
             <br />

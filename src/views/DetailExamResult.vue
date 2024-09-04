@@ -6,7 +6,7 @@
                     <div class="col-md-9">
                         <div class="contentblock">
                             <br>
-                            <h1 class="h2 mb-3" id="kết-quả-thi-new-economy-toeic-test-10">Kết quả thi: Đề thi Toán trung học phổ thông quốc gia năm 2023</h1>
+                            <h1 class="mb-3" id="kết-quả-thi-new-economy-toeic-test-10">Kết quả thi: Đề thi Toán trung học phổ thông quốc gia năm 2023</h1>
                             <div class="mb-3">
                                 <RouterLink :to="{name:'checkAnswer',params:{id:1}}"> <button class="btn btn-primary"> Xem chi tiết kết quả bài làm </button>  </RouterLink>
                                 |
