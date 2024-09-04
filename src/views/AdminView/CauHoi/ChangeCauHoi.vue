@@ -2,14 +2,14 @@
     
     <div class="mx-auto container bg-color-white"> 
         <div class="text-[50px] text-pink-500  text-center">
-            Thêm câu hỏi
+            Cập nhật câu hỏi 
         </div>
         <form class="mb-5" @submit.prevent>
             <div class="class">
                 <label for="class" class="form-label">
                     Lớp
                 </label>
-                <input v-model="question.class" id="class" type="text" class="form-control">
+                <input v-model="question.class"  id="class" type="text" class="form-control">
             </div>
 
             <div class="Subject">
@@ -48,7 +48,7 @@
             </div>
         
             <div class="mt-3">
-                <button type="submit" class="btn btn-primary" @click="postQuestion">Tạo câu hỏi</button>
+                <button type="submit" class="btn btn-primary" @click="UpdateQuestion">Cập nhật</button>
             </div>
             <!-- <p>{{ new }}</p> -->
         </form>
@@ -57,7 +57,7 @@
   <!-- eslint-disable vue/multi-word-component-names -->
 <!-- eslint-disable no-unused-vars -->
 <script>
-import { PostData } from '@/service/questionsService';
+import { PutData,GetDetail } from '@/service/questionsService';
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { Ckeditor } from '@ckeditor/ckeditor5-vue';
@@ -66,44 +66,53 @@ export default {
     components: {
         Ckeditor
     },
+    computed: {
+        idques () {
+            return this.$route.params.id;
+        }
+    },
     data () {
         return {
             editor: ClassicEditor,
-            question: {
-                class: '',
-                Subject: '',
-                title: '',
-                A: '',
-                B: '',
-                C: '',
-                D: '',
-                correctAns: '',
-                created_at: new Date().toLocaleDateString(),
-                created_by: '1',
-            }
+            question:[]
         }
     },
+    created () {
+        this.getDetailQues()
+    },
     methods: {
-        prindata () {
-            console.log(this.question);
-        },
-        async postQuestion () {
+        async getDetailQues () {
             try
             {
-                const post = await PostData(this.question);
-                if (!post)
+                const questionDetail = await GetDetail(this.idques);
+                if (!questionDetail)
                 {
-                    alert("Có lỗi trong quá trình thêm câu hỏi !");
+                    alert("Có lỗi trong quá trình lấy dữ liệu");
                 }
-                alert("Thêm câu hỏi thành công !");
-                this.$router.push({ name: 'cauhoi' });
-
+                this.question = questionDetail.data;
+                console.log(this.question);
             }
             catch (Error)
             {
-                alert("Có lỗi xảy ra ".Error);
+                alert(Error);
             }
-        }
+        },
+        async UpdateQuestion () {
+            try
+            {
+                const ques = await PutData(this.idques, this.question);
+                console.log(ques);
+                if (!ques)
+                {
+                    alert("Cập nhật câu hỏi không thành công !");
+                }
+                alert("Cập nhật câu hỏi thành công");
+            }
+            catch (Error)
+            {
+                console.log(Error);
+            }
+      }
     }
 }
     // const data = ref({ permissions: [] });

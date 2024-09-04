@@ -18,6 +18,7 @@ import User from '@/views/AdminView/User/User.vue'
 import CreateUser from '@/views/AdminView/User/CreateUser.vue'
 import CauHoi from '@/views/AdminView/CauHoi/CauHoi.vue'
 import CreateCauHoi from '@/views/AdminView/CauHoi/CreateCauHoi.vue'
+import ChangeCauHoi from '@/views/AdminView/CauHoi/ChangeCauHoi.vue'
 import Exams from '@/views/AdminView/Exams/Exams.vue'
 import CreateExam from '@/views/AdminView/Exams/CreateExam.vue'
 import EditExam from '../views/AdminView/Exams/EditExam.vue'
@@ -98,65 +99,72 @@ const router = createRouter({
           path: '/',
           name: 'homeAdmin',
           component: HomeAdmin,
-          meta : {
-            layout : 'admin'
+          meta: {
+            layout: 'admin'
           }
         },
         {
           path: 'user',
           name: 'user',
           component: User,
-          meta : {
-            layout : 'admin'
+          meta: {
+            layout: 'admin'
           }
         },
         {
           path: 'create-user',
           name: 'create-user',
           component: CreateUser,
-          meta : {
-            layout : 'admin'
+          meta: {
+            layout: 'admin'
           }
         },
         {
           path: 'cauhoi',
           name: 'cauhoi',
           component: CauHoi,
-          meta : {
-            layout : 'admin'
+          meta: {
+            layout: 'admin'
           }
         },
         {
           path: 'create-cauhoi',
           name: 'create-cauhoi',
           component: CreateCauHoi,
-          meta : {
-            layout : 'admin'
+          meta: {
+            layout: 'admin'
+          }
+        },
+        {
+          path: 'cauhoi/change/:id',
+          name: 'changeQues',
+          component: ChangeCauHoi,
+          meta: {
+            layout: 'admin'
           }
         },
         {
           path: 'exams',
           name: 'exams',
           component: Exams,
-          meta
-          : {
-            layout : 'admin'
+          meta: {
+            layout: 'admin'
           }
         },
         {
           path: 'create-exam',
           name: 'create-exam',
           component: CreateExam,
-          meta : {
-            layout : 'admin'
+          meta: {
+            layout: 'admin'
           }
         },
         {
           path: 'edit-exam/:id',
           name: 'edit-exam',
           component: EditExam,
-          meta : {
-            layout : 'admin'
+          meta: {
+            layout: 'admin'
           }
         }
       ]

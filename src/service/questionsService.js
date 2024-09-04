@@ -1,6 +1,22 @@
-import { get, patch, post } from "../utils/request";
+import { get, put, post, del } from '../utils/request'
 
 export const getQuestionList = async () => {
-    const result = await get(`questions/read.php`);
-    return result;
+  const result = await get(`questions`)
+  return result
+}
+export const DeleteQues = async (id) => {
+  const result = await del(`questions/delete/${id}`)
+  return result
+}
+export const PostData = async (option) => {
+  const result = await post('questions/create', option)
+  return result
+}
+export const PutData = async (id, option) => {
+  const result = await put(`questions/update/${id}`, option)
+  return result
+}
+export const GetDetail = async (id) => {
+  const result = await get(`questions/detail/${id}`)
+  return result
 }

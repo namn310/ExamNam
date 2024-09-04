@@ -9,7 +9,7 @@
         </RouterLink>
     </div>
     <div class="pt-8">
-        <table class="table table-hover table-bordered text-center" id="sampleTable" v-for="(  result, index) in data"
+        <table class="table table-hover table-bordered text-center" id="sampleTable" v-for="(   result, index) in data"
             :key=" index ">
             <thead>
                 <tr class="table-primary text-center">
@@ -21,7 +21,7 @@
                     <th></th>
                 </tr>
             </thead>
-            <tbody id="table-product" v-for="     question in result      " :key=" question.id ">
+            <tbody id="table-product" v-for="      question in result       " :key=" question.id ">
                 <tr>
                     <td>{{ question.id }}</td>
                     <td>{{ question.title }}</td>
@@ -43,7 +43,7 @@
                             </template>
 </ModalView> -->
                         <!-- button change -->
-                        <button class="btn btn-success btn-sm edit ms-2" type="button" title="Sửa" id="show-emp">
+                        <button class="btn btn-success btn-sm edit ms-2" @click="changeQuestion(question.id)" type="button" title="Sửa" id="show-emp">
                             <i class="fas fa-edit"></i>
                         </button>
                         <p>{{ errorPost }}</p>
@@ -51,7 +51,6 @@
                 </tr>
             </tbody>
         </table>
-        <button class="btn btn-primary" @click=" postQuestion ">click</button>
         <!-- <el-table :data=" filterTableData ">
             <el-table-column type="selection" width="55" />
             <el-table-column label="Câu hỏi" prop="title" />
@@ -86,6 +85,7 @@
 // import { resolveTypeElements } from 'vue/compiler-sfc';
 // import ModalView from '@/components/ModalView.vue';
 // import { fa } from 'element-plus/es/locale';
+import { getQuestionList, DeleteQues } from '@/service/questionsService';
 export default {
     data () {
         return {
@@ -93,103 +93,62 @@ export default {
             showModalEdit: false,
             currentQuestionId: null,
             data: [],
-            Error: null,
-            ques: [
-                {
-                    "class": 11,
-                    "Subject": "Englishhhhh",
-                    "title": "hsg",
-                    "A": "1",
-                    "B": "2",
-                    "C": "3",
-                    "D": "4",
-                    "correctAns": "A",
-                    "created_at": "2024-08-31 00:00:00",
-                    "created_by": 1
-                }
-            ],
-            errorPost: '',
-        }
+            Error: null,        }
     },
     // components: {
     //     ModalView
     // },
-    mounted () {
-        this.fetchData();
+    created () {
+        this.fetchQuestion();
     },
     methods: {
-        async fetchData () {
+        async fetchQuestion () {
             try
             {
-                const response = await fetch('http://localhost:8080/questions');
-                if (!response.ok)
+                const result = await getQuestionList();
+                if (result)
                 {
-                    this.Error = 'Nhận dữ liệu thất bại';
+                    this.data = result; // Assuming 'data' is a property of the result
                 }
                 else
                 {
-                    const data = await response.json();
-                    this.data = data;
+                    alert("Có lỗi trong quá trình lấy dữ liệu");
                 }
-            }
-            catch (error)
+            } catch (error)
             {
-                this.error = "Nhận dữ liệu thất bại";
+                console.error('Error fetching question list:', error);
             }
         },
-        // toggleModalDelete (questionId) {
-        //     this.currentQuestionId = questionId;
-        //     this.showModalDelete = !this.showModalDelete;
-        // },
+
         toggleModalEdit () {
             this.showModalEdit = !this.showModalEdit
         },
+
         async DeleteQuestion (questionId) {
-            this.currentQuestionId = questionId;
-            // confirm("Xác nhận xóa câu hỏi này");
-            const a = confirm("Xác nhận xóa câu hỏi này");
+            this.currentQuestionId=questionId
             try
             {
-                if (a != true)
+                const del = await DeleteQues(this.currentQuestionId);
+                if (del)
                 {
-                    alert('Cancel');
+                    // this.data.filter(data => data.id !== this.currentQuestionId);
+                    alert("Xóa câu hỏi thành công");
+                     window.location.reload();
+
                 }
-                const response = await fetch(`http://localhost:8080/questions/delete/${this.currentQuestionId}`, {
-                    method: 'DELETE',
-                });
-                if (!response.ok)
+                else
                 {
-                    alert("Xóa câu hỏi thất bại");
+                    alert("Xóa không thành công ! Có lỗi xảy ra");
                 }
-                this.data.filter(data => data.id !== this.currentQuestionId);
-                alert("Xóa câu hỏi thành công !");
             }
             catch (Error)
             {
-                console.log(Error);
+                alert("Lỗi ".Error);
             }
         },
-        async postQuestion () {
-            try
-            {
-                const response = await fetch('http://localhost:8080/questions/create', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json' // Set Content-Type to JSON
-                    },
-                    body: JSON.stringify(this.ques[0])
-                });
-                if (!response.ok)
-                {
-                    alert("Thêm câu hỏi không thành công !");
-                }
-                alert("Thêm câu hỏi thành công !");
-                window.location.reload();
-            }
-            catch (Error)
-            {
-                alert(`${Error.message}`);
-            }
+        changeQuestion (questionId) {
+            this.currentQuestionId = questionId;
+            this.$router.push({ name: 'changeQues', params: { id: this.currentQuestionId } });
         }
     }
 }
@@ -214,6 +173,7 @@ export default {
 //             data.title.toLowerCase().includes( search.value.toLowerCase() )
 //     )
 // )
+
 
 
 
