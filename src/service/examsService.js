@@ -5,6 +5,10 @@ export const getExamList = async () => {
     return result;
 }
 
+export const getQuestionExam = async (id) => {
+    const result = await get(`exams/questions-exams/${id}`);
+    return result;
+}
 
 export const getExamDetail = async (id) => {
     const result = await get(`exams/detail/${id}`);

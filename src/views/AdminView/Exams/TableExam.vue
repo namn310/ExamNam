@@ -21,18 +21,23 @@
                 <el-input v-model="search" size="small" placeholder="Type to search" />
                 </template>
                 <template #default="scope">
-                <el-button size="small">
-                    <RouterLink :to="`/admin/edit-exam/${scope.row.id}`">
-                        Edit
-                    </RouterLink>   
+                    <el-button size="small" type="primary" plain>
+                        <RouterLink :to="`/admin/detail-exam/${scope.row.id}`">
+                            Detail
+                        </RouterLink>  
                     </el-button>
-                <el-button
-                    size="small"
-                    type="danger"
-                    @click="handleDelete(scope.row.id)"
-                >
-                    Delete
-                </el-button>
+                    <el-button size="small">
+                        <RouterLink :to="`/admin/edit-exam/${scope.row.id}`">
+                            Edit
+                        </RouterLink>   
+                    </el-button>
+                    <el-button
+                        size="small"
+                        type="danger"
+                        @click="handleDelete(scope.row.id)"
+                    >
+                        Delete
+                    </el-button>
                 </template>
             </el-table-column>
         </el-table>
