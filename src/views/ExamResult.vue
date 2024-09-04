@@ -2,16 +2,12 @@
     <div class="p-5 mt-5">
         <div class="sm-container">
             <!-- User Profile Section -->
-            <div class="mx-md-auto mb-3 mt-4 text-center">
-                <div class="profile-cover-avatar">
+            <div class="mx-md-auto mb-3 mt-4 d-flex justify-content-center flex-column align-items-center">
+                <div class="profile-cover-avatar text-center">
                     <img class="avatar-img img-fluid" style="max-width:200px;max-height: 200px;"
                         src="/src/assets/img/avtUserDefault.webp">
                 </div>
                 <h1 class="h3 profile-header-title">Username</h1>
-
-                <div class="profile-header-content">
-                    <p></p>
-                </div>
             </div>
             <!-- End User Profile Section -->
             <ul class="nav nav-tabs mb-4">

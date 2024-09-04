@@ -20,7 +20,7 @@
         
         <Header :toggleSidebar="toggleSidebar"/>
 
-        <slot />
+        <slot/>
     </main>
     
 

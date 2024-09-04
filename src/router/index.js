@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 // src client
-import LayoutClient from '@/Layout/LayoutClient.vue'
+// import LayoutClient from '@/Layout/LayoutClient.vue'
 import HomeView from '../views/HomeView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import LoginView from '@/views/LoginView.vue'
@@ -25,7 +25,8 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      component: LayoutClient,
+      // hiện hai footer
+      // component: LayoutClient,
       children: [
         // trang ch
         {

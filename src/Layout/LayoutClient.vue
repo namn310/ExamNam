@@ -2,11 +2,9 @@
     <div class="LayoutClient">
         <NavBarView/>
         <div class="LayoutBody">
-            <RouterView/>
+            <RouterView></RouterView>
         </div>
-        <div class="LayoutFooter">
             <FooterView/>
-        </div>
     </div>
 </template>
 <script>
