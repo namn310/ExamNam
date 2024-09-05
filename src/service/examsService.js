@@ -1,7 +1,7 @@
 import { get, del, post, put } from "../utils/request";
 
-export const getExamList = async () => {
-    const result = await get(`exams`);
+export const getExamList = async (page) => {
+    const result = await get(`exams?page=${page}`);
     return result;
 }
 

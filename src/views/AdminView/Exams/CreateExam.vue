@@ -32,7 +32,7 @@
             </div>
         </el-form-item>
         <el-form-item label="Thời gian làm bài">
-            <el-input v-model="sizeForm.duration" />
+            <el-time-picker v-model="sizeForm.duration" placeholder="Arbitrary time" />
         </el-form-item>
         <el-form-item label="Lớp học">
             <el-input v-model.number="sizeForm.class" />

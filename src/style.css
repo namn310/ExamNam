@@ -17,3 +17,11 @@
 .font-great{
     font-family: "Great Vibes", cursive;
 }
+
+.el-pagination{
+    justify-content: center;
+    padding: 50px 0;
+}
+.el-pagination.is-background .el-pager li.is-active{
+    background: #c14679 !important;
+}

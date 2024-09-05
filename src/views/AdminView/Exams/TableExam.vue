@@ -41,7 +41,7 @@
                 </template>
             </el-table-column>
         </el-table>
-        <!-- <el-pagination background layout="prev, pager, next" :total="totalPage * 10" @current-change="handlePageChange"/> -->
+        <el-pagination background layout="prev, pager, next" :total="totalPage * 10" @current-change="handlePageChange"/>
     </div>
 </template>
 
@@ -51,6 +51,14 @@
     import { ElTable } from 'element-plus'
     import { RouterLink } from 'vue-router';
     import { deleteExam, getExamList } from '@/service/examsService';
+
+    let page = 1;
+    const totalPage = ref(1)
+
+    const handlePageChange = (newPage) =>{
+        page = newPage;  
+        fetchData();
+    }
 
     interface Exams {
         id : string
@@ -68,9 +76,10 @@
 
     const fetchData = () => {
         const fetchApi = async () => {
-            const result = await getExamList()
+            const result = await getExamList(page)
             if(result){
-                exams.value = result['data']
+                exams.value = result['data']['data']
+                totalPage.value = result['data']['total_page']
             }
         }
         fetchApi();
