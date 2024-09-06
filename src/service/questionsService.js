@@ -20,3 +20,7 @@ export const GetDetail = async (id) => {
   const result = await get(`questions/detail/${id}`)
   return result
 }
+export const questionsPage = async (page) => {
+  const result = await get(`questions?page=${page}`);
+  return result
+}

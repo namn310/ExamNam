@@ -9,9 +9,7 @@
         label-width="auto"
         size="large"
       >
-      <el-form-item label="ID">
-          <el-input v-model="userForm.id" disabled/>
-        </el-form-item>
+      
         <el-form-item label="Tên">
           <el-input v-model="userForm.name" />
         </el-form-item>
@@ -50,12 +48,11 @@
 
   const router = useRouter()
   const userForm = reactive({
-    id: '',
     name: '',
     password: '',
     email: '',
     role: '',
-    create_at: '',
+    create_at: new Date().toLocaleDateString(),
   })
 
   
@@ -67,7 +64,7 @@
               if(result){
                   ElMessage.success('Tạo thông tin người dùng thành công');
                   router.replace({name : 'user'});
-              }
+            }
           } catch (error) {
               console.error("Đã xảy ra lỗi khi tạo thông tin người dùng:", error);
               ElMessage.error('Tạo thông tin người dùng thất bại');
