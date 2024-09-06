@@ -2,7 +2,7 @@
 import { computed, ref, onMounted } from 'vue'
 import { ElTable } from 'element-plus';
 import { RouterLink } from 'vue-router';
-import { getUserList } from '@/service/usersService';
+import { deleteUser, getUserList } from '@/service/usersService';
 
 
 interface Users {
@@ -18,19 +18,19 @@ const search = ref('')
 const users = ref<Users[]>([])
 
 // Hàm lấy danh sách người dùng
-const fetchUsers = async () => {
-    try {
-        const result = await getUserList();
-        if (result) {
-            users.value = result['data'];
+const fetchData = () => {
+        const fetchUser = async () => {
+            const result = await getUserList();
+            if(result){
+                users.value = result['data']['data']    
+            
+            }
         }
-    } catch (error) {
-        console.error("Lỗi không thể tải thông tin người dùng:", error);
-    }
-};
+        fetchUser();
+    };
 
 // Gọi hàm lấy danh sách người dùng được gọi khi component được tạo
-    onMounted(fetchUsers);
+    onMounted(fetchData);
 // Lọc dữ liệu người dùng theo tên
     const filterTableData =  computed(() =>
         users.value.filter(
@@ -39,7 +39,12 @@ const fetchUsers = async () => {
                 data.name.toLowerCase().includes(search.value.toLowerCase())
         )
     )
-
+    const onDelete = async (row: Users) => {
+        const result = await deleteUser(row)
+        if(result){
+            fetchData()
+        }
+    }
 </script>
 
 <template>
@@ -70,7 +75,7 @@ const fetchUsers = async () => {
                             Edit
                         </RouterLink>   
                     </el-button>
-                    <el-button size="small" type="danger">
+                    <el-button size="small" type="danger" @click="onDelete(scope.row.id)">
                         Delete
                     </el-button>
                 </template>
