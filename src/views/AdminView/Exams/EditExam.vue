@@ -2,7 +2,7 @@
     
     <div class="mx-auto container bg-color-white"> 
         <div class="text-[50px] text-pink-500 font-great text-center">
-            Thêm bài kiểm tra
+            Sửa bài kiểm tra
         </div>
         <el-form
             class="w-full p-3"
@@ -20,10 +20,22 @@
             <el-input v-model="sizeForm.description" />
         </el-form-item>
         <el-form-item label="Thời gian làm bài">
-            <el-input v-model.number="sizeForm.duration" />
+            <el-input v-model="sizeForm.duration"/>
         </el-form-item>
-        <el-form-item label="Số lượng câu hỏi">
-            <el-input v-model.number="sizeForm.totalQuestion" />
+        <el-form-item label="Thời hạn làm bài">
+            <el-input v-model="sizeForm.expire_time" />
+            <div class="demo-datetime-picker">
+                <div class="block">
+                    <el-date-picker
+                        v-model="sizeForm.expire_time"
+                        type="datetime"
+                        placeholder="Select date and time"
+                        format="YYYY-MM-DD HH:mm:ss"
+                        date-format="MMM DD, YYYY"
+                        time-format="HH:mm"
+                    />
+                </div>
+            </div>
         </el-form-item>
         <el-form-item>
             <el-button type="primary" @click="onSubmit">Update</el-button>
@@ -50,17 +62,22 @@
         description: '',
         class: '',
         duration : '',
-        totalQuestion : ''
+        expire_time : ''
     })
     
     const fetchData = () =>{
         const fetchApi = async () => {
             const result = await getExamDetail(id);
-            sizeForm.value.title = result.data.title || '';
-            sizeForm.value.description = result.data.description || '';
-            sizeForm.value.class = result.data.class || '';
-            sizeForm.value.duration = result.data.duration || '';
-            sizeForm.value.totalQuestion = result.data.totalQuestion || '';
+            if(result){
+                console.log(result);
+                
+                sizeForm.value.title = result.data.title || '';
+                sizeForm.value.description = result.data.description || '';
+                sizeForm.value.class = result.data.class || '';
+                sizeForm.value.duration = result.data.duration || '';
+                sizeForm.value.expire_time = result.data.expire_time || '';
+            }
+            
         }
         fetchApi();
     }
