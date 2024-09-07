@@ -97,9 +97,9 @@ const router = createRouter({
       path: '/admin',
       children: [
         {
-          path: '/',
+          path: '',
           name: 'homeAdmin',
-          component: HomeAdmin,
+          component: User,
           meta: {
             layout: 'admin'
           }
@@ -172,8 +172,8 @@ const router = createRouter({
           path: 'detail-exam/:id',
           name: 'detail-exam',
           component: DetailExam,
-          meta : {
-            layout : 'admin'
+          meta: {
+            layout: 'admin'
           }
         }
       ]

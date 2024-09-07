@@ -9,7 +9,7 @@
             <div class="col-md-6 right-box">
                 <div class="row align-items-center text-center">
                     <div class="header-text mb-4">
-                        <h3 style="font-family: 'Courier New', Courier, monospace;font-weight: 600;">Đăng Ký</h3>
+                        <h3 style="font-weight: 600;font-size:5vw;font-size:5vh">Đăng Ký</h3>
                     </div>
                     <form id="loginForm" method="post" >
                         <div class=" form-group mb-3">
@@ -24,10 +24,10 @@
                             <input type="text" name="phone" class="form-control form-control-lg bg-light fs-6" id="phone_signup" placeholder="Số điện thoại">
                             <p class=" text-danger text-start ps-1"></p>
                         </div>
-                        <div class="form-group mb-3">
-                            <input type="text" name="local" class="form-control form-control-lg bg-light fs-6" id="local_signup" placeholder="Địa chỉ">
-                            <p class=" text-danger text-start ps-1"></p>
-                        </div>
+                            <!-- <div class="form-group mb-3">
+                                <input type="text" name="local" class="form-control form-control-lg bg-light fs-6" id="local_signup" placeholder="Địa chỉ">
+                                <p class=" text-danger text-start ps-1"></p>
+                            </div> -->
                         <div class="form-group mb-3">
                             <input type="password" name="pass" class="form-control form-control-lg bg-light fs-6" id="password_signup" placeholder="Mật Khẩu">
                             <small>Mật khẩu tối thiểu 6 ý tự</small>

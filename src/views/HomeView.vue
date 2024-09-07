@@ -3,7 +3,9 @@
     <div class="content-header pb-0 gray-bg">
       <div class="container-fluid pb-0">
         <div class="col-12 col-md-9 order-md-1">
-          <h1 id="thư-viện-đề-thi" style="font-size:3vh;font-size:3vw;font-weight: 500;">Thư viện đề thi</h1>
+          <h1 id="thư-viện-đề-thi" style="font-size: 3vh; font-size: 3vw; font-weight: 500">
+            Thư viện đề thi
+          </h1>
           <br />
           <div class="test-exams">
             <ul class="nav nav-pills flex-wrap">
@@ -42,15 +44,23 @@
                 <div class="form-group">
                   <div class="input-addon inner-addon right-addon">
                     <div class="input-group flex-nowrap">
-                      <input type="text" style="width: 30vw" class="form-control" enterkeyhint="done"
-                        placeholder="Nhập từ khoá bạn muốn tìm kiếm: tên sách, dạng câu hỏi ..." name="term" value="">
-                        <button class="btn btn-primary"> <i class="fa-solid fa-magnifying-glass fa-lg text-white"></i></button>
+                      <input
+                        type="text"
+                        style="width: 30vw"
+                        class="form-control"
+                        enterkeyhint="done"
+                        placeholder="Nhập từ khoá bạn muốn tìm kiếm: tên sách, dạng câu hỏi ..."
+                        name="term"
+                        value=""
+                      />
+                      <button class="btn btn-primary">
+                        <i class="fa-solid fa-magnifying-glass fa-lg text-white"></i>
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-
           </form>
           <br />
         </div>
@@ -63,194 +73,13 @@
       </div>
     </div>
     <div class="content-wrapper mt-4 ms-4 me-4">
-      <div class=" d-flex justify-content-start flex-wrap">
-        <!-- exam test -->
-        <div class="testitem-wrapper mt-2 me-2 p-3">
-          <a class="text-dark" href="">
-            <h2 class="testitem-title" id="ielts-simulation-listening-test-1">
-              IELTS Simulation Listening test 1
-            </h2>
-            <div class="testitem-info-wrapper">
-              <div>
-                <span class="testitem-info">
-                  <span class="far fa-clock mr-1 me-2"></span>40 phút |
-                  <i class="fa-solid fa-user-pen me-2"></i>566811 |
-                  <span class="far fa-comments mr-1 me-2"></span>1804
-                </span>
-              </div>
-              <div>
-                <span class="testitem-info"> 4 phần thi | 40 câu hỏi </span>
-              </div>
-            </div>
-
-            <div class="testitem-tags mt-2">
-              <span class="tag">IELTS Academic</span>
-              <span class="tag">Listening</span>
-            </div>
-            <br />
-          </a>
-          <div class="testitem-start-test">
-            <a class="text-dark"> </a>
-            <RouterLink :to=" { name: 'testDetail', params: { id: 1 } } " class="btn btn-block btn-outline-primary">Chi tiết
-            </RouterLink>
-          </div>
-        </div>
-        <!-- exam test -->
-        <div class="testitem-wrapper mt-2 me-2 p-3">
-          <a class="text-dark" href="">
-            <h2 class="testitem-title" id="ielts-simulation-listening-test-1">
-              IELTS Simulation Listening test 1
-            </h2>
-            <div class="testitem-info-wrapper">
-              <div>
-                <span class="testitem-info">
-                  <span class="far fa-clock mr-1 me-2"></span>40 phút |
-                  <i class="fa-solid fa-user-pen me-2"></i>566811 |
-                  <span class="far fa-comments mr-1 me-2"></span>1804
-                </span>
-              </div>
-              <div>
-                <span class="testitem-info"> 4 phần thi | 40 câu hỏi </span>
-              </div>
-            </div>
-
-            <div class="testitem-tags mt-2">
-              <span class="tag">IELTS Academic</span>
-              <span class="tag">Listening</span>
-            </div>
-            <br />
-          </a>
-          <div class="testitem-start-test">
-            <a class="text-dark"> </a>
-            <RouterLink :to=" { name: 'testDetail', params: { id: 1 } } " class="btn btn-block btn-outline-primary">Chi tiết
-            </RouterLink>
-          </div>
-        </div>
-        <!-- exam test -->
-        <div class="testitem-wrapper mt-2 me-2 p-3">
-          <a class="text-dark" href="">
-            <h2 class="testitem-title" id="ielts-simulation-listening-test-1">
-              IELTS Simulation Listening test 1
-            </h2>
-            <div class="testitem-info-wrapper">
-              <div>
-                <span class="testitem-info">
-                  <span class="far fa-clock mr-1 me-2"></span>40 phút |
-                  <i class="fa-solid fa-user-pen me-2"></i>566811 |
-                  <span class="far fa-comments mr-1 me-2"></span>1804
-                </span>
-              </div>
-              <div>
-                <span class="testitem-info"> 4 phần thi | 40 câu hỏi </span>
-              </div>
-            </div>
-
-            <div class="testitem-tags mt-2">
-              <span class="tag">IELTS Academic</span>
-              <span class="tag">Listening</span>
-            </div>
-            <br />
-          </a>
-          <div class="testitem-start-test">
-            <a class="text-dark"> </a>
-            <RouterLink :to=" { name: 'testDetail', params: { id: 1 } } " class="btn btn-block btn-outline-primary">Chi tiết
-            </RouterLink>
-          </div>
-        </div>
-        <!-- exam test -->
-        <div class="testitem-wrapper mt-2 me-2 p-3">
-          <a class="text-dark" href="">
-            <h2 class="testitem-title" id="ielts-simulation-listening-test-1">
-              IELTS Simulation Listening test 1
-            </h2>
-            <div class="testitem-info-wrapper">
-              <div>
-                <span class="testitem-info">
-                  <span class="far fa-clock mr-1 me-2"></span>40 phút |
-                  <i class="fa-solid fa-user-pen me-2"></i>566811 |
-                  <span class="far fa-comments mr-1 me-2"></span>1804
-                </span>
-              </div>
-              <div>
-                <span class="testitem-info"> 4 phần thi | 40 câu hỏi </span>
-              </div>
-            </div>
-
-            <div class="testitem-tags mt-2">
-              <span class="tag">IELTS Academic</span>
-              <span class="tag">Listening</span>
-            </div>
-            <br />
-          </a>
-          <div class="testitem-start-test">
-            <a class="text-dark"> </a>
-            <RouterLink :to=" { name: 'testDetail', params: { id: 1 } } " class="btn btn-block btn-outline-primary">Chi tiết
-            </RouterLink>
-          </div>
-        </div>
-        <!-- exam test -->
-        <div class="testitem-wrapper mt-2 me-2 p-3">
-          <a class="text-dark" href="">
-            <h2 class="testitem-title" id="ielts-simulation-listening-test-1">
-              IELTS Simulation Listening test 1
-            </h2>
-            <div class="testitem-info-wrapper">
-              <div>
-                <span class="testitem-info">
-                  <span class="far fa-clock mr-1 me-2"></span>40 phút |
-                  <i class="fa-solid fa-user-pen me-2"></i>566811 |
-                  <span class="far fa-comments mr-1 me-2"></span>1804
-                </span>
-              </div>
-              <div>
-                <span class="testitem-info"> 4 phần thi | 40 câu hỏi </span>
-              </div>
-            </div>
-
-            <div class="testitem-tags mt-2">
-              <span class="tag">IELTS Academic</span>
-              <span class="tag">Listening</span>
-            </div>
-            <br />
-          </a>
-          <div class="testitem-start-test">
-            <a class="text-dark"> </a>
-            <RouterLink :to=" { name: 'testDetail', params: { id: 1 } } " class="btn btn-block btn-outline-primary">Chi tiết
-            </RouterLink>
-          </div>
-        </div>
-        <!-- exam test -->
-        <div class="testitem-wrapper mt-2 me-2 p-3">
-          <a class="text-dark" href="">
-            <h2 class="testitem-title" id="ielts-simulation-listening-test-1">
-              IELTS Simulation Listening test 1
-            </h2>
-            <div class="testitem-info-wrapper">
-              <div>
-                <span class="testitem-info">
-                  <span class="far fa-clock mr-1 me-2"></span>40 phút |
-                  <i class="fa-solid fa-user-pen me-2"></i>566811 |
-                  <span class="far fa-comments mr-1 me-2"></span>1804
-                </span>
-              </div>
-              <div>
-                <span class="testitem-info"> 4 phần thi | 40 câu hỏi </span>
-              </div>
-            </div>
-
-            <div class="testitem-tags mt-2">
-              <span class="tag">IELTS Academic</span>
-              <span class="tag">Listening</span>
-            </div>
-            <br />
-          </a>
-          <div class="testitem-start-test">
-            <a class="text-dark"> </a>
-            <RouterLink :to=" { name: 'testDetail', params: { id: 1 } } " class="btn btn-block btn-outline-primary">Chi tiết
-            </RouterLink>
-          </div>
-        </div>
-
+      <div class="d-flex justify-content-start flex-wrap">
+        <CardExam />
+        <CardExam />
+        <CardExam />
+        <CardExam />
+        <CardExam />
+        <CardExam />
       </div>
     </div>
   </div>
@@ -284,7 +113,12 @@
   </nav>
 </template>
 <script>
-export default {}
+import CardExam from '@/components/cardExam.vue'
+export default {
+  components: {
+    CardExam
+  }
+}
 </script>
 <style scoped>
 .site-content-wrapper {
@@ -336,7 +170,6 @@ export default {}
 }
 
 @media (min-width: 992px) {
-
   .container,
   .container-lg,
   .container-md,
@@ -352,7 +185,6 @@ export default {}
 }
 
 @media (min-width: 768px) {
-
   .container,
   .container-md,
   .container-sm,
@@ -367,7 +199,6 @@ export default {}
 }
 
 @media (min-width: 576px) {
-
   .container,
   .container-sm,
   .lg-container,
@@ -487,7 +318,7 @@ ul {
 }
 
 .nav-pills .nav-link.active,
-.nav-pills .show>.nav-link {
+.nav-pills .show > .nav-link {
   color: #fff;
   background-color: #35509a;
 }
@@ -524,17 +355,5 @@ a {
   flex-wrap: wrap;
   margin-right: -0.75rem;
   margin-left: -0.75rem;
-}
-
-.testitem-wrapper {
-  border: 1px solid black;
-  border-radius: 5px;
-  max-width: 350px;
-  min-width: 300px;
-  margin-left: 20px;
-}
-
-.testitem-start-test {
-  margin-bottom: 10px
 }
 </style>
