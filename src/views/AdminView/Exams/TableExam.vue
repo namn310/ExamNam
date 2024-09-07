@@ -12,7 +12,7 @@
         <el-table :data="filterTableData">
             <el-table-column type="selection" width="55" />
             <el-table-column label="Tên bài kiểm tra" prop="title" />
-            <el-table-column label="Môn học" prop="class" />
+            <el-table-column label="Lớp học" prop="class" />
             <el-table-column label="Mô tả" prop="description" />
             <el-table-column label="Danh mục bài thi" prop="category"/>
             <el-table-column label="Thời gian làm bài" prop="duration"/>

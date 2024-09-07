@@ -12,10 +12,10 @@
               <li class="nav-item w-auto">
                 <a class="nav-link active" href="/tests/">Tất cả</a>
               </li>
-              <li class="nav-item w-auto">
-                <a class="nav-link" href="/tests/tieng-anh-thptqg/">Tiếng Anh THPTQG</a>
+              <li class="nav-item w-auto" v-for="item in dataCetegory">
+                <a class="nav-link" href="/tests/tieng-anh-thptqg/">{{item.title}}</a>
               </li>
-              <li class="nav-item w-auto">
+              <!-- <li class="nav-item w-auto">
                 <a class="nav-link" href="/tests/toan-thptqg/">Toán THPTQG</a>
               </li>
               <li class="nav-item w-auto">
@@ -33,7 +33,7 @@
 
               <li class="nav-item w-auto">
                 <a class="nav-link" href="/tests/act/">ACT</a>
-              </li>
+              </li> -->
             </ul>
           </div>
 
@@ -122,8 +122,8 @@ export default {
 } -->
 
 <script setup>
-import CardExam from '@/components/cardExam.vue'
-import { getExamList } from '@/service/examsService';
+import CardExam from '@/components/CardExam.vue'
+import { getCategoryExamList } from '@/service/examsService';
 import { onMounted, ref } from 'vue';
 //  components: {
     CardExam
@@ -132,7 +132,7 @@ import { onMounted, ref } from 'vue';
   const dataCetegory = ref([]);
 
   const fetchData = async () => {
-    const result = await getExamList(1)
+    const result = await getCategoryExamList(1)
     if(result){
       dataCetegory.value = result['data']['data']
     }

@@ -5,6 +5,11 @@ export const getExamList = async (page) => {
     return result;
 }
 
+export const getCategoryExamList = async () => {
+    const result = await get(`category-exam`);
+    return result;
+}
+
 export const getQuestionExam = async (id) => {
     const result = await get(`exams/questions-exams/${id}`);
     return result;
