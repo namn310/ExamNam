@@ -1,5 +1,5 @@
 <template>
-  <div class="site-content-wrapper">
+  <div class="site-content-wrapper container-fluid">
     <div class="content-header pb-0 gray-bg">
       <div class="container-fluid pb-0">
         <div class="col-12 col-md-9 order-md-1">
@@ -255,7 +255,7 @@
     </div>
   </div>
 
-  <nav class="jqpages mt-5">
+  <!-- <nav class="jqpages mt-5">
     <div class="pagination">
       <span class="page-item active">
         <a class="page-link" href="?page=1">1</a>
@@ -281,11 +281,27 @@
         <a class="page-link" href="?page=2"><i class="fas fa-chevron-right"></i></a>
       </span>
     </div>
-  </nav>
+  </nav> -->
+  <el-pagination background layout="prev, pager, next" :total="1000" />
 </template>
-<script>
-export default {}
+
+<script setup>
+import { getExamList } from '@/service/examsService';
+import { onMounted, ref } from 'vue';
+
+
+  const dataCetegory = ref([]);
+
+  const fetchData = async () => {
+    const result = await getExamList(1)
+    if(result){
+      dataCetegory.value = result['data']['data']
+    }
+  }
+
+  onMounted(fetchData)
 </script>
+
 <style scoped>
 .site-content-wrapper {
   padding-top: 80px;

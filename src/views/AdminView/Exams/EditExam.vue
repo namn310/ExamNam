@@ -19,6 +19,9 @@
         <el-form-item label="Mô tả">
             <el-input v-model="sizeForm.description" />
         </el-form-item>
+        <el-form-item label="Danh mục bài thi">
+            <el-input v-model="sizeForm.category"/>
+        </el-form-item>
         <el-form-item label="Thời gian làm bài">
             <el-input v-model="sizeForm.duration"/>
         </el-form-item>
@@ -51,6 +54,8 @@
     import { onMounted, ref } from 'vue'
     import { useRoute, useRouter } from 'vue-router';
     import { EditExam, getExamDetail } from '@/service/examsService';
+    import { h } from 'vue'
+    import { ElNotification } from 'element-plus'
 
     const router = useRouter()
     const options = ref([])
@@ -62,15 +67,15 @@
         description: '',
         class: '',
         duration : '',
-        expire_time : ''
+        expire_time : '',
+        category : ''
     })
     
     const fetchData = () =>{
         const fetchApi = async () => {
             const result = await getExamDetail(id);
             if(result){
-                console.log(result);
-                
+                sizeForm.value.category = result.data.category || '';
                 sizeForm.value.title = result.data.title || '';
                 sizeForm.value.description = result.data.description || '';
                 sizeForm.value.class = result.data.class || '';
@@ -89,7 +94,10 @@
     const fetchApi = async () => {
         const result = await EditExam(id, sizeForm.value)
         if(result){
-            console.log("Success");
+            ElNotification({
+                title: 'Success',
+                message: h('i', { style: 'color: teal' }, 'Sửa bài kiểm tra thành công'),
+            })
             router.replace({name : 'exams'})
         }
     } 
