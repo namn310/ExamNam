@@ -284,9 +284,24 @@
   </nav> -->
   <el-pagination background layout="prev, pager, next" :total="1000" />
 </template>
-<script>
-export default {}
+
+<script setup>
+import { getExamList } from '@/service/examsService';
+import { onMounted, ref } from 'vue';
+
+
+  const dataCetegory = ref([]);
+
+  const fetchData = async () => {
+    const result = await getExamList(1)
+    if(result){
+      dataCetegory.value = result['data']['data']
+    }
+  }
+
+  onMounted(fetchData)
 </script>
+
 <style scoped>
 .site-content-wrapper {
   padding-top: 80px;
