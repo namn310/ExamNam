@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { computed, ref, onMounted } from 'vue'
-import { ElTable } from 'element-plus';
+import { ElMessage, ElMessageBox, ElTable } from 'element-plus';
 import { RouterLink } from 'vue-router';
 import { deleteUser, getUserList } from '@/service/usersService';
+import { ca } from 'element-plus/es/locale';
 
 
 interface Users {
@@ -40,9 +41,24 @@ const fetchData = () => {
         )
     )
     const onDelete = async (row: Users) => {
-        const result = await deleteUser(row)
-        if(result){
-            fetchData()
+        try{
+            await ElMessageBox.confirm(
+                'Bạn có chắc chắn muốn xóa người dùng này không?',
+                'Xác nhận xóa',
+                {
+                    confirmButtonText: 'Xác nhận',
+                    cancelButtonText: 'Hủy',
+                    type: 'warning',
+                }
+            );
+            const result = await deleteUser(row);
+            if (result) {
+                ElMessage.success('Xóa người dùng thành công');
+                fetchData();
+            }
+        } catch (error) {
+            console.error('Đã xảy ra lỗi khi xóa người dùng:', error);
+            ElMessage.error('Xóa người dùng thất bại');
         }
     }
 </script>
@@ -71,7 +87,7 @@ const fetchData = () => {
                 </template>
                 <template #default="scope">
                     <el-button size="small">
-                        <RouterLink :to="`/edit/${scope.row.id}`">
+                        <RouterLink :to= "`/admin/changeUser/${scope.row.id}`">
                             Edit
                         </RouterLink>   
                     </el-button>

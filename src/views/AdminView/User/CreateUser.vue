@@ -1,7 +1,7 @@
 <template>
     <div class="mx-auto container bg-color-white">
       <div class="text-[50px] text-pink-500 font-great text-center">
-        Thêm người dùng
+        Thêm thông tin người dùng
       </div>
       <el-form
         class="w-full p-3"
@@ -9,9 +9,6 @@
         label-width="auto"
         size="large"
       >
-      <el-form-item label="ID">
-          <el-input v-model="userForm.id" disabled/>
-        </el-form-item>
         <el-form-item label="Tên">
           <el-input v-model="userForm.name" />
         </el-form-item>
@@ -50,7 +47,6 @@
 
   const router = useRouter()
   const userForm = reactive({
-    id: '',
     name: '',
     password: '',
     email: '',

@@ -23,7 +23,8 @@
                 <label for="subject" class="form-label">
                     Đề bài
                 </label>
-                <Ckeditor :editor="editor" v-model="question.title"/>
+                <br>
+                <textarea style="width:100%;border:1px solid black;height:20vh" v-model="question.title"></textarea>
             </div>
 
             <div class="answer mb-2 mt-3">
