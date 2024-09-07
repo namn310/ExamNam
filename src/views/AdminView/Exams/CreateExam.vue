@@ -16,6 +16,9 @@
         <el-form-item label="Mô tả">
             <el-input v-model="sizeForm.description" />
         </el-form-item>
+        <el-form-item label="Danh mục bài thi">
+            <el-input v-model="sizeForm.category" />
+        </el-form-item>
         <el-form-item label="Thời hạn làm bài">
             <el-input v-model="sizeForm.expire_time" />
             <div class="demo-datetime-picker">
@@ -49,36 +52,40 @@
   </template>
   <!-- eslint-disable vue/multi-word-component-names -->
 <!-- eslint-disable no-unused-vars -->
-<script setup>
+<script lang="ts" setup>
 
     import { createExam } from '@/service/examsService';
     import { onMounted, reactive, ref } from 'vue'
     import { useRouter } from 'vue-router';
+    import { h } from 'vue'
+    import { ElNotification } from 'element-plus'
 
     const router = useRouter()
 
-  const sizeForm = reactive({
-    title: '',
-    description: '',
-    class: '',
-    expire_time : '',
-    duration : '',
-    totalQuestion : '',
-    id_user : 1
-  })
+    const sizeForm = reactive({
+        title: '',
+        description: '',
+        class: '',
+        expire_time : '',
+        duration : '',
+        totalQuestion : '',
+        category : '',
+        id_user : 1
+    })
 
-  const onSubmit = () => {
-    const fetchApi = async () => {
-        const result = await createExam(sizeForm)
-        if(result){
-            console.log("Success");
-            router.replace({name : 'exams'})
-        }
-    } 
-    fetchApi();
-    console.log(sizeForm);
-    
-}
+    const onSubmit = () => {
+        const fetchApi = async () => {
+            const result = await createExam(sizeForm)
+            if(result){
+                ElNotification({
+                    title: 'Success',
+                    message: h('i', { style: 'color: teal' }, 'Tạo bài kiểm tra thành công'),
+                })
+                router.replace({name : 'exams'})
+            }
+        } 
+        fetchApi();
+    }
 
 </script>
 

@@ -14,6 +14,7 @@
             <el-table-column label="Tên bài kiểm tra" prop="title" />
             <el-table-column label="Môn học" prop="class" />
             <el-table-column label="Mô tả" prop="description" />
+            <el-table-column label="Danh mục bài thi" prop="category"/>
             <el-table-column label="Thời gian làm bài" prop="duration"/>
             <el-table-column label="Số lượng câu hỏi" prop="totalQuestion"/>
             <el-table-column align="right">
@@ -31,13 +32,16 @@
                             Edit
                         </RouterLink>   
                     </el-button>
-                    <el-button
-                        size="small"
-                        type="danger"
-                        @click="handleDelete(scope.row.id)"
-                    >
-                        Delete
-                    </el-button>
+                    <el-popconfirm
+                        title="Are you sure to delete this?"
+                        @confirm="handleDelete(scope.row.id)"
+                        >
+                        <template #reference>
+                            <el-button size="small" type="danger">
+                            Delete
+                            </el-button>
+                        </template>
+                    </el-popconfirm>
                 </template>
             </el-table-column>
         </el-table>
@@ -67,7 +71,8 @@
         description : string,
         duration : Date,
         created_at: Date,
-        totalQuestion : Int16Array
+        totalQuestion : Int16Array,
+        category : string
     }
 
     const search = ref('')
@@ -100,6 +105,7 @@
         if(result){
             fetchData()
         }
+         console.log("ok");
          
     } 
 
