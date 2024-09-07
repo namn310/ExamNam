@@ -96,7 +96,7 @@
 // import { resolveTypeElements } from 'vue/compiler-sfc';
 // import ModalView from '@/components/ModalView.vue';
 // import { fa } from 'element-plus/es/locale';
-import { getQuestionList, DeleteQues, questionsPage } from '@/service/questionsService'
+import { getQuestionList, DeleteQues } from '@/service/questionsService'
 export default {
   data() {
     return {

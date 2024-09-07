@@ -1,7 +1,7 @@
 <template>
     <div class="mx-auto container bg-color-white">
       <div class="text-[50px] text-pink-500 font-great text-center">
-        Thêm người dùng
+        Thêm thông tin người dùng
       </div>
       <el-form
         class="w-full p-3"
@@ -9,7 +9,6 @@
         label-width="auto"
         size="large"
       >
-      
         <el-form-item label="Tên">
           <el-input v-model="userForm.name" />
         </el-form-item>
@@ -52,7 +51,7 @@
     password: '',
     email: '',
     role: '',
-    create_at: new Date().toLocaleDateString(),
+    create_at: '',
   })
 
   
@@ -64,7 +63,7 @@
               if(result){
                   ElMessage.success('Tạo thông tin người dùng thành công');
                   router.replace({name : 'user'});
-            }
+              }
           } catch (error) {
               console.error("Đã xảy ra lỗi khi tạo thông tin người dùng:", error);
               ElMessage.error('Tạo thông tin người dùng thất bại');
@@ -74,7 +73,6 @@
   }
 
 const onCancel = () => {
-    router.replace({name : 'user'})
+  router.replace({name : 'user'})
 }
-  </script>
-  
+</script>

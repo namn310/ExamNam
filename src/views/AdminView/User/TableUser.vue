@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { computed, ref, onMounted } from 'vue'
-import { ElTable } from 'element-plus';
+import { ElMessage, ElMessageBox, ElTable } from 'element-plus';
 import { RouterLink } from 'vue-router';
-import { getUserList } from '@/service/usersService';
+import { deleteUser, getUserList } from '@/service/usersService';
+import { ca } from 'element-plus/es/locale';
 
 
 interface Users {
@@ -18,19 +19,19 @@ const search = ref('')
 const users = ref<Users[]>([])
 
 // Hàm lấy danh sách người dùng
-const fetchUsers = async () => {
-    try {
-        const result = await getUserList();
-        if (result) {
-            users.value = result['data'];
+const fetchData = () => {
+        const fetchUser = async () => {
+            const result = await getUserList();
+            if(result){
+                users.value = result['data']['data']    
+            
+            }
         }
-    } catch (error) {
-        console.error("Lỗi không thể tải thông tin người dùng:", error);
-    }
-};
+        fetchUser();
+    };
 
 // Gọi hàm lấy danh sách người dùng được gọi khi component được tạo
-    onMounted(fetchUsers);
+    onMounted(fetchData);
 // Lọc dữ liệu người dùng theo tên
     const filterTableData =  computed(() =>
         users.value.filter(
@@ -39,7 +40,27 @@ const fetchUsers = async () => {
                 data.name.toLowerCase().includes(search.value.toLowerCase())
         )
     )
-
+    const onDelete = async (row: Users) => {
+        try{
+            await ElMessageBox.confirm(
+                'Bạn có chắc chắn muốn xóa người dùng này không?',
+                'Xác nhận xóa',
+                {
+                    confirmButtonText: 'Xác nhận',
+                    cancelButtonText: 'Hủy',
+                    type: 'warning',
+                }
+            );
+            const result = await deleteUser(row);
+            if (result) {
+                ElMessage.success('Xóa người dùng thành công');
+                fetchData();
+            }
+        } catch (error) {
+            console.error('Đã xảy ra lỗi khi xóa người dùng:', error);
+            ElMessage.error('Xóa người dùng thất bại');
+        }
+    }
 </script>
 
 <template>
@@ -66,11 +87,11 @@ const fetchUsers = async () => {
                 </template>
                 <template #default="scope">
                     <el-button size="small">
-                        <RouterLink :to="`/edit/${scope.row.id}`">
+                        <RouterLink :to= "`/admin/changeUser/${scope.row.id}`">
                             Edit
                         </RouterLink>   
                     </el-button>
-                    <el-button size="small" type="danger">
+                    <el-button size="small" type="danger" @click="onDelete(scope.row.id)">
                         Delete
                     </el-button>
                 </template>
