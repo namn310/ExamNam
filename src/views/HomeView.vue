@@ -74,12 +74,7 @@
     </div>
     <div class="content-wrapper mt-4 ms-4 me-4">
       <div class="d-flex justify-content-start flex-wrap">
-        <CardExam />
-        <CardExam />
-        <CardExam />
-        <CardExam />
-        <CardExam />
-        <CardExam />
+        <CardExam v-for="item in data" :key="item.id" :title="item.title" :expire_time="item.duration" :countQuestion="item.totalQuestion" :idQues="item.id"/>
       </div>
     </div>
   </div>
@@ -111,7 +106,7 @@
       </span>
     </div>
   </nav> -->
-  <el-pagination background layout="prev, pager, next" :total="1000" />
+  <el-pagination background layout="prev, pager, next" :total="totalPage * 10" @current-change="handlePageChange"/>
 </template>
 <!-- <script>
 import CardExam from '@/components/cardExam.vue'
@@ -122,23 +117,41 @@ export default {
 } -->
 
 <script setup>
-import CardExam from '@/components/CardExam.vue'
-import { getCategoryExamList } from '@/service/examsService';
-import { onMounted, ref } from 'vue';
-//  components: {
-    CardExam
-  // }
+  import CardExam from '@/components/CardExam.vue'
+  import { getCategoryExamList, getExamList } from '@/service/examsService';
+  import { onMounted, ref } from 'vue';
 
   const dataCetegory = ref([]);
+  const data = ref([]);
+  let page = 1;
+  const totalPage = ref(1)
 
-  const fetchData = async () => {
+  const handlePageChange = (newPage) =>{
+        page = newPage;  
+        fetchDataExam();
+    }
+
+  const fetchDataCatgory = async () => {
     const result = await getCategoryExamList(1)
     if(result){
       dataCetegory.value = result['data']['data']
     }
   }
 
-  onMounted(fetchData)
+ 
+
+  const fetchDataExam = async () =>{
+    const result = await getExamList(page);
+    if(result){
+      data.value = result['data']['data'];
+      totalPage.value = result['data']['total_page']
+    }
+  }
+
+  onMounted(() =>{
+    fetchDataCatgory()
+    fetchDataExam()
+  })
 </script>
 
 <style scoped>

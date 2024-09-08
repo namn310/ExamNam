@@ -10,14 +10,26 @@
             label-width="auto"
             size="large"
         >
-        <el-form-item label="Tên bài kiểm tra">
+        <el-form-item label="Tên bài thi">
             <el-input v-model="sizeForm.title" />
         </el-form-item>
         <el-form-item label="Mô tả">
             <el-input v-model="sizeForm.description" />
         </el-form-item>
         <el-form-item label="Danh mục bài thi">
-            <el-input v-model="sizeForm.category" />
+            <el-select
+                v-model="sizeForm.category"
+                clearable
+                placeholder="Select"
+                style="width: 240px"
+            >
+                <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                />
+            </el-select>
         </el-form-item>
         <el-form-item label="Thời hạn làm bài">
             <el-input v-model="sizeForm.expire_time" />
@@ -54,7 +66,7 @@
 <!-- eslint-disable no-unused-vars -->
 <script lang="ts" setup>
 
-    import { createExam } from '@/service/examsService';
+    import { createExam, getCategoryExamList } from '@/service/examsService';
     import { onMounted, reactive, ref } from 'vue'
     import { useRouter } from 'vue-router';
     import { h } from 'vue'
@@ -72,6 +84,19 @@
         category : '',
         id_user : 1
     })
+    const options = ref([])
+    
+    const fetchCategorys = () => {
+        const fetchApi = async () => {
+            const result = await getCategoryExamList()
+            if(result){
+                console.log(result['data']['data']);
+                options.value = result['data']['data'].map(item => ({ value: item.id, label: item.title }));
+            }
+        }
+        fetchApi();
+    };   
+    onMounted(fetchCategorys)
 
     const onSubmit = () => {
         const fetchApi = async () => {
@@ -85,6 +110,8 @@
             }
         } 
         fetchApi();
+        console.log(sizeForm);
+        
     }
 
 </script>
