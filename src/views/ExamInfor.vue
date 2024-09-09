@@ -2,15 +2,15 @@
   <div class="row p-5">
     <div class="col-12 col-md-9">
       <div class="practice-test-wrapper contentblock">
-        <h1 id="ielts-simulation-listening-test-1" style="font-size:x-large;font-weight: 700;">IELTS Simulation Listening test 1</h1>
+        <h1 id="ielts-simulation-listening-test-1" style="font-size:x-large;font-weight: 700;">{{ data.title }}</h1>
         <div class="tab-content" id="nav-tabContent">
           <div class="tab-pane fade show active" id="test-info" role="tabpanel">
             <br />
 
             <div>
               <span class="far fa-clock mr-1"></span>
-              <span>Thời gian làm bài: 40 phút</span> | <span>4 phần thi</span> |
-              <span>40 câu hỏi</span>
+              <span>Thời gian làm bài: {{data.duration}} phút</span> |
+              <span>{{ data.totalQuestion }} câu hỏi</span>
 
               | <span>1806 bình luận</span>
             </div>
@@ -36,7 +36,7 @@
                     <p>Xác nhận làm bài thi này </p>
                 </template>
                 <template v-slot:buttonConfirm>
-                   <RouterLink :to="{ name: 'testStart', params: { id: 1 } }"><button class="ms-3 btn btn-primary">Xác nhận</button></RouterLink>
+                   <RouterLink :to="`/test/start/${id}`"><button class="ms-3 btn btn-primary">Xác nhận</button></RouterLink>
                 </template>
              </ModalView>
             </div>
@@ -47,24 +47,37 @@
     </div>
   </div>
 </template>
-<script>
-import ModalView from '@/components/ModalView.vue';
-export default {
-    name:'ExamInfor',
-    components: {
-        ModalView
-    },
-    data () {
-        return {
-            showModal:false
+
+<script setup>
+  import ModalView from '@/components/ModalView.vue';
+  import { getExamDetail } from '@/service/examsService';
+  import { onMounted, ref } from 'vue';
+  import { useRoute } from 'vue-router';
+
+  const showModal = ref(false);
+  const route = useRoute();
+  const id = route.params.id;
+  const data = ref([])
+
+  const toggleModal =  () => {
+    showModal.value = !showModal.value
+  } 
+
+  const fetchData = () =>{
+        const fetchApi = async () => {
+            const result = await getExamDetail(id);
+            if(result){
+                data.value = result.data
+            }
+            
         }
-    },
-    methods: {
-        toggleModal () {
-            this.showModal = !this.showModal;
-        }
+        fetchApi();
     }
-}
+    onMounted(() => {
+        fetchData();
+    });
+
+
 </script>
 <style scoped>
 .row {
