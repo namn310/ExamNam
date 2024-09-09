@@ -41,9 +41,9 @@
   
 <script  setup>
     import { reactive, onMounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-import { getUserDetail, updateUser } from '@/service/usersService'
-import { ElMessage } from 'element-plus'
+    import { useRouter, useRoute } from 'vue-router'
+    import { getUserDetail, updateUser } from '@/service/usersService'
+    import { ElMessage } from 'element-plus'
 
 const router = useRouter()
 const route = useRoute()
@@ -72,7 +72,7 @@ const fetchUser = async () => {
 onMounted(fetchUser)
 
 const onSubmit = async () => {
-  const updateUser = {
+  const updateUserDT = {
     name: userForm.name,
     password: userForm.password,
     email: userForm.email,
@@ -81,7 +81,7 @@ const onSubmit = async () => {
   }
 
   try {
-    const result = await updateUser(userId, updateUser)
+    const result = await updateUser(userId, updateUserDT)
     if (result) {
       ElMessage.success('Cập nhật thông tin người dùng thành công')
       router.push({ name: 'user' })
