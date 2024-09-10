@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/no-unused-vars -->
 <template>
-    <div class="text-[50px] text-pink-500 font-great text-center">
+    <div class="text-[50px]  text-center">
             Danh sách bài kiểm tra
         </div>
     <div class="flex justify-between">

@@ -75,7 +75,7 @@ const fetchData = () => {
 </script>
 
 <template>
-    <div class="text-[50px] text-pink-500 font-great text-center">
+    <div class="text-[50px] text-center">
         Danh sách người dùng
     </div>
     <div class="flex justify-between">

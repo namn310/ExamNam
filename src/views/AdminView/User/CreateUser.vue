@@ -1,6 +1,6 @@
 <template>
     <div class="mx-auto container bg-color-white">
-      <div class="text-[50px] text-pink-500 font-great text-center">
+      <div class="text-[50px] text-center">
         Thêm thông tin người dùng
       </div>
       <el-form
