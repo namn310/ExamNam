@@ -19,8 +19,20 @@
         <el-form-item label="Mô tả">
             <el-input v-model="sizeForm.description" />
         </el-form-item>
-        <el-form-item label="Danh mục bài thi">
-            <el-input v-model="sizeForm.category"/>
+        <el-form-item label="Danh mục cha">
+            <el-select
+                v-model="sizeForm.category"
+                clearable
+                placeholder="Select"
+                style="width: 240px"
+            >
+                <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                />
+            </el-select>
         </el-form-item>
         <el-form-item label="Thời gian làm bài">
             <el-input v-model="sizeForm.duration"/>
@@ -53,7 +65,7 @@
 
     import { onMounted, ref } from 'vue'
     import { useRoute, useRouter } from 'vue-router';
-    import { EditExam, getExamDetail } from '@/service/examsService';
+    import { EditExam, getCategoryExamList, getExamDetail } from '@/service/examsService';
     import { h } from 'vue'
     import { ElNotification } from 'element-plus'
 
@@ -86,8 +98,21 @@
         }
         fetchApi();
     }
+
+    
+    const fetchCategorys = () => {
+        const fetchApi = async () => {
+            const result = await getCategoryExamList()
+            if(result){
+                console.log(result['data']['data']);
+                options.value = result['data']['data'].map(item => ({ value: item.id, label: item.title }));
+            }
+        }
+        fetchApi();
+    };   
     onMounted(() => {
         fetchData();
+        fetchCategorys()
     });
 
   const onSubmit = () => {

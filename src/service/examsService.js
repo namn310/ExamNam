@@ -10,6 +10,11 @@ export const getCategoryExamList = async () => {
     return result;
 }
 
+export const getCategoryExamDetail = async (id) => {
+    const result = await get(`category-exam/${id}`);
+    return result;
+}
+
 export const getQuestionExam = async (id) => {
     const result = await get(`exams/questions-exams/${id}`);
     return result;

@@ -3,7 +3,6 @@ import { computed, ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox, ElTable } from 'element-plus';
 import { RouterLink } from 'vue-router';
 import { deleteUser, getUserList } from '@/service/usersService';
-import { ca } from 'element-plus/es/locale';
 
 
 interface Users {
