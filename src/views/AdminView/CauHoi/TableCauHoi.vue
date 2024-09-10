@@ -96,7 +96,8 @@
 // import { resolveTypeElements } from 'vue/compiler-sfc';
 // import ModalView from '@/components/ModalView.vue';
 // import { fa } from 'element-plus/es/locale';
-import { getQuestionList, DeleteQues } from '@/service/questionsService'
+import { getQuestionList, DeleteQues, questionsPage } from '@/service/questionsService'
+import { ElNotification } from 'element-plus'
 export default {
   data() {
     return {
@@ -171,10 +172,19 @@ export default {
         const del = await DeleteQues(this.currentQuestionId)
         if (del) {
           // this.data.filter(data => data.id !== this.currentQuestionId);
-          alert('Xóa câu hỏi thành công')
+          ElNotification({
+            title: 'Success',
+            message: 'Xóa câu hỏi thành công !',
+            type:'success',
+          })
           window.location.reload()
-        } else {
-          alert('Xóa không thành công ! Có lỗi xảy ra')
+        } else
+        {
+          ElNotification({
+            title: 'Error',
+            message: 'Xóa không thành công ! Có lỗi xảy ra',
+            type:'error',
+          })
         }
       } catch (Error) {
         alert('Lỗi '.Error)

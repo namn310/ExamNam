@@ -20,3 +20,10 @@ export const getUserDetail = async (id) => {
     const result = await get(`users/detail/${id}`);
     return result;
 }
+export const Login = async (option) => {
+    const result = await post(`users/login`, option);
+    return result;
+}
+// export const checkToken = async () => {
+//     const result = await get()
+// }

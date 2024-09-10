@@ -1,7 +1,7 @@
 <template>
     
     <div class="mx-auto container bg-color-white"> 
-        <div class="text-[50px] text-pink-500 font-great text-center">
+        <div class="text-[50px] text-center">
             Thêm bài kiểm tra
         </div>
         <el-form

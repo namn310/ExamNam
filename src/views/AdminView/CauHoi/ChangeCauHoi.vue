@@ -65,10 +65,11 @@ import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { Ckeditor } from '@ckeditor/ckeditor5-vue'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+import { ElNotification } from 'element-plus'
 export default {
-  components: {
-    Ckeditor
-  },
+  // components: {
+  //   Ckeditor
+  // },
   computed: {
     idques() {
       return this.$route.params.id
@@ -100,10 +101,19 @@ export default {
       try {
         const ques = await PutData(this.idques, this.question)
         console.log(ques)
-        if (!ques) {
-          alert('Cập nhật câu hỏi không thành công !')
+        if (!ques)
+        {
+          ElNotification({
+            title: 'Error',
+            message: 'Cập nhật câu hỏi thất bại !',
+            type:'error'
+          })
         }
-        alert('Cập nhật câu hỏi thành công')
+        ElNotification({
+          title: 'Success',
+          message: 'Cập nhật câu hỏi thành công !',
+          type:'success'
+        })
       } catch (Error) {
         console.log(Error)
       }

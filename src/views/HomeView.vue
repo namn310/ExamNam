@@ -12,7 +12,7 @@
               <li class="nav-item w-auto">
                 <a class="nav-link active" href="/tests/">Tất cả</a>
               </li>
-              <li class="nav-item w-auto" v-for="item in dataCetegory">
+              <li class="nav-item w-auto" v-for="item in dataCetegory" :key="item.id">
                 <a class="nav-link" href="/tests/tieng-anh-thptqg/">{{item.title}}</a>
               </li>
               <!-- <li class="nav-item w-auto">
