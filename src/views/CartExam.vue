@@ -9,7 +9,7 @@
 <script setup>
   import CardExam from '@/components/CardExam.vue'
   import {  getExamList, getQuestionCategory } from '@/service/examsService';
-  import { onMounted, ref } from 'vue';
+  import { onMounted, ref, watch } from 'vue';
     import { useRoute } from 'vue-router';
 
   const data = ref([]);
@@ -17,15 +17,19 @@
   const id = route.params.id
 
 
-  const fetchDataExam = async () =>{
+  const fetchDataExam = async (id) =>{
     const result = await getQuestionCategory(id);
     if(result){
       data.value = result['data'];
     }
   }
 
+  watch(() => route.params.id, (newId) => {
+      fetchDataExam(newId)
+  });
+
   onMounted(() =>{
-    fetchDataExam()
+    fetchDataExam(id)
   })
 </script>
 

@@ -12,12 +12,13 @@
                     <br />
                     <div class="test-exams">
                         <ul class="nav nav-pills flex-wrap">
-                        <li class="nav-item w-auto">
-                            <RouterLink :to="{name : 'home'}" class="nav-link active" >Tất cả</RouterLink>
-                        </li>
-                        <li class="nav-item w-auto" v-for="item in dataCetegory" :key="item.id">
-                            <RouterLink :to="`/category/${item.id}`" class="nav-link" href="">{{item.title}}</RouterLink>
-                        </li>
+                            <li class="nav-item w-auto">
+                                <RouterLink :to="{name: 'home'}" :class="{ 'nav-link active': !route.params.id }">Tất cả</RouterLink>
+                            </li>
+                            <li class="nav-item w-auto" v-for="item in dataCetegory" :key="item.id">
+                                <RouterLink :to="`/category/${item.id}`" class="nav-link" 
+                                :class="{ 'active': route.params.id === item.id }">{{ item.title }}</RouterLink>
+                            </li>
                         </ul>
                     </div>
 
@@ -72,6 +73,10 @@ import FooterView from '@/components/FooterView.vue';
 import NavBarView from '@/components/NavBarView.vue';
   import { getCategoryExamList, getExamList } from '@/service/examsService';
   import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
+
+
+  const route = useRoute()
 
   const dataCetegory = ref([]);
   const fetchDataCatgory = async () => {
