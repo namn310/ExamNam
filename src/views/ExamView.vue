@@ -2,8 +2,7 @@
   <div class="content-wrapper p-4 mb-4">
     <div class="xl-container">
       <h1 class="h4 text-center mb-4">
-        [2022-2023] Sở GD&amp;ĐT Bắc Giang - Đề thi thử tốt nghiệp THPT môn Hoá học năm 2022-2023
-        lần 1
+        {{ data.title }}
         <button class="btn btn-warning btn-sm" @click="toggleModal2">Thoát</button>
         <ModalView :visible="showModal2" @close="toggleModal2">
           <template v-slot:modal-body>
@@ -122,6 +121,8 @@
 </template>
 <script>
 import ModalView from '@/components/ModalView.vue'
+import { getExamDetail, getQuestionExam } from '@/service/examsService';
+import { useRoute } from 'vue-router';
 export default {
   name: 'ExamView',
   components: {
@@ -130,7 +131,7 @@ export default {
   data () {
     return {
       // time count donwn of exam
-      countdown: 3600,
+      countdown: 0,
       timer:null,
       showModal: false,
       showModal2:false,
@@ -233,8 +234,25 @@ export default {
 
         },
       ],
+      data : [],
       answerSelected: [],
     }
+  },
+  async created() {
+      const route = useRoute();
+      const id = route.params.id;
+      const result = await getExamDetail(id);
+      if(result){
+          this.data = result['data']
+          this.countdown = result['data'].duration
+      }
+
+      const question = await getQuestionExam(id)
+      if(question){
+        console.log(question['data']);
+        
+      }
+
   },
   computed: {
     formatTime () {

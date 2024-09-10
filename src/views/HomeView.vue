@@ -15,25 +15,6 @@
               <li class="nav-item w-auto" v-for="item in dataCetegory" :key="item.id">
                 <a class="nav-link" href="/tests/tieng-anh-thptqg/">{{item.title}}</a>
               </li>
-              <!-- <li class="nav-item w-auto">
-                <a class="nav-link" href="/tests/toan-thptqg/">Toán THPTQG</a>
-              </li>
-              <li class="nav-item w-auto">
-                <a class="nav-link" href="/tests/sinh-hoc-thptqg/">Sinh học THPTQG</a>
-              </li>
-              <li class="nav-item w-auto">
-                <a class="nav-link" href="/tests/hoa-hoc-thptqg/">Hóa học THPTQG</a>
-              </li>
-              <li class="nav-item w-auto">
-                <a class="nav-link" href="/tests/vat-ly-thptqg/">Vật lý THPTQG</a>
-              </li>
-              <li class="nav-item w-auto">
-                <a class="nav-link" href="/tests/sat/">NEW SAT</a>
-              </li>
-
-              <li class="nav-item w-auto">
-                <a class="nav-link" href="/tests/act/">ACT</a>
-              </li> -->
             </ul>
           </div>
 

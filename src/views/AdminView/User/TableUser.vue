@@ -18,6 +18,8 @@ interface Users {
 const search = ref('')
 const users = ref<Users[]>([])
 
+const currentPage = ref(1) // Trang hiện tại
+const pageSize = ref(5) // Số lượng người dùng hiển thị trên mỗi trang
 // Hàm lấy danh sách người dùng
 const fetchData = () => {
         const fetchUser = async () => {
@@ -40,6 +42,16 @@ const fetchData = () => {
                 data.name.toLowerCase().includes(search.value.toLowerCase())
         )
     )
+    // Dữ liệu người dùng phân trang
+    const paginationUsers = computed(() => {
+        const start = (currentPage.value - 1) * pageSize.value;
+        const end = start + pageSize.value;
+        return filterTableData.value.slice(start, end);
+    })
+    // Hàm chuyển trang
+    const handleChange = (page : number) =>{
+        currentPage.value = page;
+    }
     const onDelete = async (row: Users) => {
         try{
             await ElMessageBox.confirm(
@@ -73,7 +85,7 @@ const fetchData = () => {
         </RouterLink>
     </div>
     <div class="pt-8">
-        <el-table :data="filterTableData">
+        <el-table :data="paginationUsers">
             <el-table-column type="selection" width="55" />
             <el-table-column label="ID" prop="id" />
             <el-table-column label="Tên" prop="name" />
@@ -97,5 +109,13 @@ const fetchData = () => {
                 </template>
             </el-table-column>
         </el-table>
+        <!--Phân trang-->
+        <el-pagination
+            @current-change="handleChange"
+            :current-page="currentPage"
+            :page-size="pageSize"
+            layout="prev, pager, next"
+            :total="filterTableData.length"
+        />
     </div>
 </template>
