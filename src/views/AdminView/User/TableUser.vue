@@ -9,7 +9,6 @@ import { ca } from 'element-plus/es/locale';
 interface Users {
     id: number,
     name: string,
-    password: string;
     email: string,
     role: string,
     create_at: Date,
@@ -89,7 +88,6 @@ const fetchData = () => {
             <el-table-column type="selection" width="55" />
             <el-table-column label="ID" prop="id" />
             <el-table-column label="Tên" prop="name" />
-            <el-table-column label="Mật khẩu" prop="password" />
             <el-table-column label="Email" prop="email" />
             <el-table-column label="Vai trò" prop="role" />
             <el-table-column label="Ngày tạo" prop="create_at" />

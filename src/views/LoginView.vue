@@ -91,6 +91,7 @@
 </template>
 <script>
 import { Login } from '@/service/usersService'
+import Cookies from 'js-cookie'
 export default {
   data() {
     return {
@@ -103,35 +104,37 @@ export default {
     }
   },
   methods: {
-      async checkLogin () {
-          if (this.data.role == '')
-          {
-             alert('Vui lòng chọn hình thức đăng nhập !')
+    async checkLogin() {
+      if (this.data.role == '') {
+        alert('Vui lòng chọn hình thức đăng nhập !')
+      } else {
+        try {
+          //   localStorage.removeItem('token')
+          const response = await Login(this.data)
+          if (response.jwt) {
+            Cookies.set('token', response.jwt, {
+              expires: 1, //set life cookie 1 ngày,
+              secure: true,
+              samesite: 'Strict'
+              // httponly: true
+            })
+            // localStorage.setItem('token', response.jwt)
+            if (this.data.role == 'admin') {
+              this.$router.push({ name: 'homeAdmin' })
+            } else {
+              alert(response.message)
+              //   window.location.reload();
+              this.$router.push({ name: 'home' }).then(() => {
+                window.location.reload()
+              })
+            }
           }
-          else
-          {
-              try
-              {
-                  const response = await Login(this.data)
-                  if (response.jwt)
-                  {
-                      localStorage.setItem('token', response.jwt)
-                      if (this.data.role == 'admin')
-                      {
-                          this.$router.push({ name: 'homeAdmin' })
-                      }
-                      else
-                      {
-                          this.$router.push({ name: 'home' });
-                      }
-                  }
-                  alert(response.message)
-              } catch (e)
-              {
-                  alert(e)
-              }
-          }
+          // alert(response.message)
+        } catch (e) {
+          alert(e)
+        }
       }
+    }
   }
 }
 </script>

@@ -10,10 +10,10 @@
           <div class="test-exams">
             <ul class="nav nav-pills flex-wrap">
               <li class="nav-item w-auto">
-                <a class="nav-link active" href="/tests/">Tất cả</a>
+                <a class="nav-link active" >Tất cả</a>
               </li>
               <li class="nav-item w-auto" v-for="item in dataCetegory" :key="item.id">
-                <a class="nav-link" href="/tests/tieng-anh-thptqg/">{{item.title}}</a>
+                <a class="nav-link" href="">{{item.title}}</a>
               </li>
             </ul>
           </div>

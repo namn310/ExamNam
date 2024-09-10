@@ -10,7 +10,7 @@
           ☰
         </button>
         <!-- small menu -->
-        <div v-show=" visible " class="menuSmallContainer">
+        <div v-show="visible " class="menuSmallContainer">
           <div class="menuSmall pt-3">
             <ul>
               <li class="nav-item">
@@ -19,7 +19,7 @@
               <li class="nav-item">
                 <a class="nav-link">Kết quả thi</a>
               </li>
-              <li>
+              <li v-if="checkToken()">
                 <RouterLink :to=" { name: 'Login' } ">Đăng nhập</RouterLink>
               </li>
             </ul>
@@ -34,23 +34,23 @@
             <li class="nav-item">
               <a class="nav-link">Kết quả thi</a>
             </li>
-            <li>
-              <RouterLink :to=" { name: 'Login' } ">Đăng nhập</RouterLink>
-            </li>
+            <li v-if="!checkToken()">
+                <RouterLink :to=" { name: 'Login' } ">Đăng nhập</RouterLink>
+              </li>
             <!-- toogle khi user đã đăng nhập -->
-            <li class="ms-3">
+            <li v-if="checkToken()" class="ms-3">
               <button class="btn btn-white" @click="toggleUser">
                 <i class="fa-solid fa-circle-user fa-xl" style="color: #000000"></i><i
                   class="fa-solid fa-chevron-down fa-xs ms-3"></i>
               </button>
             </li>
             <!-- toggle user function -->
-              <div v-show=" UserToggleVisible ">
+              <div v-show="UserToggleVisible ">
             <div class="toggleFunctionUserContainer">
                 <ul>
                   <li>Tài khoản</li>
                   <RouterLink :to="{name:'ResultExam'}"><li>Kết quả làm bài</li></RouterLink>
-                  <li>Đăng xuất</li>
+                  <li style="cursor: pointer;" @click="logOut()">Đăng xuất</li>
                 </ul>
               </div>
             </div>
@@ -64,6 +64,7 @@
 <script>
 // nếu để ảnh ở trong mục src thì để tránh lỗi không hiển thị đc ảnh khi load trang thì ta nên import ảnh 
 import LogoWeb from '@/assets/img/LogoWeb.png'
+import Cookies from 'js-cookie';
 // nếu không thì để ảnh ở trong file public thì có thể dùng đường dẫn tuyệt đối để dẫn truyền file
 export default {
   name: 'NavBarView',
@@ -74,14 +75,37 @@ export default {
       imgageLogo: LogoWeb
     }
   },
+  created() {
+    this.checkToken()
+  },
   methods: {
     toggleMenu () {
       this.visible = !this.visible
     },
     toggleUser () {
       this.UserToggleVisible = !this.UserToggleVisible
+    },
+    checkToken () {
+      if (Cookies.get('token') !== undefined)
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+       }
+    },
+    logOut () {
+      Cookies.remove('token');
+      window.location.reload();
     }
+  },
+  watch: {
+  // Theo dõi sự thay đổi của token
+  'checkToken': function() {
+    this.$forceUpdate();
   }
+}
 }
 </script>
 <style scoped lang="css">
