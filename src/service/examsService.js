@@ -20,6 +20,11 @@ export const getQuestionExam = async (id) => {
     return result;
 }
 
+export const getQuestionCategory = async (id) => {
+    const result = await get(`category-question/${id}`);
+    return result;
+}
+
 export const getExamDetail = async (id) => {
     const result = await get(`exams/detail/${id}`);
     return result;

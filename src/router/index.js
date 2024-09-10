@@ -24,6 +24,7 @@ import Exams from '@/views/AdminView/Exams/Exams.vue'
 import CreateExam from '@/views/AdminView/Exams/CreateExam.vue'
 import EditExam from '../views/AdminView/Exams/EditExam.vue'
 import DetailExam from '@/views/AdminView/Exams/DetailExam.vue'
+import CartExam from '@/views/CartExam.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -37,7 +38,18 @@ const router = createRouter({
         {
           path: '/',
           name: 'home',
-          component: HomeView
+          component: HomeView,
+          meta : {
+            layout : 'home'
+          }
+        },
+        {
+          path: '/category/:id',
+          name: 'category-exam',
+          component: CartExam,
+          meta : {
+            layout : 'home'
+          }
         },
         {
           path: '/about',
