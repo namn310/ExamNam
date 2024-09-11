@@ -58,7 +58,7 @@
                 </div>
                 </div>
                 <div class="content-wrapper mt-4 ms-4 me-4">
-                <div class="d-flex justify-content-start flex-wrap">
+                <div class="d-flex flex-column flex-wrap">
                     <slot />
                 </div>
                 </div>

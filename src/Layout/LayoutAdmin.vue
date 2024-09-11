@@ -9,7 +9,8 @@
     const toggleSidebar = (e) => {
         e.preventDefault();
         isSidebarOpen.value = !isSidebarOpen.value;
-    };
+};
+    
 
 </script>
 

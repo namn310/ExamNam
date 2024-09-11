@@ -1,75 +1,60 @@
 <template>
   
-  <div class="d-flex justify-content-start flex-wrap">
-    <CardExam v-for="item in data" :key="item.id" :title="item.title" :expire_time="item.duration" :countQuestion="item.totalQuestion" :idQues="item.id"/>
-  </div>
-
-  <!-- <nav class="jqpages mt-5">
-    <div class="pagination">
-      <span class="page-item active">
-        <a class="page-link" href="?page=1">1</a>
-      </span>
-
-      <span class="page-item">
-        <a class="page-link" href="?page=2">2</a>
-      </span>
-
-      <span class="page-item">
-        <a class="page-link" href="?page=3">3</a>
-      </span>
-
-      <span class="page-item">
-        <a class="page-link" href="?page=4">4</a>
-      </span>
-
-      <span class="page-item">
-        <a class="page-link" href="?page=5">5</a>
-      </span>
-
-      <span class="page-item">
-        <a class="page-link" href="?page=2"><i class="fas fa-chevron-right"></i></a>
-      </span>
+    <div class="d-flex justify-content-start flex-wrap">
+      <CardExam
+        v-for="item in data"
+        :key="item.id"
+        :title="item.title"
+        :expire_time="item.duration"
+        :countQuestion="item.totalQuestion"
+        :idQues="item.id"
+      />
     </div>
-  </nav> -->
-  <el-pagination background layout="prev, pager, next" :total="totalPage * 10" @current-change="handlePageChange"/>
+    <div>
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :total="totalPage * 10"
+        @current-change="handlePageChange"
+      />
+    </div>
+  
 </template>
 
 <script setup>
-  import CardExam from '@/components/CardExam.vue'
-  import { getCategoryExamList, getExamList } from '@/service/examsService';
-  import { onMounted, ref } from 'vue';
+import CardExam from '@/components/CardExam.vue'
+import { getCategoryExamList, getExamList } from '@/service/examsService'
+import { onMounted, ref } from 'vue'
 
-  const dataCetegory = ref([]);
-  const data = ref([]);
-  let page = 1;
-  const totalPage = ref(1)
+const dataCetegory = ref([])
+const data = ref([])
+let page = 1
+const totalPage = ref(1)
 
-  const handlePageChange = (newPage) =>{
-        page = newPage;  
-        fetchDataExam();
-    }
+const handlePageChange = (newPage) => {
+  page = newPage
+  fetchDataExam()
+}
 
-  const fetchDataCatgory = async () => {
-    const result = await getCategoryExamList(1)
-    if(result){
-      dataCetegory.value = result['data']['data']
-    }
+const fetchDataCatgory = async () => {
+  const result = await getCategoryExamList(1)
+  if (result) {
+    dataCetegory.value = result['data']['data']
   }
+}
 
- 
-
-  const fetchDataExam = async () =>{
-    const result = await getExamList(page);
-    if(result){
-      data.value = result['data']['data'];
-      totalPage.value = result['data']['total_page']
-    }
+const fetchDataExam = async () => {
+  const result = await getExamList(page)
+  if (result) {
+    data.value = result['data']['data']
+    totalPage.value = result['data']['total_page']
   }
+}
 
-  onMounted(() =>{
-    fetchDataCatgory()
-    fetchDataExam()
-  })
+onMounted(() => {
+  fetchDataCatgory()
+  fetchDataExam()
+})
 </script>
 
 <style scoped>

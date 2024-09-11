@@ -7,7 +7,7 @@
           <template #header>
             <div class="card-header">
               <span>Câu {{ index + 1 }}</span>
-              <el-button class="button" text>{{ i.title }}</el-button>
+              <el-button class="button" text v-html="i.title" ></el-button>
             </div>
           </template>
           <div class="text item">A : {{ i.A }}</div>

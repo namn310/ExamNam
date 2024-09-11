@@ -39,7 +39,7 @@
       <tbody id="table-product" v-for="question in data" :key="question.id">
         <tr>
           <td>{{ question.id }}</td>
-          <td>{{ question.title }}</td>
+          <td v-html="question.title"></td>
           <td>{{ question.Subject }}</td>
           <td>{{ question.class }}</td>
           <td>{{ getName(question.created_by) }}</td>

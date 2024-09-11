@@ -1,6 +1,6 @@
 <template>
   <div class="mx-auto container bg-color-white">
-    <div class="text-[50px] text-pink-500 text-center">Cập nhật câu hỏi</div>
+    <div class="text-[50px] text-500 text-center">Cập nhật câu hỏi</div>
     <form class="mb-5" @submit.prevent>
       <div class="class">
         <label for="class" class="form-label"> Lớp </label>
@@ -14,11 +14,11 @@
 
       <div class="Subject">
         <label for="subject" class="form-label"> Đề bài </label>
-        <!-- <Ckeditor :editor="editor" v-model="question.title" /> -->
-        <textarea
+        <Ckeditor :editor="editor" v-model="question.title"  />
+        <!-- <textarea
           style="width: 100%; border: 1px solid black; height: 20vh"
           v-model="question.title"
-        ></textarea>
+        ></textarea> -->
       </div>
 
       <div class="answer mb-2 mt-3">
@@ -67,9 +67,9 @@ import { Ckeditor } from '@ckeditor/ckeditor5-vue'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 import { ElNotification } from 'element-plus'
 export default {
-  // components: {
-  //   Ckeditor
-  // },
+  components: {
+    Ckeditor
+  },
   computed: {
     idques() {
       return this.$route.params.id
@@ -128,8 +128,8 @@ export default {
 //     oldPrice : '',
 //   })
 </script>
-<style scoped>
-.Subject .ck-editor__editable_inline {
-  min-height: 400px; /* Set the minimum height for the editor */
+<style>
+.ck-editor__editable_inline {
+  min-height: 200px; /* Set the minimum height for the editor */
 }
 </style>

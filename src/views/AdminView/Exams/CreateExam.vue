@@ -82,7 +82,7 @@
         duration : '',
         totalQuestion : '',
         category : '',
-        id_user : 1
+        id_user: 8  
     })
     const options = ref([])
     

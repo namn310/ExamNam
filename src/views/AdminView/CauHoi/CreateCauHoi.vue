@@ -24,7 +24,7 @@
                     Đề bài
                 </label>
                 <br>
-                <textarea style="width:100%;border:1px solid black;height:20vh" v-model=" question.title "></textarea>
+               <Ckeditor :editor="editor" v-model="question.title"  />
             </div>
 
             <div class="answer mb-2 mt-3">
@@ -66,15 +66,15 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { ElNotification } from 'element-plus'
 
 export default {
-    // components: {
-    //     Ckeditor
-    // },
+    components: {
+        Ckeditor
+    },
     data () {
         return {
             editor: ClassicEditor,
             question: {
-                class: '',
-                Subject: '',
+                class: '11',
+                Subject: 'Tiếng Anh',
                 title: '',
                 A: '',
                 B: '',
@@ -82,7 +82,7 @@ export default {
                 D: '',
                 correctAns: '',
                 created_at: new Date().toLocaleDateString(),
-                created_by: '1',
+                created_by: '8',
             }
         }
     },
@@ -127,8 +127,8 @@ export default {
 
 </script>
 <style scoped>
-.Subject .ck-editor__editable_inline {
+/* .Subject .ck-editor__editable_inline {
     min-height: 400px;
     /* Set the minimum height for the editor */
-}
+/* } * */
 </style>
