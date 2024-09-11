@@ -1,75 +1,96 @@
 <template>
-  
-  <div class="d-flex justify-content-start flex-wrap">
-    <CardExam v-for="item in data" :key="item.id" :title="item.title" :expire_time="item.duration" :countQuestion="item.totalQuestion" :idQues="item.id"/>
-  </div>
+    <div class="LayoutClient">
+        <NavBarView/>
+        <div class="LayoutBody">
+            <div class="site-content-wrapper container-fluid">
+                <div class="content-header pb-0 gray-bg">
+                <div class="container-fluid pb-0">
+                    <div class="col-12 col-md-9 order-md-1">
+                    <h1 id="thư-viện-đề-thi" style="font-size: 3vh; font-size: 3vw; font-weight: 500">
+                        Thư viện đề thi
+                    </h1>
+                    <br />
+                    <div class="test-exams">
+                        <ul class="nav nav-pills flex-wrap">
+                            <li class="nav-item w-auto">
+                                <RouterLink :to="{name: 'home'}" :class="{ 'nav-link active': !route.params.id }">Tất cả</RouterLink>
+                            </li>
+                            <li class="nav-item w-auto" v-for="item in dataCetegory" :key="item.id">
+                                <RouterLink :to="`/category/${item.id}`" class="nav-link" 
+                                :class="{ 'active': route.params.id === item.id }">{{ item.title }}</RouterLink>
+                            </li>
+                        </ul>
+                    </div>
 
-  <!-- <nav class="jqpages mt-5">
-    <div class="pagination">
-      <span class="page-item active">
-        <a class="page-link" href="?page=1">1</a>
-      </span>
+                    <br />
+                    <form method="GET">
+                        <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                            <div class="input-addon inner-addon right-addon">
+                                <div class="input-group flex-nowrap">
+                                <input
+                                    type="text"
+                                    style="width: 30vw"
+                                    class="form-control"
+                                    enterkeyhint="done"
+                                    placeholder="Nhập từ khoá bạn muốn tìm kiếm: tên sách, dạng câu hỏi ..."
+                                    name="term"
+                                    value=""
+                                />
+                                <button class="btn btn-primary">
+                                    <i class="fa-solid fa-magnifying-glass fa-lg text-white"></i>
+                                </button>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    </form>
+                    <br />
+                    </div>
 
-      <span class="page-item">
-        <a class="page-link" href="?page=2">2</a>
-      </span>
-
-      <span class="page-item">
-        <a class="page-link" href="?page=3">3</a>
-      </span>
-
-      <span class="page-item">
-        <a class="page-link" href="?page=4">4</a>
-      </span>
-
-      <span class="page-item">
-        <a class="page-link" href="?page=5">5</a>
-      </span>
-
-      <span class="page-item">
-        <a class="page-link" href="?page=2"><i class="fas fa-chevron-right"></i></a>
-      </span>
+                    <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active">Tất cả</a>
+                    </li>
+                    </ul>
+                </div>
+                </div>
+                <div class="content-wrapper mt-4 ms-4 me-4">
+                <div class="d-flex justify-content-start flex-wrap">
+                    <slot />
+                </div>
+                </div>
+      </div>
+            <!-- <RouterView></RouterView> -->
+        </div>
+            <FooterView/>
     </div>
-  </nav> -->
-  <el-pagination background layout="prev, pager, next" :total="totalPage * 10" @current-change="handlePageChange"/>
 </template>
-
 <script setup>
-  import CardExam from '@/components/CardExam.vue'
+import FooterView from '@/components/FooterView.vue';
+import NavBarView from '@/components/NavBarView.vue';
   import { getCategoryExamList, getExamList } from '@/service/examsService';
   import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
+
+
+  const route = useRoute()
 
   const dataCetegory = ref([]);
-  const data = ref([]);
-  let page = 1;
-  const totalPage = ref(1)
-
-  const handlePageChange = (newPage) =>{
-        page = newPage;  
-        fetchDataExam();
-    }
-
   const fetchDataCatgory = async () => {
-    const result = await getCategoryExamList(1)
+    const result = await getCategoryExamList()
     if(result){
       dataCetegory.value = result['data']['data']
     }
   }
 
- 
-
-  const fetchDataExam = async () =>{
-    const result = await getExamList(page);
-    if(result){
-      data.value = result['data']['data'];
-      totalPage.value = result['data']['total_page']
-    }
-  }
 
   onMounted(() =>{
     fetchDataCatgory()
-    fetchDataExam()
   })
+
 </script>
 
 <style scoped>

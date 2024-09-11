@@ -1,74 +1,35 @@
+
+
 <template>
-  
-  <div class="d-flex justify-content-start flex-wrap">
+<div class="d-flex justify-content-start flex-wrap">
     <CardExam v-for="item in data" :key="item.id" :title="item.title" :expire_time="item.duration" :countQuestion="item.totalQuestion" :idQues="item.id"/>
   </div>
-
-  <!-- <nav class="jqpages mt-5">
-    <div class="pagination">
-      <span class="page-item active">
-        <a class="page-link" href="?page=1">1</a>
-      </span>
-
-      <span class="page-item">
-        <a class="page-link" href="?page=2">2</a>
-      </span>
-
-      <span class="page-item">
-        <a class="page-link" href="?page=3">3</a>
-      </span>
-
-      <span class="page-item">
-        <a class="page-link" href="?page=4">4</a>
-      </span>
-
-      <span class="page-item">
-        <a class="page-link" href="?page=5">5</a>
-      </span>
-
-      <span class="page-item">
-        <a class="page-link" href="?page=2"><i class="fas fa-chevron-right"></i></a>
-      </span>
-    </div>
-  </nav> -->
-  <el-pagination background layout="prev, pager, next" :total="totalPage * 10" @current-change="handlePageChange"/>
 </template>
 
 <script setup>
   import CardExam from '@/components/CardExam.vue'
-  import { getCategoryExamList, getExamList } from '@/service/examsService';
-  import { onMounted, ref } from 'vue';
+  import {  getExamList, getQuestionCategory } from '@/service/examsService';
+  import { onMounted, ref, watch } from 'vue';
+    import { useRoute } from 'vue-router';
 
-  const dataCetegory = ref([]);
   const data = ref([]);
-  let page = 1;
-  const totalPage = ref(1)
+  const route = useRoute()
+  const id = route.params.id
 
-  const handlePageChange = (newPage) =>{
-        page = newPage;  
-        fetchDataExam();
-    }
 
-  const fetchDataCatgory = async () => {
-    const result = await getCategoryExamList(1)
+  const fetchDataExam = async (id) =>{
+    const result = await getQuestionCategory(id);
     if(result){
-      dataCetegory.value = result['data']['data']
+      data.value = result['data'];
     }
   }
 
- 
-
-  const fetchDataExam = async () =>{
-    const result = await getExamList(page);
-    if(result){
-      data.value = result['data']['data'];
-      totalPage.value = result['data']['total_page']
-    }
-  }
+  watch(() => route.params.id, (newId) => {
+      fetchDataExam(newId)
+  });
 
   onMounted(() =>{
-    fetchDataCatgory()
-    fetchDataExam()
+    fetchDataExam(id)
   })
 </script>
 

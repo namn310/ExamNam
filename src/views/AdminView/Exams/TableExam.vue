@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/no-unused-vars -->
 <template>
-    <div class="text-[50px]  text-center">
+    <div class="text-[50px]  text-center font-great text-pink-500">
             Danh sách bài kiểm tra
         </div>
     <div class="flex justify-between">
@@ -14,7 +14,6 @@
             <el-table-column label="Tên bài kiểm tra" prop="title" />
             <el-table-column label="Lớp học" prop="class" />
             <el-table-column label="Mô tả" prop="description" />
-            <el-table-column label="Danh mục bài thi" prop="category"/>
             <el-table-column label="Thời gian làm bài" prop="duration"/>
             <el-table-column label="Số lượng câu hỏi" prop="totalQuestion"/>
             <el-table-column align="right">
@@ -72,7 +71,6 @@
         duration : Date,
         created_at: Date,
         totalQuestion : Int16Array,
-        category : string
     }
 
     const search = ref('')
