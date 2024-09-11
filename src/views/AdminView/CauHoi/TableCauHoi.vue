@@ -21,7 +21,11 @@
       </button>
       <input type="text" class="form-control" placeholder="" />
     </div>
-    <table class="table table-hover table-bordered text-center" id="sampleTable" v-if="data.length > 0">
+    <table
+      class="table table-hover table-bordered text-center"
+      id="sampleTable"
+      v-if="data.length > 0"
+    >
       <thead>
         <tr class="table-primary text-center">
           <th>Mã câu hỏi</th>
@@ -38,7 +42,7 @@
           <td>{{ question.title }}</td>
           <td>{{ question.Subject }}</td>
           <td>{{ question.class }}</td>
-          <td>{{ question.created_by }}</td>
+          <td>{{ getName(question.created_by) }}</td>
           <td>
             <!-- button delete -->
             <button
@@ -98,6 +102,7 @@
 // import { fa } from 'element-plus/es/locale';
 import { getQuestionList, DeleteQues, questionsPage } from '@/service/questionsService'
 import { ElNotification } from 'element-plus'
+import { getUserDetail } from '@/service/usersService'
 export default {
   data() {
     return {
@@ -106,6 +111,7 @@ export default {
       currentQuestionId: null,
       data: [],
       data2: [],
+      creator:[],
       Error: null,
       TotalQuestion: 0,
       ListPages: [],
@@ -116,15 +122,22 @@ export default {
     }
   },
   created() {
-    console.log(this.fetchQuestion())
+    this.fetchQuestion();
   },
+
   methods: {
+     // lấy tên người tạo câu hỏi
+    async getName (id) {
+      const response = await getUserDetail(id);
+      return response.data;
+      // console.log(name.data.name);
+    },
     // lấy option
     getOptionBySubject(event) {
       this.optionSelected = event.target.value.toLowerCase()
       console.log(this.optionSelected)
       if (this.optionSelected == 'lựa chọn môn học') {
-        return this.data = this.data2;
+        return (this.data = this.data2)
       }
       this.data = this.data2.filter((ques) => {
         return ques.Subject.toLowerCase() == this.optionSelected
@@ -165,7 +178,7 @@ export default {
     toggleModalEdit() {
       this.showModalEdit = !this.showModalEdit
     },
-
+    // Xóa câu hỏi
     async DeleteQuestion(questionId) {
       this.currentQuestionId = questionId
       try {
@@ -175,21 +188,21 @@ export default {
           ElNotification({
             title: 'Success',
             message: 'Xóa câu hỏi thành công !',
-            type:'success',
+            type: 'success'
           })
           window.location.reload()
-        } else
-        {
+        } else {
           ElNotification({
             title: 'Error',
             message: 'Xóa không thành công ! Có lỗi xảy ra',
-            type:'error',
+            type: 'error'
           })
         }
       } catch (Error) {
         alert('Lỗi '.Error)
       }
     },
+    // view change question
     changeQuestion(questionId) {
       this.currentQuestionId = questionId
       this.$router.push({ name: 'changeQues', params: { id: this.currentQuestionId } })

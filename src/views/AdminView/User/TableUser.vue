@@ -25,7 +25,6 @@ const fetchData = () => {
             const result = await getUserList();
             if(result){
                 users.value = result['data']['data']    
-            
             }
         }
         fetchUser();
