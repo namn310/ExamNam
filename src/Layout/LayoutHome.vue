@@ -71,7 +71,7 @@
 <script setup>
 import FooterView from '@/components/FooterView.vue';
 import NavBarView from '@/components/NavBarView.vue';
-  import { getCategoryExamList, getExamList } from '@/service/examsService';
+  import { getCategoryExamList } from '@/service/examsService';
   import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 

@@ -2,7 +2,7 @@
   <div class="footerwrapper p-4">
     <div class="footercontainer">
       <footer>
-        <h2>Footer here</h2>
+        <hr class="mb-3">
         <div class="row">
           <div class="col-6 col-md">
             <div class="footer-title">Chương trình học</div>

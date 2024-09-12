@@ -26,6 +26,7 @@ import Exams from '@/views/AdminView/Exams/Exams.vue'
 import CreateExam from '@/views/AdminView/Exams/CreateExam.vue'
 import EditExam from '../views/AdminView/Exams/EditExam.vue'
 import DetailExam from '@/views/AdminView/Exams/DetailExam.vue'
+import CategoryExam from '@/views/AdminView/Exams/CategoryExam.vue'
 import CartExam from '@/views/CartExam.vue'
 
 const router = createRouter({
@@ -198,6 +199,14 @@ const router = createRouter({
           component: DetailExam,
           meta: {
             layout: 'admin'
+          }
+        },
+        {
+          path: 'categoryExam',
+          name: 'categoryExam',
+          component: CategoryExam,
+          meta: {
+            layout:'admin'
           }
         }
       ]

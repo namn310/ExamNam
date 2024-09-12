@@ -1,6 +1,5 @@
 <template>
-  
-    <div class="d-flex justify-content-start flex-wrap">
+    <div class="d-flex justify-content-start flex-wrap" v-if ="data !==null">
       <CardExam
         v-for="item in data"
         :key="item.id"
@@ -10,6 +9,7 @@
         :idQues="item.id"
       />
     </div>
+    <p v-else>Không có bài thi nào ! </p>
     <div>
       <el-pagination
         background
@@ -18,7 +18,7 @@
         @current-change="handlePageChange"
       />
     </div>
-  
+  <!-- <p v-else >Không có bài thi nào !</p> -->
 </template>
 
 <script setup>

@@ -73,12 +73,22 @@
                 <small><a href="">Quên Mật Khẩu?</a></small>
               </div>
             </div>
-            <div class="input-group mb-3">
+            <div class="input-group mb-2">
               <button class="btn btn-lg btn-warning w-100 fs-6" type="submit" id="submit">
                 <a style="text-decoration: none; color: white">Đăng Nhập</a>
               </button>
             </div>
           </form>
+           <div class="input-group mb-3">
+              <button class="btn btn-lg btn-white w-100 fs-6 border border-dark d-flex justify-content-center" type="submit" id="submit">
+                <div>
+                  <img :src="iconGoogle" style="width:30px;height:30px" class="img-fluid me-2">
+                </div>
+                <div>
+                    <a style="text-decoration: none; color: black">Đăng nhập bằng Google</a>
+                </div>
+              </button>
+            </div>
           <div class="row">
             <small
               >Bạn chưa có tài khoản? <RouterLink :to="{ name: 'register' }"> Đăng ký </RouterLink>
@@ -96,6 +106,7 @@ export default {
   data() {
     return {
       url: './src/assets/img/LogoWeb.png',
+      iconGoogle:'./src/assets/img/google_icon.png',
       data: {
         email: '',
         password: '',
