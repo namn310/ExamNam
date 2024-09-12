@@ -146,7 +146,7 @@ export default {
       showModal2: false,
       questions: [],
       answers: [],
-      numberAnswer: ['', '', '', ''],
+      numberAnswer: ['', '', '', ''], 
       data: [],
       answerSelected: []
     }
@@ -164,7 +164,7 @@ export default {
     const question = await getQuestionExam(id)
     if (question)
     {
-      console.log(question['data'])
+      // console.log(question['data'])
       this.questions = question['data']
     }
   },
@@ -207,7 +207,7 @@ export default {
     ToggleSelected (quesIndex) {
       // this.questions[quesIndex].checked;
       this.questions[quesIndex].checked = true
-      console.log(this.questions[quesIndex])
+      // console.log(this.questions[quesIndex])
     },
     getLable (index) {
       const labels = ['A', 'B', 'C', 'D']

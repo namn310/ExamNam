@@ -111,25 +111,32 @@ export default {
         try {
           //   localStorage.removeItem('token')
           const response = await Login(this.data)
-          if (response.jwt) {
-            Cookies.set('token', response.jwt, {
-              expires: 1, //set life cookie 1 ngày,
-              secure: true,
-              samesite: 'Strict'
-              // httponly: true
-            })
-            // localStorage.setItem('token', response.jwt)
-            if (this.data.role == 'admin') {
-              this.$router.push({ name: 'homeAdmin' })
-            } else {
+          if (this.data.role == 'student') {
+            if (response.jwtStudent) {
+              Cookies.set('tokenStudent', response.jwtStudent, {
+                expires: 1, //set life cookie 1 ngày,
+                secure: true,
+                samesite: 'Strict'
+                // httponly: true
+              })
               alert(response.message)
-              //   window.location.reload();
               this.$router.push({ name: 'home' }).then(() => {
                 window.location.reload()
               })
             }
           }
-          // alert(response.message)
+
+          if (this.data.role == 'admin') {
+            if (response.jwtStudent) {
+              Cookies.set('tokenAdmin', response.jwtAdmin, {
+                expires: 1, //set life cookie 1 ngày,
+                secure: true,
+                samesite: 'Strict'
+                // httponly: true
+              })
+            }
+            this.$router.push({ name: 'homeAdmin' })
+          }
         } catch (e) {
           alert(e)
         }
