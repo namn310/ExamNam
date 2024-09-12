@@ -251,7 +251,6 @@ export default {
     },
     ToggleSelected (quesIndex, ans) {
       this.questions[quesIndex].checked = true
-
       const existingAnswerIndex = this.answers.findIndex(answer => answer.id === this.questions[quesIndex].id);
 
       if (existingAnswerIndex !== -1) {
