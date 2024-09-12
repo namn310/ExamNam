@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import Cookies from 'js-cookie'
+
 // src client
 // import LayoutClient from '@/Layout/LayoutClient.vue'
 import HomeView from '../views/HomeView.vue'
@@ -200,7 +202,16 @@ const router = createRouter({
         }
       ]
     }
-  ]
+  ],
+})
+router.beforeEach((to, from, next) => {
+  // to and from are both route objects. must call `next`.
+  const adminToken = Cookies.get('tokenAdmin')
+  if (to.path.startsWith('/admin') && !adminToken) {
+    next({ name: 'Login' })
+  } else {
+    next()
+  }
 })
 
 export default router

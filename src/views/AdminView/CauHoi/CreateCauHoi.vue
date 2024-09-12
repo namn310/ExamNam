@@ -58,7 +58,8 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <!-- eslint-disable no-unused-vars -->
 <script>
-import { PostData } from '@/service/questionsService';
+import { decodeToken } from '@/service/decodeToken';
+import { PostData} from '@/service/questionsService';
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { Ckeditor } from '@ckeditor/ckeditor5-vue';
@@ -82,14 +83,19 @@ export default {
                 D: '',
                 correctAns: '',
                 created_at: new Date().toLocaleDateString(),
-                created_by: '8',
+                created_by: '',
             }
         }
     },
+    created () {
+        this.getId()
+    },
     methods: {
-        prindata () {
-            console.log(this.question);
+        getId () {
+            const id = decodeToken();
+            this.question.created_by = id.data.id
         },
+
         async postQuestion () {
             try
             {

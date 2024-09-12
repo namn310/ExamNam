@@ -127,7 +127,7 @@ export default {
           }
 
           if (this.data.role == 'admin') {
-            if (response.jwtStudent) {
+            if (response.jwtAdmin) {
               Cookies.set('tokenAdmin', response.jwtAdmin, {
                 expires: 1, //set life cookie 1 ngày,
                 secure: true,

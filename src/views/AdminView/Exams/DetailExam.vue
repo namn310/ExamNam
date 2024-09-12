@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-v-text-v-html-on-component -->
 
 <template>
     <div class="p-10">
@@ -37,7 +38,6 @@
       question.value = result['data'];
     }
   }
-
   onMounted(fetchData);
 </script>
   
