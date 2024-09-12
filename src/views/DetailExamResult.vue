@@ -61,7 +61,7 @@
                                             <div class="col">
                                                 <div class="result-score-box" style="font-size:3vw;font-size:3vh">
                                                     <div class="result-score-icontext text-score"><strong>Điểm</strong></div>
-                                                    <div class="result-score-text text-score text-danger"><strong>10</strong></div>
+                                                    <div class="result-score-text text-score text-danger"><strong>{{ data.score }}</strong></div>
                                                 </div>
                                             </div>
 
@@ -84,11 +84,29 @@
         </div>
     </div>
 </template>
-<script>
-export default {
-    
-}
+
+<script setup>
+    import { getResultDetail } from '@/service/resultServeice';
+    import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
+
+    const data = ref([])
+    const route = useRoute()
+    const id = route.params.id
+
+    const fetchData = async () =>{
+        const result = await getResultDetail(id)
+        if(result){
+            data.value = result['data']
+            console.log(result);
+            
+        }
+    }
+
+    onMounted(fetchData)
+
 </script>
+
 <style scoped>
 a{
     text-decoration: none;

@@ -69,7 +69,7 @@
                     </div>
 
                     <div class="question-content text-highlightable">
-                      <div class="question-answers" v-for="( ANSWER, index2) in numberAnswer" :key=" index2 ">
+                      <!-- <div class="question-answers" v-for="( ANSWER, index2) in numberAnswer" :key=" index2 ">
                         <div class="form-check">
                           <input @click="ToggleSelected( index )" data-type="question-answer" class="form-check-input"
                             :data-qid=" 'question-' + index + ANSWER " type="radio" :name=" 'question-' + index + ANSWER "
@@ -80,6 +80,47 @@
                             {{ question.A }}.
                           </label>
                         </div>
+                      </div> -->
+                      <div class="question-answers">
+                        <!-- Câu trả lời A -->
+                        <div class="form-check">
+                          <input @click="ToggleSelected(index, 'A')" data-type="question-answer" class="form-check-input"
+                            :data-qid="'question-' + index + 'A'" type="radio" :name="'question-' + index + 'A'"
+                            :id="'question-' + index + 'A'" :value="getLable(0)" v-model="answerSelected[index]" />
+                          <label class="form-check-label" :for="'question-' + index + 'A'">
+                            {{ getLable(0) }}. {{ question.A }}.
+                          </label>
+                        </div>
+
+                        <!-- Câu trả lời B -->
+                        <div class="form-check">
+                          <input @click="ToggleSelected(index,'B')" data-type="question-answer" class="form-check-input"
+                            :data-qid="'question-' + index + 'B'" type="radio" :name="'question-' + index + 'B'"
+                            :id="'question-' + index + 'B'" :value="getLable(1)" v-model="answerSelected[index]" />
+                          <label class="form-check-label" :for="'question-' + index + 'B'">
+                            {{ getLable(1) }}. {{ question.B }}.
+                          </label>
+                        </div>
+
+                        <!-- Câu trả lời C -->
+                        <div class="form-check">
+                          <input @click="ToggleSelected(index,'C')" data-type="question-answer" class="form-check-input"
+                            :data-qid="'question-' + index + 'C'" type="radio" :name="'question-' + index + 'C'"
+                            :id="'question-' + index + 'C'" :value="getLable(2)" v-model="answerSelected[index]" />
+                          <label class="form-check-label" :for="'question-' + index + 'C'">
+                            {{ getLable(2) }}. {{ question.C }}.
+                          </label>
+                        </div>
+
+                        <!-- Câu trả lời D -->
+                        <div class="form-check">
+                          <input @click="ToggleSelected(index,'D')" data-type="question-answer" class="form-check-input"
+                            :data-qid="'question-' + index + 'D'" type="radio" :name="'question-' + index + 'D'"
+                            :id="'question-' + index + 'D'" :value="getLable(3)" v-model="answerSelected[index]" />
+                          <label class="form-check-label" :for="'question-' + index + 'D'">
+                            {{ getLable(3) }}. {{ question.D }}.
+                          </label>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -87,7 +128,6 @@
               </div>
             </div>
           </div>
-
           <div class="test-navigation" id="test-navigation"
             style="width: 20%; border-left: 1px solid black; padding-left: 10px">
             <div class="test-navigation__inner" id="test-navigation__inner">
@@ -106,8 +146,7 @@
                     <p>Xác nhận nộp bài ?</p>
                   </template>
                   <template v-slot:buttonConfirm>
-                    <RouterLink :to=" { name: 'home' } "><button class="ms-3 btn btn-primary">Xác nhận</button>
-                    </RouterLink>
+                    <button @click="handleSubmit" class="ms-3 btn btn-primary">Xác nhận</button>
                   </template>
                 </ModalView>
                 <div class="test-questions-list">
@@ -131,6 +170,7 @@
 <script>
 import ModalView from '@/components/ModalView.vue'
 import { getExamDetail, getQuestionExam } from '@/service/examsService'
+import { createResult } from '@/service/resultServeice';
 import { useRoute } from 'vue-router'
 export default {
   name: 'ExamView',
@@ -148,23 +188,28 @@ export default {
       answers: [],
       numberAnswer: ['', '', '', ''],
       data: [],
-      answerSelected: []
+      answerSelected: [],
+      id : 0,
+      score : 0,
+      scoreQuestion : 0
     }
   },
   async created () {
     const route = useRoute()
     const id = route.params.id
+    this.id = id
     const result = await getExamDetail(id)
     if (result)
     {
       this.data = result['data']
       this.countdown = result['data'].duration
+      this.scoreQuestion = (10 / result['data'].totalQuestion)
+      
     }
 
     const question = await getQuestionExam(id)
     if (question)
     {
-      console.log(question['data'])
       this.questions = question['data']
     }
   },
@@ -204,10 +249,23 @@ export default {
     toggleModal2 () {
       this.showModal2 = !this.showModal2
     },
-    ToggleSelected (quesIndex) {
-      // this.questions[quesIndex].checked;
+    ToggleSelected (quesIndex, ans) {
       this.questions[quesIndex].checked = true
-      console.log(this.questions[quesIndex])
+
+      const existingAnswerIndex = this.answers.findIndex(answer => answer.id === this.questions[quesIndex].id);
+
+      if (existingAnswerIndex !== -1) {
+        // Nếu đã tồn tại, cập nhật câu trả lời
+        this.answers[existingAnswerIndex].answer = ans;
+      } else {
+        // Nếu chưa tồn tại, thêm mới câu trả lời
+        this.answers.push({
+          id: this.questions[quesIndex].id,
+          answer: ans
+        });
+      }
+      console.log(this.answers);
+      
     },
     getLable (index) {
       const labels = ['A', 'B', 'C', 'D']
@@ -215,6 +273,30 @@ export default {
     },
     HighlightQuestion (index) {
       this.questions[index].highlighted = !this.questions[index].highlighted
+    },
+    async handleSubmit (){
+      this.answers.forEach((userAnswer) => {
+        const question = this.questions.find(q => q.id === userAnswer.id); // Tìm câu hỏi tương ứng
+        if (question && question.correctAns === userAnswer.answer) {
+           this.score += this.scoreQuestion
+        }
+      });
+      const result = await createResult({
+          id_user : 1,
+          id_exam : parseInt(this.id),
+          score : this.score,
+          duration : this.countdown
+      })
+      if(result){
+        this.$router.push({ name: 'detailResultExam' });
+      }
+      console.log({
+          id_user : 1,
+          id_exam : parseInt(this.id),
+          score : this.score,
+          duration : this.countdown
+        });
+      
     }
   }
 }
