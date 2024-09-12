@@ -86,7 +86,7 @@ export default {
       this.UserToggleVisible = !this.UserToggleVisible
     },
     checkToken () {
-      if (Cookies.get('token') !== undefined)
+      if (Cookies.get('tokenStudent') !== undefined)
       {
         return true;
       }
@@ -96,7 +96,7 @@ export default {
        }
     },
     logOut () {
-      Cookies.remove('token');
+      Cookies.remove('tokenStudent');
       window.location.reload();
     }
   },

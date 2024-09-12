@@ -53,15 +53,6 @@
             >
               <i class="fas fa-trash-alt"></i>
             </button>
-            <!-- <ModalView :visible="showModalDelete" @close="toggleModalDelete">
-                            <template v-slot:modal-body>
-                                <p>Xác nhận xóa câu hỏi này</p>
-                            </template>
-<template v-slot:buttonConfirm>
-                                <button class="btn btn-primary ms-2">Xóa</button>
-                            </template>
-</ModalView> -->
-            <!-- button change -->
             <button
               class="btn btn-success btn-sm edit ms-2"
               @click="changeQuestion(question.id)"
@@ -100,9 +91,12 @@
 // import { resolveTypeElements } from 'vue/compiler-sfc';
 // import ModalView from '@/components/ModalView.vue';
 // import { fa } from 'element-plus/es/locale';
-import { getQuestionList, DeleteQues, questionsPage } from '@/service/questionsService'
+import { getQuestionList, DeleteQues, questionsPage} from '@/service/questionsService'
 import { ElNotification } from 'element-plus'
 import { getUserDetail } from '@/service/usersService'
+// import Cookies from 'js-cookie'
+// Một số phiên bản của jwt-decode không xuất mặc định (default export) nên phải import như này
+// 
 export default {
   data() {
     return {
@@ -124,7 +118,6 @@ export default {
   created() {
     this.fetchQuestion();
   },
-
   methods: {
      // lấy tên người tạo câu hỏi
     async getName (id) {

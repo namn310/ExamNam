@@ -186,7 +186,7 @@ export default {
       showModal2: false,
       questions: [],
       answers: [],
-      numberAnswer: ['', '', '', ''],
+      numberAnswer: ['', '', '', ''], 
       data: [],
       answerSelected: [],
       id : 0,
