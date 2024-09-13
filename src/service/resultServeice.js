@@ -20,7 +20,7 @@ export const getUserListResult = async (id) => {
 }
 
 export const getUserListResultByPage = async (id,page) => {
-    const result = await get(`UserListResult/${id}?page=${page}`);
+    const result = await get(`UserlistResult/${id}?page=${page}`);
     return result;
 }
 
