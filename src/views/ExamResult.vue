@@ -7,7 +7,7 @@
                     <img class="avatar-img img-fluid" style="max-width:200px;max-height: 200px;"
                         src="/src/assets/img/avtUserDefault.webp">
                 </div>
-                <h1 class="h3 profile-header-title">Username</h1>
+                <h1 class="h3 profile-header-title">{{ this.userName }}</h1>
             </div>
             <!-- End User Profile Section -->
             <ul class="nav nav-tabs mb-4">
@@ -17,7 +17,7 @@
             </ul>
             <div v-for="(exam,index) in listExam" :key="index">
                 <div class="user-test">
-                    <h2 class="h5" id="new-economy-toeic-test-10">{{ exam.ExamName }}</h2>
+                    <h3  style="font-weight: 600;font-size:2vh;font-size:2vw" id="new-economy-toeic-test-10">{{ exam.title }}</h3>
                     <div class="table-wrapper">
                         <table class="table table-sm table-striped">
                             <thead>
@@ -31,14 +31,14 @@
                             <tbody>
                                 <tr>
                                     <td>
-                                        {{ exam.dateStartExam }}
+                                        {{ exam.created_at }}
                                     </td>
                                     <td>
-                                        {{ exam.ExamScore }}
+                                        {{ exam.score }}
                                     </td>
-                                    <td>{{ exam.ExamDuration }}</td>
+                                    <td>{{ exam.duration }}</td>
                                     <td>
-                                        <RouterLink :to="{name:'detailResultExam',params:{id:index+1}}">
+                                        <RouterLink :to="{name:'detailResultExam',params:{id:exam.id}}">
                                             Xem chi tiết
                                         </RouterLink>
                                     </td>
@@ -50,64 +50,44 @@
                 <br>
                 <hr>
             </div>
-            <nav class="jqpages">
-                <div class="pagination">
-                    <span class="page-item active">
-                        <a class="page-link" href="?page=1">1</a>
-                    </span>
-                    <span class="page-item ">
-                        <a class="page-link" href="?page=2">2</a>
-                    </span>
-                    <span class="page-item ">
-                        <a class="page-link" href="?page=3">3</a>
-                    </span>
-                    <span class="page-item">
-                        <a class="page-link" href="?page=2"><i class="fas fa-chevron-right"></i></a>
-                    </span>
-
-                </div>
-            </nav>
+            <div class="mb-4">
+    <ul class="pagination justify-content-center">
+      <li style="cursor: pointer" class="page-item" :class=" { active: page == currentPage } "
+        v-for="( page, index) in ListPages" :key=" index ">
+        <a class="page-link" @click="changePage( page )">{{ page }}</a>
+      </li>
+    </ul>
+  </div>
         </div>
     </div>
 </template>
 <script>
+import { decodeTokenStudent } from '@/service/decodeToken'
+import { getUserListResult,getUserListResultByPage } from '@/service/resultServeice';
 export default {
     data () {
         return {
-            listExam: [
-                {
-                    ExamName: 'Đề thi Toán trung học phổ thông quốc gia năm 2023',
-                    dateStartExam: '20/7/2024',
-                    ExamScore: '10',
-                    ExamDuration: '0:50:2',
-                },
-                {
-                    ExamName: 'Đề thi Tiếng Anh trung học phổ thông quốc gia năm 2023',
-                    dateStartExam: '20/7/2024',
-                    ExamScore: '7',
-                    ExamDuration: '0:50:2',
-                },
-                {
-                    ExamName: 'Đề thi Hóa học trung học phổ thông quốc gia năm 2023',
-                    dateStartExam: '20/7/2024',
-                    ExamScore: '10',
-                    ExamDuration: '0:53:2',
-                },
-                {
-                    ExamName: 'Đề thi Ngữ Văn trung học phổ thông quốc gia năm 2023',
-                    dateStartExam: '20/7/2024',
-                    ExamScore: '9,5',
-                    ExamDuration: '0:50:2',
-                },
-                {
-                    ExamName: 'Đề thi Vật lý trung học phổ thông quốc gia năm 2023',
-                    dateStartExam: '20/7/2024',
-                    ExamScore: '8',
-                    ExamDuration: '0:52:2',
-                },
-            ]
+            userName:'',
+            listExam: [],
+            recordTotal: '',
+            totalPage: '',
+            currentPage:''
+        }
+    },
+    created () {
+        this.getListResult()     
+    },
+    methods: {
+        async getListResult () {
+            const user = decodeTokenStudent()
+            this.userName = user.data.name
+            const result = await getUserListResult(user.data.id)
+            this.listExam = result.data
+            this.recordTotal=result.total_page
+            console.log(result);
         }
     }
+
 }
 </script>
 <style></style>

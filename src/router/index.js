@@ -42,16 +42,16 @@ const router = createRouter({
           path: '/',
           name: 'home',
           component: HomeView,
-          meta : {
-            layout : 'home'
+          meta: {
+            layout: 'home'
           }
         },
         {
           path: '/category/:id',
           name: 'category-exam',
           component: CartExam,
-          meta : {
-            layout : 'home'
+          meta: {
+            layout: 'home'
           }
         },
         {
@@ -69,25 +69,37 @@ const router = createRouter({
         {
           path: '/test/start/:id',
           name: 'testStart',
-          component: ExamView
+          component: ExamView,
+          meta: {
+            requiresAuth: true //các link cần đăng nhập để truy cập
+          }
         },
         // danh sách các bài thi đã làm
         {
           path: '/user/resultList',
           name: 'ResultExam',
-          component: ExamResult
+          component: ExamResult,
+          meta: {
+            requiresAuth: true //các link cần đăng nhập để truy cập
+          }
         },
         //chi tiết bài thi đã làm
         {
           path: '/user/resultDetail/:id',
           name: 'detailResultExam',
-          component: DetailExamResult
+          component: DetailExamResult,
+          meta: {
+            requiresAuth: true //các link cần đăng nhập để truy cập
+          }
         },
         // check lại đáp án bài thi
         {
           path: '/test/checkResult/:id',
           name: 'checkAnswer',
-          component: CheckAnswerResult
+          component: CheckAnswerResult,
+          meta: {
+            requiresAuth: true //các link cần đăng nhập để truy cập
+          }
         },
         // Đăng ký
         {
@@ -206,12 +218,12 @@ const router = createRouter({
           name: 'categoryExam',
           component: CategoryExam,
           meta: {
-            layout:'admin'
+            layout: 'admin'
           }
         }
       ]
     }
-  ],
+  ]
 })
 router.beforeEach((to, from, next) => {
   // to and from are both route objects. must call `next`.
@@ -219,6 +231,24 @@ router.beforeEach((to, from, next) => {
   if (to.path.startsWith('/admin') && !adminToken) {
     next({ name: 'Login' })
   } else {
+    next()
+  }
+})
+//kiểm tra xem người dùng đã đăng nhập hay chưa
+router.beforeEach((to, from, next) => {
+  const userToken = Cookies.get('tokenStudent') // Lấy token từ cookies
+
+  // Kiểm tra xem route có yêu cầu đăng nhập không
+  if (to.matched.some((record) => record.meta.requiresAuth) && to.path.startsWith('/')) {
+    if (!userToken) {
+      // Nếu không có token thì về trang đăng nhập
+      next({ name: 'Login' })
+    } else {
+      // Nếu đã đăng nhập thì được truy cập vào
+      next()
+    }
+  } else {
+    // Nếu không cần đăng nhập thì vẫn được truy cấp
     next()
   }
 })

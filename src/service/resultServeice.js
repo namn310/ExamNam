@@ -14,4 +14,13 @@ export const getReviewResult = async (id) => {
     const result = await get(`result/review/${id}`);
     return result;
 }
+export const getUserListResult = async (id) => {
+    const result = await get(`UserlistResult/${id}`);
+    return result;
+}
+
+export const getUserListResultByPage = async (id,page) => {
+    const result = await get(`UserListResult/${id}?page=${page}`);
+    return result;
+}
 
