@@ -223,7 +223,7 @@
         </div>
       </form>
     </div>
-    <button
+    <!-- <button
       class="btn btn-danger"
       @click="
         () => {
@@ -232,7 +232,7 @@
       "
     >
       click
-    </button>
+    </button> -->
   </div>
 </template>
 <script>
@@ -348,7 +348,7 @@ export default {
           this.score += this.scoreQuestion
           this.correct_question += 1
         }
-      })      
+      })
       const user = decodeTokenStudent()
       const result = await createResult({
         id_user: user.data.id,
@@ -412,6 +412,7 @@ input[type='radio'] {
 
 #selected {
   background-color: green;
+  color:white
 }
 
 .hightlightQuestion {

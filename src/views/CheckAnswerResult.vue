@@ -251,7 +251,7 @@
                           />
                           <label
                             :class="{
-                              'text-success':
+                              'text-danger':
                                 answerSelected[index] === getLable(3) &&
                                 answerSelected[index] !== correctAnswer[index],
                               'text-success': correctAnswer[index] === getLable(3)
@@ -319,7 +319,6 @@ export default {
       questions: [],
       answers: [],
       numberAnswer: ['', '', '', ''],
-      // answerSelected: [],
       answerSelected: [],
       correctAnswer: [],
       UserAnswer: [],
@@ -346,7 +345,7 @@ export default {
           }
           if (result2) {
             this.UserAnswer = result2.data
-            console.log(this.UserAnswer)
+            console.log('useran',this.UserAnswer)
           }
           if (result3) {
             this.titleExam = result3.data.title
@@ -356,12 +355,12 @@ export default {
           this.UserAnswer.forEach((e) => {
             this.answerSelected.push(e.answer)
           })
-          console.log(this.answerSelected)
+          console.log('anSelected',this.answerSelected)
           // lấy danh sách đáp án đúng
           this.questions.forEach((e) => {
             this.correctAnswer.push(e.correctAns)
           })
-          console.log(this.correctAnswer)
+          console.log('correctAn',this.correctAnswer)
         }
       }
     },
