@@ -97,9 +97,7 @@ import { useRoute } from 'vue-router';
     const fetchData = async () =>{
         const result = await getResultDetail(id)
         if(result){
-            data.value = result['data']
-            console.log(result);
-            
+            data.value = result['data']            
         }
     }
 

@@ -6,3 +6,9 @@ export const decodeToken = () => {
   const decode = jwtDecode(token)
   return decode
 }
+export const decodeTokenStudent = () => {
+   const token = Cookies.get('tokenStudent')
+   // console.log(jwtDecode);
+   const decode = jwtDecode(token)
+   return decode
+}
