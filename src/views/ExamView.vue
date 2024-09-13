@@ -86,7 +86,7 @@
                       <!-- title question -->
                       <div class="question-text ms-2 mb-2">
                         <div class="boldIntro"></div>
-                        <p v-html="question.title"></p>
+                        <strong v-html="question.title"></strong>
                       </div>
                     </div>
 
@@ -223,7 +223,16 @@
         </div>
       </form>
     </div>
-    <button class="btn btn-danger" @click="()=>{ console.log(this.questions.length - this.answers.length)}">click</button>
+    <button
+      class="btn btn-danger"
+      @click="
+        () => {
+          console.log(this.questions.length - this.answers.length)
+        }
+      "
+    >
+      click
+    </button>
   </div>
 </template>
 <script>
@@ -255,7 +264,7 @@ export default {
       scoreQuestion: 0,
       blank_question: 0,
       correct_question: 0,
-      incorrect_question:0
+      incorrect_question: 0
     }
   },
   async created() {
@@ -337,7 +346,7 @@ export default {
         const question = this.questions.find((q) => q.id === userAnswer.id) // Tìm câu hỏi tương ứng
         if (question && question.correctAns === userAnswer.answer) {
           this.score += this.scoreQuestion
-          this.correct_question +=1
+          this.correct_question += 1
         }
       })
 
@@ -349,17 +358,21 @@ export default {
         duration: this.countdown,
         blank_question: this.questions.length - this.answers.length,
         correct_question: this.correct_question,
-        incorrect_question: this.questions.length - this.blank_question - this.correct_question
+        incorrect_question: this.questions.length - this.blank_question - this.correct_question,
+        answers: this.answers
       })
       // console.log({
-      //   id_user: user.data.id,
+      //  id_user: user.data.id,
       //   id_exam: parseInt(this.id),
       //   score: this.score,
       //   duration: this.countdown,
-      //   quesblank:this.questions.length - this.answers.length
+      //   blank_question: this.questions.length - this.answers.length,
+      //   correct_question: this.correct_question,
+      //   incorrect_question: this.questions.length - this.blank_question - this.correct_question,
+      //   answers:this.answers
       // });
       if (result) {
-        this.$router.push({ name: 'detailResultExam' })
+        this.$router.push({ name: 'detailResultExam', params: { id: result.lastInsert } })
         // console.log(result)
       }
     }
@@ -367,6 +380,16 @@ export default {
 }
 </script>
 <style scoped>
+input[type='radio'] {
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  border: 2px solid #007bff;
+  border-radius: 50%;
+  position: relative;
+  outline: none;
+  cursor: pointer;
+}
 .content-wrapper {
   margin-top: 70px;
 }

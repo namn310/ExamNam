@@ -10,3 +10,8 @@ export const getResultDetail = async (id) => {
     const result = await get(`result/detail/${id}`);
     return result;
 }
+export const getReviewResult = async (id) => {
+    const result = await get(`result/review/${id}`);
+    return result;
+}
+
