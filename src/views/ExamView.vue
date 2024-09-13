@@ -373,7 +373,7 @@ export default {
       if (result) {
         this.stopCountdown()
         // console.log(result)
-        this.$router.replace({ name: 'detailResultExam', params: { id: result.id } })
+        this.$router.replace({ name: 'detailResultExam', params: { id: result.lastInsert } })
       }
     }
   }
