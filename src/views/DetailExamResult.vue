@@ -103,13 +103,17 @@ import { getExamDetail } from '@/service/examsService';
 const data = ref([])
 const route = useRoute()
 const id = route.params.id
-const ResultDetail = ref([])
 const ExamName = ref()
 
 const fetchData = async () => {
   const result = await getResultDetail(id)
   if (result) {
+      result['data'].blank_question = parseInt(result['data'].blank_question)
+      result['data'].correct_question = parseInt(result['data'].correct_question)
+      result['data'].incorrect_question = parseInt(result['data'].incorrect_question)
       data.value = result['data']
+      console.log(result);
+      
     }
     const result2 = await getExamDetail(data.value.id_exam)
     if (result2)

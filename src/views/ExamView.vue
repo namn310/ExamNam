@@ -348,21 +348,19 @@ export default {
           this.score += this.scoreQuestion
           this.correct_question += 1
         }
-      })
+      })      
 
-      const user = decodeTokenStudent()
       const result = await createResult({
-        id_user: user.data.id,
+        id_user: "1",
         id_exam: parseInt(this.id),
         score: this.score,
         duration: this.countdown,
         blank_question: this.questions.length - this.answers.length,
         correct_question: this.correct_question,
         incorrect_question: this.questions.length - this.blank_question - this.correct_question,
-        answers: this.answers
       })
       // console.log({
-      //  id_user: user.data.id,
+      //   id_user: "1",
       //   id_exam: parseInt(this.id),
       //   score: this.score,
       //   duration: this.countdown,
@@ -372,8 +370,8 @@ export default {
       //   answers:this.answers
       // });
       if (result) {
-        this.$router.push({ name: 'detailResultExam', params: { id: result.lastInsert } })
-        // console.log(result)
+        this.stopCountdown()
+        this.$router.replace({ name: 'detailResultExam', params: { id: result.id } })
       }
     }
   }
