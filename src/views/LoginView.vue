@@ -70,7 +70,9 @@
                 >
               </div>
               <div class="forgot">
-                <small><a href="">Quên Mật Khẩu?</a></small>
+                <!-- <small><a href="">Quên Mật Khẩu?</a></small> -->
+                <small><RouterLink :to="{ name: 'forgot-password' }">Quên Mật Khẩu?</RouterLink></small>
+                <small><RouterLink :to="{ name: 'reset-password' }">Đổi Mật Khẩu?</RouterLink></small>
               </div>
             </div>
             <div class="input-group mb-2">

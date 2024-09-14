@@ -6,6 +6,8 @@ import Cookies from 'js-cookie'
 import HomeView from '../views/HomeView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import LoginView from '@/views/LoginView.vue'
+import forgotPasswordView from '@/views/forgotPasswordView.vue'
+import resetPasswordView from '@/views/resetPasswordView.vue'
 import AboutView from '@/views/AboutView.vue'
 import ExamInfor from '@/views/ExamInfor.vue'
 import ExamView from '@/views/ExamView.vue'
@@ -28,6 +30,7 @@ import EditExam from '../views/AdminView/Exams/EditExam.vue'
 import DetailExam from '@/views/AdminView/Exams/DetailExam.vue'
 import CategoryExam from '@/views/AdminView/Exams/CategoryExam.vue'
 import CartExam from '@/views/CartExam.vue'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -112,6 +115,16 @@ const router = createRouter({
           path: '/login',
           name: 'Login',
           component: LoginView
+        },
+        {
+          path: '/forgot-password',
+          name: 'forgot-password',
+          component: forgotPasswordView
+        },
+        {
+          path: '/reset-password',
+          name: 'reset-password',
+          component: resetPasswordView
         },
         // test
         {

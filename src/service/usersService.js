@@ -24,6 +24,14 @@ export const Login = async (option) => {
     const result = await post(`users/login`, option);
     return result;
 }
+export const forgotPasswordView = async (option) => {
+    const result = await post(`users/forgot-password`, option);
+    return result;
+}
+export const resetPassword = async (option) => {
+    const result = await post(`users/reset-password`, option);
+    return result;
+}
 // export const checkToken = async () => {
 //     const result = await get()
 // }
