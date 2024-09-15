@@ -67,7 +67,8 @@
         const fetchApi = async () => {
             const result = await getExamDetail(id);
             if(result){
-                data.value = result.data
+              data.value = result.data
+                
             }
             
         }

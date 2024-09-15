@@ -29,12 +29,12 @@
             {{ exam.title }}
           </h3>
           <div class="table-wrapper">
-            <table class="table table-sm table-striped">
+            <table class="table table-sm table-striped text-center">
               <thead>
                 <tr>
                   <th style="min-width: 150px">Ngày làm</th>
                   <th style="min-width: 100px">Kết quả</th>
-                  <th style="min-width: 150px">Thời gian làm bài</th>
+                  <th style="min-width: 150px">Thời gian làm bài còn lại</th>
                   <th style="min-width: 150px"></th>
                 </tr>
               </thead>
@@ -46,7 +46,7 @@
                   <td>
                     {{ exam.score }}
                   </td>
-                  <td>{{ exam.duration }}</td>
+                  <td>{{ exam.formattedTime }}</td>
                   <td>
                     <RouterLink :to="{ name: 'detailResultExam', params: { id: exam.id } }">
                       Xem chi tiết
@@ -88,7 +88,8 @@ export default {
       recordTotal: '',
       totalPage: '',
       currentPage: 1,
-      ListPages: []
+      ListPages: [],
+      // formattedTime: ''
     }
   },
   created() {
@@ -103,17 +104,25 @@ export default {
         this.listExam = result.data
         this.recordTotal = result.record_total
         this.totalPage = result.total_page
-        console.log(result)
+        // console.log(result)
         // liệt kê các trang của data
         for (var i = 1; i <= this.totalPage; i++) {
           this.ListPages.push(i)
         }
-        console.log(this.ListPages)
+        // console.log(this.ListPages)
+        // thêm element định dạng time vào mảng listExam
+        this.listExam.forEach((event) => {
+          var minutes = Math.floor(event.duration / 60) // Tính số phút
+          var seconds = event.duration % 60 // Tính số giây còn lại
+          var a = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}` // Định dạng thành mm:ss
+          event.formattedTime =  a ;
+        })
+        // console.log(this.listExam)
       }
     },
     async getResultByPage(page) {
       try {
-          this.userId = decodeTokenStudent().data.id
+        this.userId = decodeTokenStudent().data.id
         const result = await getUserListResultByPage(this.userId, page)
         if (!result) {
           alert('Có lỗi trong quá trình lấy dữ liệu')

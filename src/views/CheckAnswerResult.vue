@@ -341,29 +341,24 @@ export default {
           const result3 = await getExamDetail(idExam)
           if (result) {
             this.questions = result.data
-            console.log(result.data)
           }
           if (result2) {
             this.UserAnswer = result2.data
-            console.log('useran',this.UserAnswer)
           }
           if (result3) {
             this.titleExam = result3.data.title
-            console.log(result3.data.title)
           }
           // lấy danh sách đáp án mà người dùng đã làm
           this.UserAnswer.forEach((e) => {
             this.answerSelected.push(e.answer)
           })
-          console.log('anSelected',this.answerSelected)
           // lấy danh sách đáp án đúng
           this.questions.forEach((e) => {
             this.correctAnswer.push(e.correctAns)
           })
-          console.log('correctAn',this.correctAnswer)
         }
       }
-    },
+    },  
     toggleModal() {
       this.showModal = !this.showModal
     },

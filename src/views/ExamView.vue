@@ -179,13 +179,7 @@
               <div>
                 <div class="timeleft-wrapper mb-2">
                   Thời gian còn lại:
-                  <span
-                    data-totaltime="50.0"
-                    data-timeleft-value="48.766666666666666"
-                    id="timeleft"
-                    class="timeleft"
-                    >{{ formatTime }}</span
-                  >
+                  <span id="timeleft" class="timeleft">{{ formatTime }}</span>
                 </div>
                 <button
                   class="btn btn-outline-primary btn-block mb-3 mt-3"
@@ -250,6 +244,7 @@ export default {
   data() {
     return {
       // time count donwn of exam
+      durationExam: 0,
       countdown: 0,
       timer: null,
       showModal: false,
@@ -274,7 +269,7 @@ export default {
     const result = await getExamDetail(id)
     if (result) {
       this.data = result['data']
-      this.countdown = result['data'].duration
+      this.durationExam = result['data'].duration
       this.scoreQuestion = 10 / result['data'].totalQuestion
     }
 
@@ -282,6 +277,13 @@ export default {
     if (question) {
       this.questions = question['data']
     }
+    this.startCountDown()
+     // Thêm sự kiện `beforeunload` khi component được mount
+    window.addEventListener('beforeunload', this.BeforeUnload);
+  },
+  beforeUnmount() {
+    // Xóa sự kiện `beforeunload` khi component bị hủy
+    window.removeEventListener('beforeunload', this.BeforeUnload);
   },
   computed: {
     formatTime() {
@@ -290,17 +292,25 @@ export default {
       return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
     }
   },
-  mounted() {
-    this.startCountDown()
-  },
   methods: {
+    // hiện thông báo khi người dùng bấm refresh trang khi thời gian làm bài chưa kết thúc
+    BeforeUnload (event) {
+      if (this.countdown > 0)
+      {
+        const message = "Thời gian làm bài vẫn còn. Nếu thoát thì kết quả sẽ không được lưu lại !"
+        event.returnValue = message
+        return message
+      }
+    },
     startCountDown() {
+      this.countdown = this.durationExam * 60
       this.timer = setInterval(() => {
         if (this.countdown > 0) {
           this.countdown--
         } else {
           this.stopCountdown()
           alert("Time's up!")
+          // this.handleSubmit()
         }
       }, 1000)
     },
@@ -412,7 +422,7 @@ input[type='radio'] {
 
 #selected {
   background-color: green;
-  color:white
+  color: white;
 }
 
 .hightlightQuestion {
