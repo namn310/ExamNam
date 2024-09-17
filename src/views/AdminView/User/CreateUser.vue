@@ -24,13 +24,13 @@
             <el-radio border value="admin">Quản trị viên</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="Ngày tạo">
+        <!-- <el-form-item label="Ngày tạo">
           <el-date-picker
             v-model="userForm.create_at"
             type="datetime"
             placeholder="Chọn ngày"
           />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item>
           <el-button type="primary" @click="onSubmit">Create</el-button>
           <el-button @click="onCancel">Cancel</el-button>

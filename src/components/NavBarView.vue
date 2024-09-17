@@ -16,9 +16,9 @@
               <li class="nav-item">
                 <RouterLink class="nav-link" :to=" { name: 'home' } ">Đề thi online</RouterLink>
               </li>
-              <li class="nav-item">
+              <!-- <li class="nav-item">
                 <a class="nav-link">Kết quả thi</a>
-              </li>
+              </li> -->
               <li v-if="checkToken()">
                 <RouterLink :to=" { name: 'Login' } ">Đăng nhập</RouterLink>
               </li>
@@ -31,9 +31,9 @@
             <li class="nav-item">
               <RouterLink class="nav-link" :to=" { name: 'home' } ">Đề thi online</RouterLink>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a class="nav-link">Kết quả thi</a>
-            </li>
+            </li> -->
             <li v-if="!checkToken()">
                 <RouterLink :to=" { name: 'Login' } ">Đăng nhập</RouterLink>
               </li>
@@ -97,6 +97,8 @@ export default {
     },
     logOut () {
       Cookies.remove('tokenStudent');
+      Cookies.remove('tokenAdmin');
+
       window.location.reload();
     }
   },

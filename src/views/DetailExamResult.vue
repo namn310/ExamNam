@@ -111,12 +111,12 @@ const fetchData = async () => {
       result['data'].blank_question = parseInt(result['data'].blank_question)
       result['data'].correct_question = parseInt(result['data'].correct_question)
       result['data'].incorrect_question = parseInt(result['data'].incorrect_question)
-      data.value = result['data']      
+    data.value = result['data']  
     }
     const result2 = await getExamDetail(data.value.id_exam)
     if (result2)
     {
-        ExamName.value= result2.data.title
+      ExamName.value = result2.data.title
     }
 }
 onMounted(fetchData)

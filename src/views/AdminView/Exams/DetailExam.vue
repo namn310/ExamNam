@@ -36,6 +36,7 @@
     const result = await getQuestionExam(id)
     if(result){
       question.value = result['data'];
+      console.log(result['data'])
     }
   }
   onMounted(fetchData);

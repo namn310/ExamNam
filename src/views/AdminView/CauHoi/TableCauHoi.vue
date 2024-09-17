@@ -121,8 +121,8 @@ export default {
     },
     // lấy dữ liệu question từ api
     async fetchQuestion () {
-      try
-      {
+      // try
+      // {
         const result = await getQuestionList()
         const response = await getUserCreate()
         this.creator = response.data
@@ -153,10 +153,10 @@ export default {
         {
           alert('Có lỗi trong quá trình lấy dữ liệu')
         }
-      } catch (error)
-      {
-        console.error('Error fetching question list:', error)
-      }
+      // } catch (error)
+      // {
+      //   console.error('Error fetching question list:', error)
+      // }
     },
     async getQuestionByPage (page) {
       try
