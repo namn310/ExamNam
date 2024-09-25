@@ -75,7 +75,7 @@ const options = ref([])
 const getId = () => {
     const id = decodeToken();
     sizeForm['id_user'] = id.data.id;
-    console.log( sizeForm['id_user'] );
+    // console.log( sizeForm['id_user'] );
 }
 const fetchCategorys = () => {
   const fetchApi = async () => {
@@ -91,8 +91,10 @@ onMounted(fetchCategorys)
 onMounted(getId)
 const onSubmit = () => {
   const fetchApi = async () => {
-    const result = await createExam(sizeForm)
-    if (result) {
+    const result = await createExam( sizeForm )
+    console.log(result)
+    if ( result ) {
+      console.log(result)
       ElNotification({
         title: 'Success',
         message: h('i', { style: 'color: teal' }, 'Tạo bài kiểm tra thành công')

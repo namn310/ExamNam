@@ -3,8 +3,7 @@
     <div class="xl-container">
       <h1 class="h4 text-center mb-4" style="font-size: 3vw; font-size: 3vh; font-weight: 500">
         {{ this.titleExam }}
-        <RouterLink :to="{ name: 'ResultExam' }"
-          ><button class="ms-3 btn btn-primary">Thoát</button>
+        <RouterLink :to=" { name: 'ResultExam' } "><button class="ms-3 btn btn-primary">Thoát</button>
         </RouterLink>
       </h1>
       <hr />
@@ -13,253 +12,50 @@
           <div class="test-content contentblock" id="test-content" style="width: 80%">
             <div class="context-wrapper"></div>
             <div class="tab-content" id="pills-tabContent">
-              <div
-                class="tab-pane active show"
-                id="partcontent-9022"
-                role="tabpanel"
-                aria-labelledby="pills-tab"
-              >
+              <div class="tab-pane active show" id="partcontent-9022" role="tabpanel" aria-labelledby="pills-tab">
                 <div class="context-wrapper"></div>
-
-                <div
-                  class="test-questions-wrapper"
-                  v-for="(question, index) in questions"
-                  :key="index"
-                >
+                <div class="test-questions-wrapper mb-4 me-2" v-for="(  question, index) in questions" :key=" index ">
                   <div class="question-wrapper" data-qid="144565" id="question-wrapper-144565">
+                    <!-- number question -->
                     <div class="d-flex">
-                      <div
-                        class="question-number d-flex justify-content-center text-center"
-                        data-qid="144565"
-                        style="
+                      <div class="question-number text-center hightlightQuestion" v-if=" question.highlighted "
+                        @dblclick="HighlightQuestion( index )" data-qid="144565" style="
                           width: 30px;
                           height: 30px;
                           border: 1px solid black;
                           border-radius: 5px;
                           cursor: pointer;
-                        "
-                      >
-                        <p
-                          style="
-                            width: 100%;
-                            height: 100%;
-                            border: 1px solid black;
-                            border-radius: 5px;
-                            cursor: pointer;
-                          "
-                        >
-                          {{ index + 1 }}
-                        </p>
+                        ">
+                        <strong style="width: 100%; height: 100%; border-radius: 5px; cursor: pointer">{{ index + 1
+                          }}</strong>
                       </div>
-
-                      <!-- <div class="question-content text-highlightable">
-                      <div class="question-text">
-                        <div class="boldIntro"></div>
-                        <p v-html="question.title"></p>
+                      <!--  -->
+                      <div @dblclick="HighlightQuestion( index )" class="question-number text-center" v-else
+                        data-qid="144565" style="
+                          width: 30px;
+                          height: 30px;
+                          border: 1px solid black;
+                          border-radius: 5px;
+                          cursor: pointer;
+                        ">
+                        <strong style="width: 100%; height: 100%; border-radius: 5px; cursor: pointer">{{ index + 1
+                          }}</strong>
                       </div>
-
-                      <div
-                        class="question-answers"
-                        v-for="(ANSWER, index2) in question.answers"
-                        :key="index2"
-                      >
-                        <div
-                          class="form-check"
-                          v-if="
-                            getLable(index2) !== question.correctAnswe &&
-                            getLable(index2) == question.answerSelect
-                          "
-                        >
-                          <input
-                            data-type="question-answer"
-                            class="form-check-input"
-                            :data-qid="'question-' + index + ANSWER"
-                            type="radio"
-                            :name="'question-' + index + ANSWER"
-                            :id="'question-' + index + ANSWER"
-                            :value="getLable(index2)"
-                            v-model="question.answerSelect"
-                          />
-                          <label
-                            class="form-check-label text-danger"
-                            :for="'question-' + index + ANSWER"
-                            >{{ getLable(index2) }}. {{ ANSWER }}.
-                          </label>
-                        </div>
-                        <div
-                          class="form-check"
-                          v-else-if="
-                            getLable(index2) == question.correctAnswe &&
-                            getLable(index2) == question.answerSelect
-                          "
-                        >
-                          <input
-                            data-type="question-answer"
-                            class="form-check-input"
-                            :data-qid="'question-' + index + ANSWER"
-                            type="radio"
-                            :name="'question-' + index + ANSWER"
-                            :id="'question-' + index + ANSWER"
-                            :value="getLable(index2)"
-                            v-model="question.answerSelect"
-                          />
-                          <label
-                            class="form-check-label text-success"
-                            :for="'question-' + index + ANSWER"
-                            >{{ getLable(index2) }}. {{ ANSWER }}.
-                          </label>
-                        </div>
-                        <div
-                          class="form-check"
-                          v-else-if="
-                            getLable(index2) == question.correctAnswe &&
-                            getLable(index2) !== question.answerSelect
-                          "
-                        >
-                          <input
-                            data-type="question-answer"
-                            class="form-check-input"
-                            :data-qid="'question-' + index + ANSWER"
-                            type="radio"
-                            :name="'question-' + index + ANSWER"
-                            :id="'question-' + index + ANSWER"
-                            :value="getLable(index2)"
-                            v-model="question.answerSelect"
-                          />
-                          <label
-                            class="form-check-label text-success"
-                            :for="'question-' + index + ANSWER"
-                            >{{ getLable(index2) }}. {{ ANSWER }}.
-                          </label>
-                        </div>
-                        <div class="form-check" v-else>
-                          <input
-                            data-type="question-answer"
-                            class="form-check-input"
-                            :data-qid="'question-' + index + ANSWER"
-                            type="radio"
-                            :name="'question-' + index + ANSWER"
-                            :id="'question-' + index + ANSWER"
-                            :value="getLable(index2)"
-                            v-model="question.answerSelect"
-                          />
-                          <label class="form-check-label" :for="'question-' + index + ANSWER"
-                            >{{ getLable(index2) }}. {{ ANSWER }}.
-                          </label>
-                        </div>
-                      </div>
-                    </div> -->
-
                       <!-- title question -->
                       <div class="question-text ms-2 mb-2">
                         <div class="boldIntro"></div>
-                        <strong v-html="question.title"></strong>
+                        <strong v-html=" question.title "></strong>
                       </div>
                     </div>
 
                     <div class="question-content text-highlightable">
-                      <div class="question-answers">
-                        <!-- Câu trả lời A -->
-                        <div class="form-check">
-                          <input
-                            @click="ToggleSelected(index, 'A')"
-                            data-type="question-answer"
-                            class="form-check-input"
-                            :data-qid="'question-' + index + 'A'"
-                            type="radio"
-                            :name="'question-' + index + 'A'"
-                            :id="'question-' + index + 'A'"
-                            :checked="answerSelected[index] === getLable(0)"
-                          />
-                          <label
-                            :class="{
-                              'text-danger':
-                                answerSelected[index] === getLable(0) &&
-                                answerSelected[index] !== correctAnswer[index],
-                              'text-success': correctAnswer[index] === getLable(0)
-                            }"
-                            class="form-check-label"
-                            :for="'question-' + index + 'A'"
-                          >
-                            {{ getLable(0) }}. {{ question.A }}.
-                          </label>
-                        </div>
-
-                        <!-- Câu trả lời B -->
-                        <div class="form-check">
-                          <input
-                            @click="ToggleSelected(index, 'B')"
-                            data-type="question-answer"
-                            class="form-check-input"
-                            :data-qid="'question-' + index + 'B'"
-                            type="radio"
-                            :name="'question-' + index + 'B'"
-                            :id="'question-' + index + 'B'"
-                            :checked="answerSelected[index] === getLable(1)"
-                          />
-                          <label
-                            :class="{
-                              'text-danger':
-                                answerSelected[index] === getLable(1) &&
-                                answerSelected[index] !== correctAnswer[index],
-                              'text-success': correctAnswer[index] === getLable(1)
-                            }"
-                            class="form-check-label"
-                            :for="'question-' + index + 'B'"
-                          >
-                            {{ getLable(1) }}. {{ question.B }}.
-                          </label>
-                        </div>
-
-                        <!-- Câu trả lời C -->
-                        <div class="form-check">
-                          <input
-                            @click="ToggleSelected(index, 'C')"
-                            data-type="question-answer"
-                            class="form-check-input"
-                            :data-qid="'question-' + index + 'C'"
-                            type="radio"
-                            :name="'question-' + index + 'C'"
-                            :id="'question-' + index + 'C'"
-                            :checked="answerSelected[index] === getLable(2)"
-                          />
-                          <label
-                            :class="{
-                              'text-danger':
-                                answerSelected[index] === getLable(2) &&
-                                answerSelected[index] !== correctAnswer[index],
-                              'text-success': correctAnswer[index] === getLable(2)
-                            }"
-                            class="form-check-label"
-                            :for="'question-' + index + 'C'"
-                          >
-                            {{ getLable(2) }}. {{ question.C }}.
-                          </label>
-                        </div>
-
-                        <!-- Câu trả lời D -->
-                        <div class="form-check">
-                          <input
-                            @click="ToggleSelected(index, 'D')"
-                            data-type="question-answer"
-                            class="form-check-input"
-                            :data-qid="'question-' + index + 'D'"
-                            type="radio"
-                            :name="'question-' + index + 'D'"
-                            :id="'question-' + index + 'D'"
-                            :checked="answerSelected[index] === getLable(3)"
-                          />
-                          <label
-                            :class="{
-                              'text-danger':
-                                answerSelected[index] === getLable(3) &&
-                                answerSelected[index] !== correctAnswer[index],
-                              'text-success': correctAnswer[index] === getLable(3)
-                            }"
-                            class="form-check-label"
-                            :for="'question-' + index + 'D'"
-                          >
-                            {{ getLable(3) }}. {{ question.D }}.
+                      <div class="question-answers mt-3">
+                        <!-- Câu trả lời -->
+                        <div class="form-check" v-for="(  ans, index2) in question.answerlist" :key=" index2 ">
+                          <input @click="ToggleSelected( question.id, index2 )" data-type="question-answer"
+                            class="form-check-input" type="checkbox" :checked="checkAnswerSelect(getLable(index2),question.AnswerSelected)" style="border: 1px solid black" />
+                          <label :class="{'text-danger':checkAnswerSelect(getLable(index2),question.AnswerSelected) && !checkAnswerSelect(getLable(index2),question.correctAns) ,'text-success':checkAnswerSelect(getLable(index2),question.correctAns)}" class="form-check-label">
+                            {{ getLable( index2 ) }}. {{ ans }}
                           </label>
                         </div>
                       </div>
@@ -270,22 +66,15 @@
             </div>
           </div>
 
-          <div
-            class="test-navigation"
-            id="test-navigation"
-            style="width: 20%; border-left: 1px solid black; padding-left: 10px"
-          >
+          <div class="test-navigation" id="test-navigation"
+            style="width: 20%; border-left: 1px solid black; padding-left: 10px">
             <div class="test-navigation__inner mb-3" id="test-navigation__inner">
               <strong class="mb-3">Đáp án</strong>
               <div>
                 <div class="test-questions-list mt-3">
                   <div class="test-questions-list-part d-flex flex-wrap">
-                    <div
-                      class="test-questions-list-wrapper"
-                      v-for="(question, index) in questions"
-                      :key="index"
-                    >
-                      <div v-if="checkAnswer(index) == true">
+                    <div class="test-questions-list-wrapper" v-for="(  question, index) in questions" :key=" index ">
+                      <div v-if="CheckAnswer(question.correctAns,question.AnswerSelected)">
                         <p class="test-questions-listitem" id="correctAnswer">{{ index + 1 }}</p>
                       </div>
                       <div v-else>
@@ -311,7 +100,7 @@ export default {
   components: {
     // ModalView
   },
-  data() {
+  data () {
     return {
       id: this.$route.params.id,
       showModal: false,
@@ -325,56 +114,79 @@ export default {
       titleExam: ''
     }
   },
-  created() {
+  created () {
     this.getExam()
     // this.getAnswerUser()
   },
   methods: {
-    async getExam() {
+    async getExam () {
       const result1 = await getResultDetail(this.id)
-      if (result1) {
+      if (result1)
+      {
         const idExam = result1.data.id_exam
         const idResult = this.$route.params.id
         {
           const result = await getQuestionExam(idExam)
           const result2 = await getReviewResult(idResult)
           const result3 = await getExamDetail(idExam)
-          if (result) {
+          if (result)
+          {
             this.questions = result.data
+            this.questions.forEach((e) => {
+              e.answerlist = JSON.parse(e.answerlist)
+              e.correctAns = JSON.parse(e.correctAns)
+              e.AnswerSelected = []
+            })
           }
-          if (result2) {
+          if (result2)
+          {
             this.UserAnswer = result2.data
           }
-          if (result3) {
+          if (result3)
+          {
             this.titleExam = result3.data.title
           }
-          // lấy danh sách đáp án mà người dùng đã làm
-          this.UserAnswer.forEach((e) => {
-            this.answerSelected.push(e.answer)
-          })
-          // lấy danh sách đáp án đúng
-          this.questions.forEach((e) => {
-            this.correctAnswer.push(e.correctAns)
+          // push thuộc tính câu trả lời người dùng làm vào mảng ques
+          this.questions.forEach(e => {
+            this.UserAnswer.forEach(e2 => {
+              if (e.id === e2.id_question)
+              {
+                e.AnswerSelected.push(e2.answer)
+              }
+            })
           })
         }
+        console.log(this.questions)
       }
-    },  
-    toggleModal() {
+    },
+    toggleModal () {
       this.showModal = !this.showModal
     },
-    toggleModal2() {
+    toggleModal2 () {
       this.showModal2 = !this.showModal2
     },
-
-    getLable(index) {
-      const labels = ['A', 'B', 'C', 'D']
-      return labels[index]
+    getLable (index) {
+      return String.fromCharCode(65 + index) // Từ mã ASCII để tạo A, B, C, D,...
     },
-    checkAnswer(index) {
-      if (this.answerSelected[index] !== this.correctAnswer[index]) {
+    checkAnswerSelect (answer, AnswerSelected) {
+      const result = AnswerSelected.find(e => answer === e)
+      if (result)
+      {
+        return true
+      }
+      else
+      {
         return false
-      } else return true
-    }
+      }
+    },
+     CheckAnswer(correctAns, answerSelected) {
+      if (correctAns.length !== answerSelected.length) {
+        return false
+      } else {
+        // hàm every duyệt qua từng phần tử của mảng correctAns và kiểm tra xem nó có tồn tại trong mảng answerSelected hay không. Nếu có thì trả về true không thì trả về false
+        return correctAns.every((e) => answerSelected.includes(e))
+      }
+    },
   }
 }
 </script>

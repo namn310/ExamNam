@@ -9,9 +9,9 @@
   <div class="pt-8">
     <!-- lọc data theo yêu cầu -->
     <div class="mb-2" style="width: 30%">
-      <select class="form-select" @change=" getOptionBySubject ">
+      <select class="form-select" @change=" getOptionBySubject " v-model=" currentSubject ">
         <option selected>Lựa chọn môn học</option>
-        <option v-for="( choice, index) in option" :key=" index ">{{ choice }}</option>
+        <option v-for="( choice, index) in category" :key=" index ">{{ choice['title'] }}</option>
       </select>
     </div>
     <!-- search -->
@@ -28,25 +28,26 @@
           <th>Câu hỏi</th>
           <th>Môn</th>
           <th>Lớp</th>
-          <th>Người tạo</th>
+          <!-- <th>Người tạo</th> -->
           <th></th>
         </tr>
       </thead>
       <tbody id="table-product" v-for=" question in data " :key=" question.id ">
         <tr>
           <td>{{ question.id }}</td>
-          <td v-html=" question.title "></td>
-          <td>{{ question.Subject }}</td>
+          <td><p v-html=" question.title "></p></td>
+          <td >{{ question.CatSucject }}</td>
           <td>{{ question.class }}</td>
-          <td>{{ question.CreatorName }}</td>
+          <!-- <td>{{ question.CreatorName }}</td> -->
           <!-- <td>{{ question.created_by }}</td> -->
-          <td>
+          <td class="d-flex flex-column">
             <!-- button delete -->
-            <button class="btn btn-danger btn-sm trash" type="button" @click="DeleteQuestion( question.id )" title="Xóa">
+            <button class="btn btn-danger btn-sm trash mb-2" type="button" @click="DeleteQuestion( question.id )"
+              title="Xóa">
               <i class="fas fa-trash-alt"></i>
             </button>
-            <button class="btn btn-success btn-sm edit ms-2" @click="changeQuestion( question.id )" type="button"
-              title="Sửa" id="show-emp">
+            <button class="btn btn-success btn-sm edit" @click="changeQuestion( question.id )" type="button" title="Sửa"
+              id="show-emp">
               <i class="fas fa-edit"></i>
             </button>
             <!-- <p>{{ errorPost }}</p> -->
@@ -83,6 +84,7 @@ import { ElNotification } from 'element-plus'
 // import Cookies from 'js-cookie'
 // Một số phiên bản của jwt-decode không xuất mặc định (default export) nên phải import như này
 //
+import { getCategoryExamList } from '@/service/examsService'
 export default {
   data () {
     return {
@@ -97,66 +99,81 @@ export default {
       ListPages: [],
       TotalPage: 0,
       currentPage: 0,
-      option: ['Toán', 'Ngữ Văn', 'Tiếng Anh', 'Vật lý', 'Hóa học'],
-      optionSelected: null,
-      search: null
+      search: null,
+      category: [],
+      currentSubject: 'Lựa chọn môn học'
     }
   },
   created () {
     this.fetchQuestion()
+    this.renderMath()
   },
   methods: {
-    // lấy tên người tạo câu hỏi
-    // lấy option
-    getOptionBySubject (event) {
-      this.optionSelected = event.target.value.toLowerCase()
-      console.log(this.optionSelected)
-      if (this.optionSelected == 'lựa chọn môn học')
+    renderMath() {
+      // Gọi MathJax để render công thức LaTeX
+      if (window.MathJax) {
+        window.MathJax.Hub.Queue(['Typeset', window.MathJax.Hub, 'output'])
+      }
+    },
+    // lấy tên môn học cần lọc
+    getOptionBySubject () {
+      // console.log(this.currentSubject)
+      if (this.currentSubject.toLowerCase() == 'lựa chọn môn học')
       {
         return (this.data = this.data2)
       }
-      this.data = this.data2.filter((ques) => {
-        return ques.Subject.toLowerCase() == this.optionSelected
-      })
+      else
+      {
+        this.data = this.data2.filter((ques) => {
+          return ques.CatSucject.toLowerCase() == this.currentSubject.toLowerCase()
+        })
+      }
     },
     // lấy dữ liệu question từ api
     async fetchQuestion () {
       // try
       // {
-        const result = await getQuestionList()
-        const response = await getUserCreate()
-        this.creator = response.data
-        if (result)
-        {
-          // Thêm thuộc tính creator cho dữ liệu
-          result.question.data.forEach((e) => {
-            e.CreatorName = ''
+      const result = await getQuestionList()
+      const response = await getUserCreate()
+      const CAT = await getCategoryExamList()
+      this.category = CAT.data.data
+      this.creator = response.data
+      if (result)
+      {
+        // Thêm thuộc tính creator cho dữ liệu
+        result.question.data.forEach((e) => {
+          e.CreatorName = ''
+        })
+        this.data = result.question.data
+        // data2 là dữ liệu gốc để sau dùng cho việc tìm kiếm
+        this.data2 = result.question.data
+        // set thông tin người tạo câu hỏi vào mảng
+        this.data.forEach((ques) => {
+          this.creator.forEach((cre) => {
+            if (cre.id === ques.created_by)
+            {
+              ques.CreatorName = cre.name
+            }
           })
-          this.data = result.question.data
-          // data2 là dữ liệu gốc để sau dùng cho việc tìm kiếm
-          this.data2 = result.question.data
-          // set thông tin người tạo câu hỏi vào mảng
-          this.data.forEach((ques) => {
-            this.creator.forEach((cre) => {
-              if (cre.id === ques.created_by)
-              {
-                ques.CreatorName = cre.name
-              }
-            })
+        })
+        // lấy tên danh mục
+        this.data.forEach((ques) => {
+          this.category.forEach((cat) => {
+            if (ques.Subject === cat.id)
+            {
+              ques.CatSucject = cat.title
+            }
           })
-          // lấy tổng số bản ghi
-          this.TotalQuestion = result.question.record_total
-          this.TotalPage = result.question.total_page
-          // lấy danh sách các trang
-          this.listpage()
-        } else
-        {
-          alert('Có lỗi trong quá trình lấy dữ liệu')
-        }
-      // } catch (error)
-      // {
-      //   console.error('Error fetching question list:', error)
-      // }
+        })
+        // lấy tổng số bản ghi
+        this.TotalQuestion = result.question.record_total
+        this.TotalPage = result.question.total_page
+        // lấy danh sách các trang
+        this.listpage()
+      } else
+      {
+        alert('Có lỗi trong quá trình lấy dữ liệu')
+      }
     },
     async getQuestionByPage (page) {
       try
@@ -168,6 +185,24 @@ export default {
         }
         this.data = result.question.data
         this.data2 = result.question.data
+        this.data.forEach((ques) => {
+          this.creator.forEach((cre) => {
+            if (cre.id === ques.created_by)
+            {
+              ques.CreatorName = cre.name
+            }
+          })
+        })
+        // lấy tên danh mục
+        this.data.forEach((ques) => {
+          this.category.forEach((cat) => {
+            if (ques.Subject === cat.id)
+            {
+              ques.CatSucject = cat.title
+            }
+          })
+        })
+        this.getOptionBySubject()
       } catch (Error)
       {
         alert(Error)
@@ -175,11 +210,11 @@ export default {
     },
     // Tìm kiếm câu hỏi
     SearchQuestion () {
-      const input = this.search.toLowerCase()
-      const origin = this.data
-      if (input !== null)
+      const input = this.search
+      // const origin = this.data
+      if (input !== '')
       {
-        if (this.optionSelected === null)
+        if (this.currentSubject === 'Lựa chọn môn học')
         {
           this.data = this.data2.filter((ques) => {
             return ques.title.toLowerCase().includes(input)
@@ -189,13 +224,13 @@ export default {
           this.data = this.data2.filter((ques) => {
             return (
               ques.title.toLowerCase().includes(input) &&
-              ques.Subject.toLowerCase() == this.optionSelected
+              ques.Subject == this.currentSubject
             )
           })
         }
       } else
       {
-        this.data = origin
+        this.data = this.data2
       }
     },
     toggleModalEdit () {
@@ -204,18 +239,24 @@ export default {
     // Xóa câu hỏi
     async DeleteQuestion (questionId) {
       this.currentQuestionId = questionId
+      if (!confirm("Bạn có muốn xóa câu hỏi này không ?"))
+      {
+        return;  // Nếu người dùng nhấn 'Cancel', dừng việc xóa
+      }
       try
       {
-        const del = await DeleteQues(this.currentQuestionId)
-        if (del)
+      const del = await DeleteQues(this.currentQuestionId)
+        // console.log(del)
+        if (del.message == "Xóa bài thi thành công !")
         {
-          // this.data.filter(data => data.id !== this.currentQuestionId);
+         
           ElNotification({
             title: 'Success',
             message: 'Xóa câu hỏi thành công !',
             type: 'success'
           })
-          window.location.reload()
+            this.data = this.data.filter(data => data.id !== this.currentQuestionId);
+          // window.location.reload()
         } else
         {
           ElNotification({
@@ -242,33 +283,11 @@ export default {
     },
     async changePage (page) {
       this.currentPage = page
-      console.log(this.currentPage)
       await this.getQuestionByPage(page)
-    },
+    }
   },
   computed: {}
 }
-// import { getQuestionList } from '@/service/questionsService';
-
-// interface Questions {
-//     id: string
-//     title: string
-//     Subject: string
-//     created_at: Date,
-//     correctAns: string,
-//     created_by: string
-// }
-
-// const search = ref( '' )
-// const questions = ref<Questions[]>( [] );
-
-// const filterTableData = computed( () =>
-//     questions.value.filter(
-//         ( data ) =>
-//             !search.value ||
-//             data.title.toLowerCase().includes( search.value.toLowerCase() )
-//     )
-// )
 </script>
 <style scoped>
 .active {
