@@ -1,23 +1,27 @@
 <template>
-    <div class="d-flex justify-content-start flex-wrap" v-if ="data !==null">
-      <CardExam
-        v-for="item in data"
-        :key="item.id"
-        :title="item.title"
-        :expire_time="item.duration"
-        :countQuestion="item.totalQuestion"
-        :idQues="item.id"
-      />
+  <div class="d-flex justify-content-start flex-wrap" v-if="data !== null">
+    <CardExam
+      v-for="item in data"
+      :key="item.id"
+      :title="item.title"
+      :expire_time="item.duration"
+      :countQuestion="item.totalQuestion"
+      :idQues="item.id"
+    />
+  </div>
+  <p v-else>Không có bài thi nào !</p>
+  <div>
+    <el-pagination
+      background
+      layout="prev, pager, next"
+      :total="totalPage * 10"
+      @current-change="handlePageChange"
+    />
+    <div id="output">
+      <!-- Công thức toán học Latex sẽ được hiển thị tại đây -->
+      $$\frac{a}{b}$$
     </div>
-    <p v-else>Không có bài thi nào ! </p>
-    <div>
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="totalPage * 10"
-        @current-change="handlePageChange"
-      />
-    </div>
+  </div>
   <!-- <p v-else >Không có bài thi nào !</p> -->
 </template>
 
@@ -50,10 +54,16 @@ const fetchDataExam = async () => {
     totalPage.value = result['data']['total_page']
   }
 }
-
+const renderMath = () => {
+  // Gọi MathJax để render công thức LaTeX
+   if (window.MathJax) {
+        window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub, "output"]);
+      }
+}
 onMounted(() => {
   fetchDataCatgory()
   fetchDataExam()
+  renderMath()
 })
 </script>
 

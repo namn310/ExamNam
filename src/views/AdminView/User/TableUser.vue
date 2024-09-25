@@ -17,7 +17,7 @@ const search = ref('')
 const users = ref<Users[]>([])
 
 const currentPage = ref(1) // Trang hiện tại
-const pageSize = ref(5) // Số lượng người dùng hiển thị trên mỗi trang
+const pageSize = ref(10) // Số lượng người dùng hiển thị trên mỗi trang
 // Hàm lấy danh sách người dùng
 const fetchData = () => {
         const fetchUser = async () => {

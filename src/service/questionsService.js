@@ -1,4 +1,5 @@
-import { get, put, post, del } from '../utils/request'
+import { get, del } from '../utils/request'
+import axios from 'axios'
 
 export const getQuestionList = async () => {
   const result = await get(`questions`)
@@ -13,11 +14,21 @@ export const DeleteQues = async (id) => {
   return result
 }
 export const PostData = async (option) => {
-  const result = await post('questions/create', option)
+  const result = await axios.post('http://localhost:8080/questions/create', option, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
   return result
 }
 export const PutData = async (id, option) => {
-  const result = await put(`questions/update/${id}`, option)
+  // const result = await put(`questions/update/${id}`, option)
+  // return result
+  const result = await axios.post(`http://localhost:8080/questions/update/${id}`, option, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
   return result
 }
 export const GetDetail = async (id) => {

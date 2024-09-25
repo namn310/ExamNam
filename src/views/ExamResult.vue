@@ -34,7 +34,7 @@
                 <tr>
                   <th style="min-width: 150px">Ngày làm</th>
                   <th style="min-width: 100px">Kết quả</th>
-                  <th style="min-width: 150px">Thời gian làm bài còn lại</th>
+                  <th style="min-width: 150px">Thời gian làm bài </th>
                   <th style="min-width: 150px"></th>
                 </tr>
               </thead>
