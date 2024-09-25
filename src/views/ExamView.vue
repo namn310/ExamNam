@@ -303,10 +303,18 @@ export default {
       }
     },
     startCountDown() {
-      this.countdown = this.durationExam * 60
+      // Nếu tồn tại thời gian từ localStorage, set giá trị từ localStorage
+      const savedTime = localStorage.getItem('time');
+      if (savedTime){
+        this.countdown = parseInt(savedTime)
+      } else {
+        this.countdown = this.durationExam * 60
+      }
+      // Đếm ngược thời gian
       this.timer = setInterval(() => {
         if (this.countdown > 0) {
           this.countdown--
+          localStorage.setItem('time', this.countdown)
         } else {
           this.stopCountdown()
           alert("Time's up!")
@@ -318,9 +326,9 @@ export default {
       clearInterval(this.timer)
       this.timer = null
     },
-    beforeDestroy() {
-      this.stopCountdown()
-    },
+    handleUnload() {
+      window.addEventListener('beforeunload', this.BeforeUnload)
+    },  
     toggleModal() {
       this.showModal = !this.showModal
     },

@@ -74,10 +74,12 @@
           const response = await resetPassword({
             token: this.token,
             new_password: this.newPassword
-          })
+          });
+          console.log(response)
           alert(response.message)
           this.$router.push({ name: 'Login' })
         } catch (e) {
+          console.error(e)
           alert('Có lỗi xảy ra, vui lòng thử lại!')
         }
       }
