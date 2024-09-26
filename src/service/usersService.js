@@ -29,7 +29,7 @@ export const forgotPasswordView = async (option) => {
     return result;
 }
 export const resetPassword = async (option) => {
-    const result = await post(`users/reset-password`, option);
+    const result = await put(`users/reset-password`, option);
     return result;
 }
 // export const checkToken = async () => {
