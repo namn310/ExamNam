@@ -36,7 +36,7 @@
             @click=" removeImg ">X</button>
         </div>
       </div>
-      <div v-for="(    ans, index) in answer" :key=" index " class="mt-3 mb-3">
+      <div v-for="(  ans, index) in answer" :key=" index " class="mt-3 mb-3">
         <span class="d-flex">{{ getLabel( index ) }}:
           <input class="form-control" v-model=" answer[index] " type="text" :id=" 'answer' + getLabel( index ) " />
           <span><button class="btn btn-danger ms-2" @click="removeAnswer( index )">-</button></span>
@@ -90,11 +90,32 @@ export default {
       imgUrl: ''
     }
   },
+  watch: {
+    question () {
+      this.renderMath()
+    },
+     'question.title': function(newVal) {
+    this.renderMath();  // Gọi MathJax để xử lý công thức LaTeX
+  }
+  },
   created () {
+    this.renderMath()
     this.getDetailQues();
   },
 
   methods: {
+       renderMath() {
+    // Kiểm tra xem MathJax đã được tải chưa
+    if (window.MathJax) {
+        this.$nextTick(() => {
+          window.MathJax.typesetPromise()
+            .then(() => {
+              // console.log("MathJax rendering completed");
+            })
+            .catch(err => console.error("MathJax rendering error:", err));
+        });
+      }
+  },
     getImage (event) {
       const file = event.target.files[0]
       if (file)

@@ -11,7 +11,7 @@
         <label for="subject" class="form-label"> Môn học </label>
         <select v-model=" question.Subject " id="subject" class="form-select border border-secondary">
           <option selected>Lựa chọn môn học</option>
-          <option :value=" choice['id'] " v-for="(  choice, index) in category" :key=" index ">
+          <option :value=" choice['id'] " v-for="( choice, index) in category" :key=" index ">
             {{ choice['title'] }}
           </option>
         </select>
@@ -19,6 +19,7 @@
 
       <div class="Subject">
         <label for="subject" class="form-label"> Đề bài </label>
+        <p><i>Nếu câu hỏi và đáp án có chứa các công thức toán học thì nhập ở dạng <strong>Latex</strong> để có thể hiển thị trên giao diện</i></p>
         <br />
         <Ckeditor :editor=" editor " v-model=" question.title " />
       </div>
@@ -31,14 +32,17 @@
       </div>
 
       <!-- hiển thị ảnh nếu người dùng tải lên -->
-      <div v-if=" question.image !== '' " style="border:1px solid black">
-        <div style="width: 30%; height: 30%;position: relative"><img :src=" imgUrl " style="border: 1px solid black; border-radius: 5px"
-            class="img-fluid" />
-          <button class="btn btn-danger" style="position:absolute;top:0;right:0;padding:5px;margin:5px" @click="removeImg">X</button>
+      <div v-if=" question.image !== '' " style="border: 1px solid black">
+        <div style="width: 30%; height: 30%; position: relative">
+          <img :src=" imgUrl " style="border: 1px solid black; border-radius: 5px" class="img-fluid" />
+          <button class="btn btn-danger" style="position: absolute; top: 0; right: 0; padding: 5px; margin: 5px"
+            @click=" removeImg ">
+            X
+          </button>
         </div>
       </div>
       <!-- danh sách các câu trả lời -->
-      <div v-for="(  ans, index) in answer" :key=" index " class="mt-3 mb-3">
+      <div v-for="( ans, index) in answer" :key=" index " class="mt-3 mb-3">
         <span class="d-flex">{{ getLabel( index ) }}:
           <input class="form-control border border-secondary" v-model=" answer[index] " type="text"
             :id=" 'answer' + getLabel( index ) " />
@@ -51,7 +55,7 @@
 
       <div class="correctAnswer mt-4">
         <label for="correctAnswer">Chọn đáp án đúng:</label>
-        <div v-for="(  ans, index) in answer" :key=" index " class="mt-2">
+        <div v-for="( ans, index) in answer" :key=" index " class="mt-2" id="output">
           <input type="checkbox" :value=" getLabel( index ) " v-model=" correctAns " />
           {{ getLabel( index ) }}. {{ ans }}
         </div>
@@ -71,8 +75,10 @@ import { decodeToken } from '@/service/decodeToken'
 import { PostData } from '@/service/questionsService'
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+// ckeditor
 import { Ckeditor } from '@ckeditor/ckeditor5-vue'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+// import thư viện làm toast message
 import { ElNotification } from 'element-plus'
 import { getCategoryExamList } from '@/service/examsService'
 import axios from 'axios'
@@ -84,6 +90,13 @@ export default {
   data () {
     return {
       editor: ClassicEditor,
+      editorConfig: {
+        toolbar: ['bold', 'italic', 'math', '|', 'link'],
+        math: {
+          engine: 'mathjax', // Sử dụng MathJax để hiển thị LaTeX
+          outputType: 'mathml' // 'mathml', 'html', hoặc 'latex'
+        }
+      },
       category: [],
       question: {
         class: '',
@@ -97,11 +110,25 @@ export default {
       correctAns: []
     }
   },
-  created () {
+  watch: {
+    correctAns () {
+      this.renderMath()
+    }
+  },
+  mounted() {
+    this.renderMath()
     this.getId()
     this.getCat()
   },
+  created () {
+  },
   methods: {
+    renderMath () {
+      // Kiểm tra xem MathJax đã được tải chưa
+      this.$nextTick(() => {
+        window.MathJax.typeset(); // MathJax v3.x không còn sử dụng Hub.Queue nữa
+      });
+    },
     getImage (event) {
       const file = event.target.files[0]
       if (file)
@@ -113,11 +140,17 @@ export default {
       }
     },
     removeImg () {
-        this.question.image = ''; // Xóa file hình ảnh
-      this.imgUrl = ''; // Xóa URL hình ảnh
-      this.$refs.fileImage.value = ''; // Đặt lại input file
+      this.question.image = '' // Xóa file hình ảnh
+      this.imgUrl = '' // Xóa URL hình ảnh
+      this.$refs.fileImage.value = '' // Đặt lại input file
     },
     async getCat () {
+      if (window.MathJax)
+      {
+        this.$nextTick(() => {
+          window.MathJax.Hub.Queue(['Typeset', window.MathJax.Hub, 'ouput'])
+        })
+      }
       const CAT = await getCategoryExamList()
       this.category = CAT.data.data
     },
@@ -169,7 +202,7 @@ export default {
           message: response.data.message,
           type: 'success'
         })
-        this.$router.push({ name: 'cauhoi' })
+        this.$router.push({ name: 'create-cauhoi' })
       } catch (Error)
       {
         alert('Có lỗi xảy ra '.Error)
