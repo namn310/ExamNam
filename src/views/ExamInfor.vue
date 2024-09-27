@@ -132,6 +132,8 @@
   const listComments = ref([]);
   const listChildComments = ref([])
   
+  const checkLogin = ref(false);
+  
 
   const toggleModal =  () => {
     showModal.value = !showModal.value
@@ -170,6 +172,7 @@
         fetchData();
         fetchListComment();
         fetchListChildComment();
+        checkLogin.value = !!Cookies.get('tokenStudent');
     });
 
     const handleComment = async () =>{
@@ -199,16 +202,7 @@
       }
     }
 
-    const checkLogin = () =>{
-      if (Cookies.get('tokenStudent') !== undefined)
-      {
-        return true;
-      }
-      else
-      {
-        return false;
-       }
-    }
+
 
 
 
