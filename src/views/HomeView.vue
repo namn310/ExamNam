@@ -17,10 +17,7 @@
       :total="totalPage * 10"
       @current-change="handlePageChange"
     />
-    <div id="output">
-      <!-- Công thức toán học Latex sẽ được hiển thị tại đây -->
-      $$\frac{a}{b}$$
-    </div>
+    
   </div>
   <!-- <p v-else >Không có bài thi nào !</p> -->
 </template>
@@ -54,16 +51,15 @@ const fetchDataExam = async () => {
     totalPage.value = result['data']['total_page']
   }
 }
-const renderMath = () => {
-  // Gọi MathJax để render công thức LaTeX
-   if (window.MathJax) {
-        window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub, "output"]);
-      }
-}
+// const renderMath = () => {
+//   // Gọi MathJax để render công thức LaTeX
+//    if (window.MathJax) {
+//         window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub, "output"]);
+//       }
+// }
 onMounted(() => {
   fetchDataCatgory()
   fetchDataExam()
-  renderMath()
 })
 </script>
 

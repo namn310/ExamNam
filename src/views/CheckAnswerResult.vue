@@ -114,11 +114,31 @@ export default {
       titleExam: ''
     }
   },
+  watch: {
+    questions() {
+      // Khi có sự thay đổi trong dữ liệu câu hỏi, gọi lại MathJax
+      this.renderMath();
+    }
+  },
+
   created () {
+    this.renderMath()
     this.getExam()
     // this.getAnswerUser()
   },
   methods: {
+    renderMath() {
+    // Kiểm tra xem MathJax đã được tải chưa
+    if (window.MathJax) {
+        this.$nextTick(() => {
+          window.MathJax.typesetPromise()
+            .then(() => {
+              // console.log("MathJax rendering completed");
+            })
+            .catch(err => console.error("MathJax rendering error:", err));
+        });
+      }
+  },
     async getExam () {
       const result1 = await getResultDetail(this.id)
       if (result1)

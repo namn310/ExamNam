@@ -104,15 +104,28 @@ export default {
       currentSubject: 'Lựa chọn môn học'
     }
   },
+  watch: {
+    data() {
+      // Khi có sự thay đổi trong dữ liệu câu hỏi, gọi lại MathJax
+      this.renderMath();
+    }
+  },
   created () {
     this.fetchQuestion()
     this.renderMath()
   },
   methods: {
-    renderMath() {
-      // Gọi MathJax để render công thức LaTeX
-      if (window.MathJax) {
-        window.MathJax.Hub.Queue(['Typeset', window.MathJax.Hub, 'output'])
+    renderMath () {
+      // Kiểm tra xem MathJax đã được tải chưa
+      if (window.MathJax)
+      {
+        this.$nextTick(() => {
+          window.MathJax.typesetPromise()
+            .then(() => {
+              // console.log("MathJax rendering completed");
+            })
+            .catch(err => console.error("MathJax rendering error:", err));
+        });
       }
     },
     // lấy tên môn học cần lọc

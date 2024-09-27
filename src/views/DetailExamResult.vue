@@ -32,7 +32,7 @@
                       <div class="result-stats-item">
                         <span class="result-stats-icon far fa-clock me-3"></span>
                         <span class="result-stats-label me-2">Thời gian hoàn thành</span>
-                        <span class="result-stats-text"><strong>{{ data.duration }} giây</strong></span>
+                        <span class="result-stats-text"><strong>{{ convertToMinutes(data.duration) }} giây</strong></span>
                       </div>
                     </div>
                     <br />
@@ -104,7 +104,12 @@ const data = ref([])
 const route = useRoute()
 const id = route.params.id
 const ExamName = ref()
-
+ const convertToMinutes = (seconds) => {
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      return `${minutes} p ${remainingSeconds} s`;
+} 
+    
 const fetchData = async () => {
   const result = await getResultDetail(id)
   if (result) {

@@ -202,8 +202,11 @@ export default {
       incorrect_question: null
     }
   },
+  // mounted () {
+  //   this.renderMath()
+  // },
   async created () {
-    this.renderMath()
+   this.renderMath()
     const route = useRoute()
     const id = route.params.id
     this.id = id
@@ -240,15 +243,24 @@ export default {
       return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
     }
   },
+   watch: {
+    questions() {
+      // Khi có sự thay đổi trong dữ liệu câu hỏi, gọi lại MathJax
+      this.renderMath();
+    }
+  },
   methods: {
      renderMath() {
     // Kiểm tra xem MathJax đã được tải chưa
     if (window.MathJax) {
-      this.$nextTick(() => {
-        window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub, "ouput"]);
-      });
-    }
-
+        this.$nextTick(() => {
+          window.MathJax.typesetPromise()
+            .then(() => {
+              // console.log("MathJax rendering completed");
+            })
+            .catch(err => console.error("MathJax rendering error:", err));
+        });
+      }
   },
     // hiện thông báo khi người dùng bấm refresh trang khi thời gian làm bài chưa kết thúc
     BeforeUnload(event) {
