@@ -258,17 +258,17 @@ export default {
       }
       try
       {
-      const del = await DeleteQues(this.currentQuestionId)
-        // console.log(del)
+        const del = await DeleteQues(this.currentQuestionId)
+        console.log(del)
         if (del.message == "Xóa bài thi thành công !")
         {
-         
+
           ElNotification({
             title: 'Success',
             message: 'Xóa câu hỏi thành công !',
             type: 'success'
           })
-            this.data = this.data.filter(data => data.id !== this.currentQuestionId);
+          this.data = this.data.filter(data => data.id !== this.currentQuestionId);
           // window.location.reload()
         } else
         {
@@ -280,7 +280,7 @@ export default {
         }
       } catch (Error)
       {
-        alert('Lỗi '.Error)
+        alert('Lỗi ',Error,'Vui lòng thử lại sau')
       }
     },
     // view change question
