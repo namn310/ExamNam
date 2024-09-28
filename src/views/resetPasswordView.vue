@@ -71,13 +71,9 @@ import Cookies from 'js-cookie';
         oldPassword:"",
         newPassword: '',
         confirmPassword: '',
-<<<<<<< HEAD
-        token: Cookies.get('tokenStudent'), // Assuming token is passed via query params
-        url: './src/assets/img/LogoWeb.png' // Path to the logo image
-=======
-        token: this.$route.query.token, 
+        token: Cookies.get('tokenStudent'),
+        // token: this.$route.query.token,
         url: './src/assets/img/LogoWeb.png' 
->>>>>>> 281ffce4a004fd6651073473c8d965cacb92ab9c
       }
     },
     methods: {
