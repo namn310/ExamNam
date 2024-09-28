@@ -54,13 +54,14 @@
   
   <script>
   import { resetPassword } from '@/service/usersService'
+import Cookies from 'js-cookie';
   
   export default {
     data() {
       return {
         newPassword: '',
         confirmPassword: '',
-        token: this.$route.query.token, // Assuming token is passed via query params
+        token: Cookies.get('tokenStudent'), // Assuming token is passed via query params
         url: './src/assets/img/LogoWeb.png' // Path to the logo image
       }
     },
@@ -76,7 +77,6 @@
             new_password: this.newPassword
           });
           console.log(response)
-          alert(response.message)
           this.$router.push({ name: 'Login' })
         } catch (e) {
           console.error(e)

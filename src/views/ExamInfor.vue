@@ -55,7 +55,7 @@
             size="large"
             placeholder="Chia sẻ cảm nghĩ của bạn"
           />
-          <el-button type="info" size="large" @click="handleComment()" >Gửi</el-button>
+          <el-button type="primary" size="large" @click="handleComment()" >Gửi</el-button>
         </div>  
 
         <div class="mt-3">
@@ -75,7 +75,7 @@
                       size="large"
                       placeholder="Trả lời"
                     />
-                    <el-button type="info" size="large" @click="handleRepComment(item.id)" >Gửi</el-button>
+                    <el-button type="primary" size="large" @click="handleRepComment(item.id)" >Gửi</el-button>
                   </div>  
                 </PopoverPanel>
               </Popover>
@@ -97,7 +97,7 @@
                             size="large"
                             placeholder="Trả lời"
                           />
-                          <el-button type="info" size="large" @click="handleRepComment(item.id)" >Gửi</el-button>
+                          <el-button type="primary" size="large" @click="handleRepComment(item.id)" >Gửi</el-button>
                         </div>  
                       </PopoverPanel>
                     </Popover>
