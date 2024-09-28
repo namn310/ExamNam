@@ -64,7 +64,7 @@
             <div class="flex-1">
               <div class="font-semibold">{{item.name}} , <span class="font-normal">{{item.created_at}}</span></div>
               <div class="text-base">{{ item.comment_text }}</div>
-              <Popover class="relative">
+              <Popover class="relative " v-if="checkLogin">
                 <PopoverButton><div class="text-[#35509a] font-bold">Trả lời</div></PopoverButton>
 
                 <PopoverPanel>
@@ -83,10 +83,10 @@
               <div class="ml-5 mt-3" v-for="item2 in getChildComments(item.id)" :key="item2.id" >
                 <div class="flex items-start gap-2">
                   <div class="text-base font-bold rounded-[50%] flex justify-center items-center bg-gray-300 w-8 h-8">C</div>
-                  <div>
+                  <div class="flex-1">
                     <div class="font-semibold">{{item2.name}} , <span class="font-normal">{{item2.created_at}}</span></div>
                     <div class="text-base">{{ item2.comment_text }}</div>
-                    <Popover class="relative">
+                    <Popover class="relative" v-if="checkLogin">
                       <PopoverButton><div class="text-[#35509a] font-bold">Trả lời</div></PopoverButton>
 
                       <PopoverPanel>

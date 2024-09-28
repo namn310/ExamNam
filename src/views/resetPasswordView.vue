@@ -18,6 +18,15 @@
             </div>
             <form @submit.prevent="submitResetPassword">
               <div class="form-group mb-3 mt-3">
+              <input
+                type="password"
+                class="form-control form-control-lg bg-light fs-6"
+                placeholder="Mật khẩu cũ"
+                v-model="oldPassword"
+                required
+              />
+            </div>
+              <div class="form-group mb-3 mt-3">
                 <input
                   type="password"
                   class="form-control form-control-lg bg-light fs-6"
@@ -59,14 +68,24 @@ import Cookies from 'js-cookie';
   export default {
     data() {
       return {
+        oldPassword:"",
         newPassword: '',
         confirmPassword: '',
+<<<<<<< HEAD
         token: Cookies.get('tokenStudent'), // Assuming token is passed via query params
         url: './src/assets/img/LogoWeb.png' // Path to the logo image
+=======
+        token: this.$route.query.token, 
+        url: './src/assets/img/LogoWeb.png' 
+>>>>>>> 281ffce4a004fd6651073473c8d965cacb92ab9c
       }
     },
     methods: {
       async submitResetPassword() {
+        if (!this.oldPassword){
+          alert("Vui lòng điền đúng mật khẩu cũ")
+          return
+        }
         if (this.newPassword !== this.confirmPassword) {
           alert('Mật khẩu không đúng, vui lòng kiểm tra lại!')
           return
@@ -74,6 +93,7 @@ import Cookies from 'js-cookie';
         try {
           const response = await resetPassword({
             token: this.token,
+            old_password: this.oldPassword,
             new_password: this.newPassword
           });
           console.log(response)
