@@ -9,6 +9,10 @@ export const getUserCreate = async () => {
   const result = await get('questions/userCreate')
   return result
 }
+export const getImageAnswer = async (id) => {
+  const result = await get(`questions/imageAnswer/${id}`)
+  return result
+}
 export const DeleteQues = async (id) => {
   const result = await del(`questions/delete/${id}`)
   return result

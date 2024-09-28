@@ -32,7 +32,7 @@
                       <div class="result-stats-item">
                         <span class="result-stats-icon far fa-clock me-3"></span>
                         <span class="result-stats-label me-2">Thời gian hoàn thành</span>
-                        <span class="result-stats-text"><strong>{{ convertToMinutes(data.duration) }} giây</strong></span>
+                        <span class="result-stats-text"><strong>{{ convertToMinutes(data.duration) }}</strong></span>
                       </div>
                     </div>
                     <br />

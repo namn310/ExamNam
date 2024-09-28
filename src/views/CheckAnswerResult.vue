@@ -14,7 +14,7 @@
             <div class="tab-content" id="pills-tabContent">
               <div class="tab-pane active show" id="partcontent-9022" role="tabpanel" aria-labelledby="pills-tab">
                 <div class="context-wrapper"></div>
-                <div class="test-questions-wrapper mb-4 me-2" v-for="(  question, index) in questions" :key=" index ">
+                <div class="test-questions-wrapper mb-4 me-2" v-for="(    question, index) in questions" :key=" index ">
                   <div class="question-wrapper" data-qid="144565" id="question-wrapper-144565">
                     <!-- number question -->
                     <div class="d-flex">
@@ -45,17 +45,32 @@
                       <div class="question-text ms-2 mb-2">
                         <div class="boldIntro"></div>
                         <strong v-html=" question.title "></strong>
+                        <div v-if=" question.imageUrl ">
+                          <img :src=" question.imageUrl " class="img-fluid" style="width: 35%; height: 35%" />
+                        </div>
                       </div>
                     </div>
 
                     <div class="question-content text-highlightable">
                       <div class="question-answers mt-3">
                         <!-- Câu trả lời -->
-                        <div class="form-check" v-for="(  ans, index2) in question.answerlist" :key=" index2 ">
+                        <div class="form-check" v-for="(    ans, index2) in question.answerlist" :key=" index2 ">
                           <input @click="ToggleSelected( question.id, index2 )" data-type="question-answer"
-                            class="form-check-input" type="checkbox" :checked="checkAnswerSelect(getLable(index2),question.AnswerSelected)" style="border: 1px solid black" />
-                          <label :class="{'text-danger':checkAnswerSelect(getLable(index2),question.AnswerSelected) && !checkAnswerSelect(getLable(index2),question.correctAns) ,'text-success':checkAnswerSelect(getLable(index2),question.correctAns)}" class="form-check-label">
+                            class="form-check-input" type="checkbox"
+                            :checked=" checkAnswerSelect( getLable( index2 ), question.AnswerSelected ) "
+                            style="border: 1px solid black" />
+                          <label
+                            :class=" { 'text-danger': checkAnswerSelect( getLable( index2 ), question.AnswerSelected ) && !checkAnswerSelect( getLable( index2 ), question.correctAns ), 'text-success': checkAnswerSelect( getLable( index2 ), question.correctAns ) } "
+                            class="form-check-label">
                             {{ getLable( index2 ) }}. {{ ans }}
+                            <!-- Nếu có hình ảnh câu trả lời thì load ra -->
+                              <div>
+                            <div style="position: relative; width: 30%; height: 30%" v-if="
+                              question.ListImageAnswerUrl && question.ListImageAnswerUrl.length > 0 && question.ListImageAnswerUrl[index2].imageUrl
+                            ">
+                              <img :src=" question.ListImageAnswerUrl[index2].imageUrl " class="img-fluid" />
+                            </div>
+                          </div>
                           </label>
                         </div>
                       </div>
@@ -73,8 +88,8 @@
               <div>
                 <div class="test-questions-list mt-3">
                   <div class="test-questions-list-part d-flex flex-wrap">
-                    <div class="test-questions-list-wrapper" v-for="(  question, index) in questions" :key=" index ">
-                      <div v-if="CheckAnswer(question.correctAns,question.AnswerSelected)">
+                    <div class="test-questions-list-wrapper" v-for="(    question, index) in questions" :key=" index ">
+                      <div v-if=" CheckAnswer( question.correctAns, question.AnswerSelected ) ">
                         <p class="test-questions-listitem" id="correctAnswer">{{ index + 1 }}</p>
                       </div>
                       <div v-else>
@@ -95,6 +110,7 @@
 // import ModalView from '@/components/ModalView.vue'
 import { getExamDetail, getQuestionExam } from '@/service/examsService'
 import { getResultDetail, getReviewResult } from '@/service/resultServeice'
+import { getImageAnswer } from '@/service/questionsService'
 export default {
   name: 'ExamView',
   components: {
@@ -115,7 +131,7 @@ export default {
     }
   },
   watch: {
-    questions() {
+    questions () {
       // Khi có sự thay đổi trong dữ liệu câu hỏi, gọi lại MathJax
       this.renderMath();
     }
@@ -127,9 +143,10 @@ export default {
     // this.getAnswerUser()
   },
   methods: {
-    renderMath() {
-    // Kiểm tra xem MathJax đã được tải chưa
-    if (window.MathJax) {
+    renderMath () {
+      // Kiểm tra xem MathJax đã được tải chưa
+      if (window.MathJax)
+      {
         this.$nextTick(() => {
           window.MathJax.typesetPromise()
             .then(() => {
@@ -138,7 +155,7 @@ export default {
             .catch(err => console.error("MathJax rendering error:", err));
         });
       }
-  },
+    },
     async getExam () {
       const result1 = await getResultDetail(this.id)
       if (result1)
@@ -152,11 +169,35 @@ export default {
           if (result)
           {
             this.questions = result.data
-            this.questions.forEach((e) => {
+            for (const [index, e] of this.questions.entries())
+            {
               e.answerlist = JSON.parse(e.answerlist)
               e.correctAns = JSON.parse(e.correctAns)
               e.AnswerSelected = []
-            })
+              if (e.image !== null && e.image !== '')
+              {
+                // lấy URL hình ảnh
+                e.imageUrl = `http://localhost:8080/assets/image/Question/${e.image}`
+              }
+              var idQues = e.id
+              // Lấy danh sách hình ảnh câu trả lời
+              var fetchImageAnswer = await getImageAnswer(idQues)
+              var imageAnswerQuestion = fetchImageAnswer.data
+              // nếu chưa tồn tại list url ảnh thì khởi tạo mảng
+              if (!e.ListImageAnswerUrl)
+              {
+                e.ListImageAnswerUrl = []
+              }
+              for (var img of imageAnswerQuestion.entries())
+              {
+                const imageAnsUrl = `http://localhost:8080/assets/image/AnswerQuestion/${img[1].imageAns}`
+                const element = { imageUrl: imageAnsUrl, stt: img[1].stt }
+                if (img[1].idQues === e.id)
+                {
+                  e.ListImageAnswerUrl.push(element)
+                }
+              }
+            }
           }
           if (result2)
           {
@@ -199,10 +240,12 @@ export default {
         return false
       }
     },
-     CheckAnswer(correctAns, answerSelected) {
-      if (correctAns.length !== answerSelected.length) {
+    CheckAnswer (correctAns, answerSelected) {
+      if (correctAns.length !== answerSelected.length)
+      {
         return false
-      } else {
+      } else
+      {
         // hàm every duyệt qua từng phần tử của mảng correctAns và kiểm tra xem nó có tồn tại trong mảng answerSelected hay không. Nếu có thì trả về true không thì trả về false
         return correctAns.every((e) => answerSelected.includes(e))
       }
