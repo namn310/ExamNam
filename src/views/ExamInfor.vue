@@ -49,9 +49,9 @@
       <div class="border border-gray-500 p-3 rounded-lg">
         <div class="text-lg font-semibold mb-2">Bình luận</div>
         <div class="flex items-center gap-2" v-if="checkLogin">
-          <el-input
+          <input
             v-model="input1"
-            class="w-full"
+            class="form-control border border-secondary"
             size="large"
             placeholder="Chia sẻ cảm nghĩ của bạn"
           />
@@ -143,8 +143,7 @@
     const result = await getCommentsList(id);
     if(result){
       listComments.value = result.data;
-      console.log(result.data);
-      
+      // console.log(result.data);
     }
   }
   const getChildComments = (parentId) => {
@@ -163,7 +162,7 @@
         const result = await getExamDetail(id);
         if(result){
           data.value = result.data
-          
+
         }
     }
     fetchApi();
@@ -201,11 +200,6 @@
         input2.value = ''
       }
     }
-
-
-
-
-
 </script>
 <style scoped>
 .row {

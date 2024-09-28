@@ -99,7 +99,6 @@ export default {
     logOut () {
       Cookies.remove('tokenStudent');
       Cookies.remove('tokenAdmin');
-
       window.location.reload();
     }
   },

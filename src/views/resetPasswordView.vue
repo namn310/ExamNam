@@ -64,6 +64,8 @@
   <script>
   import { resetPassword } from '@/service/usersService'
 import Cookies from 'js-cookie';
+    import { ElNotification } from 'element-plus'
+
   
   export default {
     data() {
@@ -92,11 +94,32 @@ import Cookies from 'js-cookie';
             old_password: this.oldPassword,
             new_password: this.newPassword
           });
-          console.log(response)
-          this.$router.push({ name: 'Login' })
+          if(response.message === 'Đổi mật khẩu thành công !'){
+              ElNotification({
+            title: 'Success',
+            message: response.message,
+            type: 'success'
+          })
+          Cookies.remove('tokenStudent')
+          //  window.location.reload().then(()=>{})
+          this.$router.push({ name: 'Login' }).then(()=>{
+             window.location.reload()
+          })
+          }
+          else{
+             ElNotification({
+            title: 'Error',
+            message: 'Mật khẩu cũ không chính xác',
+            type: 'error'
+          })
+          }
         } catch (e) {
-          console.error(e)
-          alert('Có lỗi xảy ra, vui lòng thử lại!')
+           ElNotification({
+            title: 'Error',
+            message: 'Có lỗi xảy ra, vui lòng thử lại!',
+            type: 'error'
+          })
+
         }
       }
     }

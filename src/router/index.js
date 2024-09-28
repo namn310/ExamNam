@@ -124,7 +124,10 @@ const router = createRouter({
         {
           path: '/reset-password',
           name: 'reset-password',
-          component: resetPasswordView
+          component: resetPasswordView,
+           meta: {
+            requiresAuth: true //các link cần đăng nhập để truy cập
+          }
         },
         // test
         {
