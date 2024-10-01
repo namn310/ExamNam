@@ -48,7 +48,9 @@
               <div v-show="UserToggleVisible ">
             <div class="toggleFunctionUserContainer">
                 <ul>
-                  <li>Tài khoản</li>
+                  <li>
+                    <RouterLink :to="{name : 'userInfo'}" >Tài khoản</RouterLink>
+                  </li>
                   <RouterLink :to="{name: 'reset-password'}"><li>Đổi mật khẩu</li></RouterLink>
                   <RouterLink :to="{name:'ResultExam'}"><li>Kết quả làm bài</li></RouterLink>
                   <li style="cursor: pointer;" @click="logOut()">Đăng xuất</li>
