@@ -49,7 +49,7 @@
             <div class="toggleFunctionUserContainer">
                 <ul>
                   <li>
-                    <RouterLink :to="{name : 'userInfo'}" >Tài khoản</RouterLink>
+                    <RouterLink :to="{name : 'ResultExam'}" >Tài khoản</RouterLink>
                   </li>
                   <RouterLink :to="{name: 'reset-password'}"><li>Đổi mật khẩu</li></RouterLink>
                   <RouterLink :to="{name:'ResultExam'}"><li>Kết quả làm bài</li></RouterLink>
