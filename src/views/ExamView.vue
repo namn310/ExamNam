@@ -53,7 +53,7 @@
                           }}</strong>
                       </div>
                       <!-- title question -->
-                      <div class="question-text ms-2 mb-2" id="output">
+                      <div class="question-text ms-2 mb-2" :id="'question_' + index">
                         <strong v-html=" question.title " style="display: inline-block"></strong>
                         <div v-if=" question.imageUrl ">
                           <img :src=" question.imageUrl " class="img-fluid" style="width: 35%; height: 35%" />
@@ -119,11 +119,11 @@
                 <div class="test-questions-list">
                   <div class="test-questions-list-part d-flex flex-wrap">
                     <div class="test-questions-list-wrapper" v-for="( question, index) in questions" :key=" index ">
-                      <span class="test-questions-listitem"
+                      <span @click="scrollToQuesstion(index)" class="test-questions-listitem"
                         v-if=" !question.Answer || Object.keys( question.Answer[0] ).length < 1 ">
                         {{ index + 1 }}
                       </span>
-                      <span class="test-questions-listitem" v-else id="selected">
+                      <span @click="scrollToQuesstion(index)" class="test-questions-listitem" v-else id="selected">
                         {{ index + 1 }}
                       </span>
                     </div>
@@ -282,6 +282,12 @@ export default {
     }
   },
   methods: {
+     scrollToQuesstion(index) {
+      const element = document.getElementById(`question_${index-1}`)
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' })
+      }
+    },
     // nếu có dữ liệu đáp án đã chọn từ localStorage thì load ra
     checkAnswerSelectLocalStorage (index, label) {
       // check xem questions.Answer laf array koong
