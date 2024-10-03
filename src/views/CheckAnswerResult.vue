@@ -57,10 +57,13 @@
                         <div class="form-check" v-for="(    ans, index2) in question.answerlist" :key=" index2 ">
                           <input @click="ToggleSelected( question.id, index2 )" data-type="question-answer"
                             class="form-check-input" type="checkbox"
-                            :checked=" checkAnswerSelect( getLable( index2 ), question.AnswerSelected ) "
+                            :checked = " checkAnswerSelect( getLable( index2 ), question.AnswerSelected ) "
                             style="border: 1px solid black" />
+<!-- :checked = " checkAnswerSelect( getLable( index2 ), question.AnswerSelected ) " -->
+                            
+                              <!-- :class=" { 'text-danger': checkAnswerSelect( getLable( index2 ), question.AnswerSelected ) && !checkAnswerSelect( getLable( index2 ), question.correctAns ), 'text-success': checkAnswerSelect( getLable( index2 ), question.correctAns ) } " -->
                           <label
-                            :class=" { 'text-danger': checkAnswerSelect( getLable( index2 ), question.AnswerSelected ) && !checkAnswerSelect( getLable( index2 ), question.correctAns ), 'text-success': checkAnswerSelect( getLable( index2 ), question.correctAns ) } "
+                          :class=" { 'text-danger': checkAnswerSelect( getLable( index2 ), question.AnswerSelected ) && !checkAnswerSelect( getLable( index2 ), question.correctAns ), 'text-success': checkAnswerSelect( getLable( index2 ), question.correctAns ) } "
                             class="form-check-label">
                             {{ getLable( index2 ) }}. {{ ans }}
                             <!-- Nếu có hình ảnh câu trả lời thì load ra -->
@@ -218,6 +221,7 @@ export default {
           })
         }
       }
+      this.renderMath()
     },
     toggleModal () {
       this.showModal = !this.showModal
@@ -228,25 +232,52 @@ export default {
     getLable (index) {
       return String.fromCharCode(65 + index) // Từ mã ASCII để tạo A, B, C, D,...
     },
-    checkAnswerSelect (answer, AnswerSelected) {
-      const result = AnswerSelected.find(e => answer === e)
-      if (result)
-      {
-        return true
-      }
-      else
+    checkAnswerSelect (answer, answerSelected) {
+       // kiểm tra xem biến answer có null hoặc undefined không
+      if (answerSelected === undefined || answerSelected === null)
       {
         return false
+      }
+      // nếu không thì xét tiếp
+      else
+      {
+        // console.log(typeof(answerSelected))
+        try
+        {
+          const result = Object.values(answerSelected).find(e => answer === e)
+          if (result)
+          {
+            return true
+          }
+          else
+          {
+            return false
+          }
+        }
+        catch (e)
+        {
+          console.log(e)
+        }
       }
     },
     CheckAnswer (correctAns, answerSelected) {
-      if (correctAns.length !== answerSelected.length)
+      // kiểm tra xem biến answer có null hoặc undefined không
+      if (answerSelected === undefined || answerSelected === null)
       {
         return false
-      } else
+      }
+      // nếu không thì xét tiếp
+      else
       {
-        // hàm every duyệt qua từng phần tử của mảng correctAns và kiểm tra xem nó có tồn tại trong mảng answerSelected hay không. Nếu có thì trả về true không thì trả về false
-        return correctAns.every((e) => answerSelected.includes(e))
+
+        if (correctAns.length !== answerSelected.length)
+        {
+          return false
+        } else
+        {
+          // hàm every duyệt qua từng phần tử của mảng correctAns và kiểm tra xem nó có tồn tại trong mảng answerSelected hay không. Nếu có thì trả về true không thì trả về false
+          return correctAns.every((e) => answerSelected.includes(e))
+        }
       }
     },
   }
