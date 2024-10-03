@@ -217,7 +217,6 @@ export default {
             })
           })
         }
-        console.log(this.questions)
       }
     },
     toggleModal () {

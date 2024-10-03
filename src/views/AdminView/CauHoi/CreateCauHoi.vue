@@ -188,7 +188,8 @@ export default {
   watch: {
     correctAns() {
       this.renderMath()
-    }
+    },
+    
   },
   mounted() {
     this.renderMath()

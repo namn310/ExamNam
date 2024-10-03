@@ -25,7 +25,7 @@
                       <div class="result-stats-item">
                         <i class="fa-solid fa-bullseye fa-lg me-2" style="color: #f20707"></i>
                         <span class="result-stats-label me-2">Kết quả làm bài</span>
-                        <span class="result-stats-text"><strong>{{ data.correct_question}} / {{ data.correct_question + data.incorrect_question  }}</strong></span>
+                        <span class="result-stats-text"><strong>{{ data.correct_question}} / {{ data.correct_question + data.incorrect_question + data.blank_question  }}</strong></span>
                       </div>
                       <br />
                       <br />

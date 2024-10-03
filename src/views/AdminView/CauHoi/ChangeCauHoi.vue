@@ -19,6 +19,7 @@
 
       <div class="Subject">
         <label for="subject" class="form-label"> Đề bài </label>
+        <p><strong v-html="question.title"></strong></p>
         <Ckeditor :editor="editor" v-model="question.title" />
       </div>
       <!-- hình ảnh đề bài (nếu có) -->
