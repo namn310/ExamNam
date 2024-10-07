@@ -175,30 +175,36 @@
     });
 
     const handleComment = async () =>{
-      const user = decodeTokenStudent()
-      const result = await createComment({
-        exam_id : id,
-        user_id : user.data.id,
-        comment_text : input1.value,
-      })
-      if(result){
-        fetchListComment();
-        input1.value = ''
+      if(input1.value != ''){
+        const user = decodeTokenStudent()
+        const result = await createComment({
+          exam_id : id,
+          user_id : user.data.id,
+          comment_text : input1.value,
+        })
+        if(result){
+          fetchListComment();
+          input1.value = ''
+        }
       }
+      
     }
 
     const handleRepComment = async (parentId) =>{
-      const user = decodeTokenStudent()
-      const result = await createComment({
-        exam_id : id,
-        user_id : user.data.id,
-        comment_text : input2.value,
-        parent_id : parentId
-      })
-      if(result){
-        fetchListChildComment();
-        input2.value = ''
+      const user = decodeTokenStudent();
+      if(input2.value != ''){
+        const result = await createComment({
+          exam_id : id,
+          user_id : user.data.id,
+          comment_text : input2.value,
+          parent_id : parentId
+        })
+        if(result){
+          fetchListChildComment();
+          input2.value = ''
+        }
       }
+      
     }
 </script>
 <style scoped>

@@ -29,7 +29,10 @@ export const getExamDetail = async (id) => {
     const result = await get(`exams/detail/${id}`);
     return result;
 }
-
+export const getExamByCategory = async (id) => {
+  const result = await get(`exam/category/${id}`)
+  return result
+}
 export const EditExam = async (id, option) => {
     const result = put(`exams/update/${id}`, option)
     return result;

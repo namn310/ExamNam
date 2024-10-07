@@ -4,7 +4,8 @@
         <div class="LayoutBody">
             <div class="site-content-wrapper container-fluid">
                 <div class="content-header pb-0 gray-bg">
-                <div class="container-fluid pb-0">
+
+                <!-- <div class="container-fluid pb-0">
                     <div class="col-12 col-md-9 order-md-1">
                     <h1 id="thư-viện-đề-thi" style="font-size: 3vh; font-size: 3vw; font-weight: 500">
                         Thư viện đề thi
@@ -55,7 +56,8 @@
                         <a class="nav-link active">Tất cả</a>
                     </li>
                     </ul>
-                </div>
+                </div> -->
+
                 </div>
                 <div class="content-wrapper mt-4 ms-4 me-4">
                 <div class="d-flex flex-column flex-wrap">
@@ -71,22 +73,21 @@
 <script setup>
 import FooterView from '@/components/FooterView.vue';
 import NavBarView from '@/components/NavBarView.vue';
-  import { getCategoryExamList } from '@/service/examsService';
-  import { onMounted, ref } from 'vue';
+import { getCategoryExamList } from '@/service/examsService';
+import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
+// import HomeView from '@/views/HomeView.vue';
 
-
-  const route = useRoute()
-
+const route = useRoute()
+  // const id = ref()
   const dataCetegory = ref([]);
   const fetchDataCatgory = async () => {
     const result = await getCategoryExamList()
     if(result){
       dataCetegory.value = result['data']['data']
     }
-  }
-
-
+}
+  
   onMounted(() =>{
     fetchDataCatgory()
   })

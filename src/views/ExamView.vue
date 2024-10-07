@@ -53,8 +53,8 @@
                           }}</strong>
                       </div>
                       <!-- title question -->
-                      <div class="question-text ms-2 mb-2" id="output">
-                        <strong v-html=" question.title " style="display: inline-block;"></strong>
+                      <div class="question-text ms-2 mb-2" :id="'question_' + index">
+                        <strong v-html=" question.title " style="display: inline-block"></strong>
                         <div v-if=" question.imageUrl ">
                           <img :src=" question.imageUrl " class="img-fluid" style="width: 35%; height: 35%" />
                         </div>
@@ -69,14 +69,16 @@
                             class="form-check-input" type="checkbox" style="border: 1px solid black" />
                           <label id="output" class="form-label">
                             {{ getLable( index2 ) }}. {{ ans }}
-                               <div>
-                                <!-- Nếu có hình ảnh câu trả lời thì load nó ra -->
-                            <div style="position: relative; width: 40%; height: 40%" v-if="
-                              question.ListImageAnswerUrl && question.ListImageAnswerUrl.length > 0 && question.ListImageAnswerUrl[index2].imageUrl
-                            ">
-                              <img :src=" question.ListImageAnswerUrl[index2].imageUrl " class="img-fluid" />
+                            <div>
+                              <!-- Nếu có hình ảnh câu trả lời thì load nó ra -->
+                              <div style="position: relative; width: 40%; height: 40%" v-if="
+                                question.ListImageAnswerUrl &&
+                                question.ListImageAnswerUrl.length > 0 &&
+                                question.ListImageAnswerUrl[index2].imageUrl
+                              ">
+                                <img :src=" question.ListImageAnswerUrl[index2].imageUrl " class="img-fluid" />
+                              </div>
                             </div>
-                          </div>
                           </label>
                           <!-- <div>
                             <div style="position: relative; width: 30%; height: 30%" v-if="
@@ -117,11 +119,11 @@
                 <div class="test-questions-list">
                   <div class="test-questions-list-part d-flex flex-wrap">
                     <div class="test-questions-list-wrapper" v-for="( question, index) in questions" :key=" index ">
-                      <span class="test-questions-listitem"
+                      <span @click="scrollToQuesstion(index)" class="test-questions-listitem"
                         v-if=" !question.Answer || Object.keys( question.Answer[0] ).length < 1 ">
                         {{ index + 1 }}
                       </span>
-                      <span class="test-questions-listitem" v-else id="selected">
+                      <span @click="scrollToQuesstion(index)" class="test-questions-listitem" v-else id="selected">
                         {{ index + 1 }}
                       </span>
                     </div>
@@ -133,6 +135,7 @@
         </div>
       </form>
     </div>
+    <!-- <button class="btn btn-danger" @click="checkAnswerSelectLocalStorage( 0, 'A' )">click</button> -->
   </div>
 </template>
 <script>
@@ -172,7 +175,6 @@ export default {
   //   this.renderMath()
   // },
   async created () {
-    this.renderMath()
     const route = useRoute()
     const id = route.params.id
     this.id = id
@@ -181,6 +183,7 @@ export default {
     {
       this.data = result['data']
       this.durationExam = result['data'].duration
+      this.startCountDown()
       this.scoreQuestion = 10 / result['data'].totalQuestion
     }
     const question = await getQuestionExam(id)
@@ -216,10 +219,50 @@ export default {
         }
       }
     }
-    // console.log(this.questions)
-    this.startCountDown()
+    // if (
+    //   localStorage.getItem('dataQuestion') !== null ||
+    //   localStorage.getItem('dataQuestion' !== undefined)
+    // )
+    // {
+    //   this.questions = JSON.parse(localStorage.getItem('dataQuestion'))
+    //   console.log(this.questions)
+
+    // }
+    this.renderMath()
+  },
+  mounted () {
     // Thêm sự kiện `beforeunload` khi component được mount
     window.addEventListener('beforeunload', this.BeforeUnload)
+  },
+  beforeRouteLeave (to, from, next) {
+    if (this.countdown > 0)
+    {
+      const answer = window.confirm(
+        'Thời gian làm bài vẫn còn. Bạn có chắc chắn muốn rời đi không?'
+      )
+      if (answer)
+      {
+        for (let i = localStorage.length - 1; i >= 0; i--)
+        {
+          const key = localStorage.key(i)
+          if (key === 'timeExam')
+          {
+            localStorage.removeItem(key)
+          }
+          if (key === 'dataQuestion')
+          {
+            localStorage.removeItem(key)
+          }
+        }
+        next() // Cho phép điều hướng
+      } else
+      {
+        next(false) // Hủy điều hướng
+      }
+    } else
+    {
+      next() // Cho phép điều hướng nếu không còn thời gian
+    }
   },
   beforeUnmount () {
     // Xóa sự kiện `beforeunload` khi component bị hủy
@@ -235,10 +278,70 @@ export default {
   watch: {
     questions () {
       // Khi có sự thay đổi trong dữ liệu câu hỏi, gọi lại MathJax
-      this.renderMath();
+      this.renderMath()
     }
   },
   methods: {
+     scrollToQuesstion(index) {
+      const element = document.getElementById(`question_${index-1}`)
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' })
+      }
+    },
+    // nếu có dữ liệu đáp án đã chọn từ localStorage thì load ra
+    checkAnswerSelectLocalStorage (index, label) {
+      // check xem questions.Answer laf array koong
+      if (
+        this.questions[index] &&
+        Array.isArray(this.questions[index].Answer) &&
+        this.questions[index].Answer[0]
+      )
+      {
+        const answers = this.questions[index].Answer[0]
+        const lengthAnswer = Object.keys(answers).length
+
+        // Loop through answers and check if label matches
+        if (lengthAnswer > 0)
+        {
+          for (var i = 0; i < lengthAnswer; i++)
+          {
+            if (answers[i] === label)
+            {
+              return true
+            }
+          }
+        }
+      }
+      // Return false if questions[index] or Answer array is not valid
+      return false
+      // const lengthAnswer = Object.values(this.questions[index].Answer[0]).length
+      // var a = ''
+      // if (lengthAnswer > 0)
+      // {
+      //   for (var i = 0; i < lengthAnswer; i++)
+      //   {
+      //     if (this.questions[index].Answer[0][i] == label)
+      //     {
+      //       a = 1
+      //     }
+      //   }
+      //   return a > 0 ? true : false
+      // }
+      // else
+      // {
+      //   return false
+      // }
+    },
+    deleteLocal () {
+      for (let i = localStorage.length - 1; i >= 0; i--)
+      {
+        const key = localStorage.key(i)
+        if (key === 'dataQuestion')
+        {
+          localStorage.removeItem(key)
+        }
+      }
+    },
     renderMath () {
       // Kiểm tra xem MathJax đã được tải chưa
       if (window.MathJax)
@@ -248,22 +351,22 @@ export default {
             .then(() => {
               // console.log("MathJax rendering completed");
             })
-            .catch(err => console.error("MathJax rendering error:", err));
-        });
+            .catch((err) => console.error('MathJax rendering error:', err))
+        })
       }
     },
     // hiện thông báo khi người dùng bấm refresh trang khi thời gian làm bài chưa kết thúc
     BeforeUnload (event) {
-      if (this.countdown > 0)
-      {
-        const message = 'Thời gian làm bài vẫn còn. Nếu thoát thì kết quả sẽ không được lưu lại !'
-        event.returnValue = message
-        return message
-      }
+      localStorage.setItem('timeExam', this.countdown)
+      localStorage.setItem('dataQuestion', JSON.stringify(this.questions))
+      event.preventDefault()
+      event.returnValue = ''
+      console.log('nam')
     },
     startCountDown () {
+      // localStorage.clear();
       // Nếu tồn tại thời gian từ localStorage, set giá trị từ localStorage
-      const savedTime = localStorage.getItem('time');
+      const savedTime = localStorage.getItem('timeExam')
       if (savedTime)
       {
         this.countdown = parseInt(savedTime)
@@ -276,7 +379,6 @@ export default {
         if (this.countdown > 0)
         {
           this.countdown--
-          localStorage.setItem('time', this.countdown)
         } else
         {
           this.stopCountdown()
@@ -289,9 +391,6 @@ export default {
       clearInterval(this.timer)
       this.timer = null
     },
-    handleUnload () {
-      window.addEventListener('beforeunload', this.BeforeUnload)
-    },
     toggleModal () {
       this.showModal = !this.showModal
     },
@@ -299,6 +398,7 @@ export default {
       this.showModal2 = !this.showModal2
     },
     ToggleSelected (IdQues, answerIndex) {
+      console.log(this.questions)
       // lấy câu hỏi theo idQues
       const questionItem = this.questions.find((ques) => ques.id === IdQues)
       if (questionItem)
@@ -433,6 +533,14 @@ export default {
       if (result)
       {
         this.stopCountdown()
+        for (let i = localStorage.length - 1; i >= 0; i--)
+        {
+          const key = localStorage.key(i)
+          if (key === 'timeExam')
+          {
+            localStorage.removeItem(key)
+          }
+        }
         // console.log(result)
         this.$router.replace({ name: 'detailResultExam', params: { id: result.lastInsert } })
       }

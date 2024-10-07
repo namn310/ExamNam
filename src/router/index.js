@@ -31,6 +31,7 @@ import EditExam from '../views/AdminView/Exams/EditExam.vue'
 import DetailExam from '@/views/AdminView/Exams/DetailExam.vue'
 import CategoryExam from '@/views/AdminView/Exams/CategoryExam.vue'
 import CartExam from '@/views/CartExam.vue'
+import UserInfo from '@/views/UserInfo.vue'
 
 
 const router = createRouter({
@@ -140,6 +141,11 @@ const router = createRouter({
           path: '/testView',
           name: 'test',
           component: TestView
+        },
+        {
+          path: '/user-info',
+          name: 'userInfo',
+          component: UserInfo,
         }
       ]
     },

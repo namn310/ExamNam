@@ -1,5 +1,55 @@
 <template>
-  <div class="d-flex justify-content-start flex-wrap" v-if="data !== null">
+    <div class="container-fluid pb-0">
+                    <div class="col-12 col-md-9 order-md-1">
+                    <h1 id="thư-viện-đề-thi" style="font-size: 3vh; font-size: 3vw; font-weight: 500">
+                        Thư viện đề thi
+                    </h1>
+                    <br />
+                    <div class="test-exams">
+                        <ul class="nav nav-pills flex-wrap">
+                            <li class="nav-item w-auto">
+                                <a class="nav-link" @click="changeIdcat(0)" :class=" { 'nav-link active': idcat === 0 || !idcat }" >Tất cả</a>
+                            </li>
+                            <li class="nav-item w-auto" v-for="item in dataCetegory" :key="item.id">
+                                <a  class="nav-link" :class=" { 'nav-link active': idcat === item.id}" @click="changeIdcat(item.id)"
+                               >{{ item.title }}</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <br />
+                    <!-- <form method="GET"> -->
+                        <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                            <div class="input-addon inner-addon right-addon">
+                                <div class="input-group flex-nowrap">
+                                <input
+                                    type="text"
+                                    style="width: 30vw"
+                                    class="form-control"
+                                    placeholder="Nhập từ khoá bạn muốn tìm kiếm: tên sách, dạng câu hỏi ..."
+                                    @input="search"
+                                />
+                                <button @click="getExamBySearch" class="btn btn-primary">
+                                    <i class="fa-solid fa-magnifying-glass fa-lg text-white"></i>
+                                </button>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    <!-- </form> -->
+                    <br />
+                    </div>
+
+                    <!-- <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active">Tất cả</a>
+                    </li>
+                    </ul> -->
+                </div>
+  <div class="d-flex justify-content-start flex-wrap" v-if="data !== null && data.length >0">
     <CardExam
       v-for="item in data"
       :key="item.id"
@@ -17,38 +67,73 @@
       :total="totalPage * 10"
       @current-change="handlePageChange"
     />
-    
   </div>
-  <!-- <p v-else >Không có bài thi nào !</p> -->
 </template>
 
 <script setup>
 import CardExam from '@/components/CardExam.vue'
+// import router from '@/router';
 import { getCategoryExamList, getExamList } from '@/service/examsService'
 import { onMounted, ref } from 'vue'
 
 const dataCetegory = ref([])
 const data = ref([])
+const originData = ref([])
+const idcat =ref()
 let page = 1
 const totalPage = ref(1)
-
+const SearchInput = ref()
+const changeIdcat = async(id) => {
+  idcat.value = id
+  if (id > 0)
+  {
+    data.value = originData.value.filter(e => {
+      return e.category === id
+    })
+  }
+  else
+  {
+    data.value=originData.value
+  }
+}
+const search = (event) => {
+  SearchInput.value = event.target.value
+  if (SearchInput.value === '')
+  {
+    data.value = originData.value
+  }
+}
+const getExamBySearch = () => {
+  const result = SearchInput.value.toLowerCase()
+  if (result !== ' ')
+  {
+    data.value = originData.value.filter(e => {
+      return e.title.toLowerCase().includes(result)
+    })
+  }
+  else
+  {
+    data.value = originData.value
+  }
+}
 const handlePageChange = (newPage) => {
   page = newPage
   fetchDataExam()
 }
 
 const fetchDataCatgory = async () => {
-  const result = await getCategoryExamList(1)
+  const result = await getCategoryExamList()
   if (result) {
     dataCetegory.value = result['data']['data']
   }
 }
-
 const fetchDataExam = async () => {
   const result = await getExamList(page)
   if (result) {
     data.value = result['data']['data']
+    originData.value = result['data']['data']
     totalPage.value = result['data']['total_page']
+    console.log(data.value)
   }
 }
 // const renderMath = () => {
