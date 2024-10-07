@@ -7,6 +7,7 @@ import HomeView from '../views/HomeView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import LoginView from '@/views/LoginView.vue'
 import forgotPasswordView from '@/views/forgotPasswordView.vue'
+import resetPasswordForgotView from '@/views/resetPasswordForgotView.vue'
 import resetPasswordView from '@/views/resetPasswordView.vue'
 import AboutView from '@/views/AboutView.vue'
 import ExamInfor from '@/views/ExamInfor.vue'
@@ -120,6 +121,11 @@ const router = createRouter({
           path: '/forgot-password',
           name: 'forgot-password',
           component: forgotPasswordView
+        },
+        {
+          path: '/reset-passwordForgot',
+          name: 'reset-passwordForgot',
+          component: resetPasswordForgotView
         },
         {
           path: '/reset-password',
