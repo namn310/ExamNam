@@ -21,7 +21,7 @@
       </button>
       <input type="text" class="form-control" v-model=" search " @input=" SearchQuestion " placeholder="Tìm kiếm câu hỏi" />
     </div>
-    <table class="table table-hover table-bordered text-center" id="sampleTable" v-if=" data.length > 0 ">
+    <table class="table table-hover table-bordered text-center table-responsive" id="sampleTable" v-if=" data.length > 0 ">
       <thead>
         <tr class="table-primary text-center">
           <th>Mã câu hỏi</th>

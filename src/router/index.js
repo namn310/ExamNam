@@ -28,10 +28,10 @@ import Exams from '@/views/AdminView/Exams/Exams.vue'
 import CreateExam from '@/views/AdminView/Exams/CreateExam.vue'
 import EditExam from '../views/AdminView/Exams/EditExam.vue'
 import DetailExam from '@/views/AdminView/Exams/DetailExam.vue'
+import StatisticExam from '@/views/AdminView/Exams/StatisticExam.vue'
 import CategoryExam from '@/views/AdminView/Exams/CategoryExam.vue'
 import CartExam from '@/views/CartExam.vue'
 import UserInfo from '@/views/UserInfo.vue'
-
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -126,7 +126,7 @@ const router = createRouter({
           path: '/reset-password',
           name: 'reset-password',
           component: resetPasswordView,
-           meta: {
+          meta: {
             requiresAuth: true //các link cần đăng nhập để truy cập
           }
         },
@@ -139,7 +139,7 @@ const router = createRouter({
         {
           path: '/user-info',
           name: 'userInfo',
-          component: UserInfo,
+          component: UserInfo
         }
       ]
     },
@@ -231,6 +231,15 @@ const router = createRouter({
           path: 'detail-exam/:id',
           name: 'detail-exam',
           component: DetailExam,
+          meta: {
+            layout: 'admin'
+          }
+        },
+        // thống kê dữ liệu bài thi
+        {
+          path: 'statistic-exam/:id',
+          name: 'thongke',
+          component: StatisticExam,
           meta: {
             layout: 'admin'
           }

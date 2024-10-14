@@ -68,8 +68,11 @@
                       <div class="col">
                         <div class="result-score-box" style="font-size: 3vw; font-size: 3vh">
                           <div class="result-score-icontext text-score"><strong>Điểm</strong></div>
-                          <div class="result-score-text text-score text-danger">
-                            <strong>{{ data.score }}</strong>
+                          <div v-if="data.score > 0" class="result-score-text text-score text-danger">
+                            <strong>{{ (data.score).toFixed(1) }}</strong>
+                          </div>
+                           <div v-else class="result-score-text text-score text-danger">
+                            <strong>{{ (data.score) }}</strong>
                           </div>
                         </div>
                       </div>

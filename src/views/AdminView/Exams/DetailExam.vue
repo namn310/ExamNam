@@ -2,6 +2,11 @@
 
 <template>
   <div class="p-10">
+    <div>
+      <RouterLink :to="{name:'thongke',params:{id: id}}">
+        <button class="btn btn-primary mb-3">Thống kê dữ liệu làm bài kiểm tra</button>
+      </RouterLink>
+    </div>
     <div style="margin-bottom: 15px">Danh sách câu hỏi: <el-switch v-model="fill" /></div>
     <el-space :fill="fill" wrap>
       <el-card v-for="(i, index) in question" :key="i" class="box-card">
@@ -47,13 +52,13 @@ import { getQuestionExam } from '@/service/examsService'
 import { getImageAnswer } from '@/service/questionsService'
 // import { a } from 'vitest/dist/suite-IbNSsUWN';
 import { onMounted, ref, nextTick } from 'vue'
-import { useRoute } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 
 const question = ref([])
 const route = useRoute()
 // const ListImageAnswer = ref([])
 // const ListImageAnswerUrl = ref([])
-const imgUrl = ref([])
+// const imgUrl = ref([])
 const id = route.params.id
 // const answer = ref( [] );
 const fill = ref(false)

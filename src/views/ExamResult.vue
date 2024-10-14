@@ -43,9 +43,10 @@
                   <td>
                     {{ exam.created_at }}
                   </td>
-                  <td>
-                    {{ exam.score }}
+                  <td v-if="exam.score > 0">
+                    {{ (exam.score).toFixed(1) }}
                   </td>
+                  <td v-else>{{ exam.score }}</td>
                   <td>{{ exam.formattedTime }}</td>
                   <td>
                     <RouterLink :to="{ name: 'detailResultExam', params: { id: exam.id } }">

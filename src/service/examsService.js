@@ -47,3 +47,8 @@ export const deleteExam = async (id) => {
     const result = await del(`exams/delete/${id}`);
     return result;
 }
+// lấy số lượng người làm sai câu hỏi
+export const getCountDoWrong = async (id) => {
+  const result = await get(`exams/count_do_wrong/${id}`)
+  return result
+}

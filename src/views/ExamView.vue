@@ -219,16 +219,8 @@ export default {
         }
       }
     }
-    // if (
-    //   localStorage.getItem('dataQuestion') !== null ||
-    //   localStorage.getItem('dataQuestion' !== undefined)
-    // )
-    // {
-    //   this.questions = JSON.parse(localStorage.getItem('dataQuestion'))
-    //   console.log(this.questions)
-
-    // }
     this.renderMath()
+    console.log(this.questions)
   },
   mounted () {
     // Thêm sự kiện `beforeunload` khi component được mount
@@ -314,23 +306,6 @@ export default {
       }
       // Return false if questions[index] or Answer array is not valid
       return false
-      // const lengthAnswer = Object.values(this.questions[index].Answer[0]).length
-      // var a = ''
-      // if (lengthAnswer > 0)
-      // {
-      //   for (var i = 0; i < lengthAnswer; i++)
-      //   {
-      //     if (this.questions[index].Answer[0][i] == label)
-      //     {
-      //       a = 1
-      //     }
-      //   }
-      //   return a > 0 ? true : false
-      // }
-      // else
-      // {
-      //   return false
-      // }
     },
     deleteLocal () {
       for (let i = localStorage.length - 1; i >= 0; i--)
@@ -398,7 +373,6 @@ export default {
       this.showModal2 = !this.showModal2
     },
     ToggleSelected (IdQues, answerIndex) {
-      console.log(this.questions)
       // lấy câu hỏi theo idQues
       const questionItem = this.questions.find((ques) => ques.id === IdQues)
       if (questionItem)
@@ -461,19 +435,22 @@ export default {
             {
               // false thì câu này sai
               this.incorrect_question += 1
+              e.idIncorrect={id:e.id,state:0}
             }
           } else
           {
             // nếu chưa chọn thì đây là câu bỏ trống
             this.blank_question += 1
+            e.idIncorrect={id:e.id,state:0}
           }
         } else
         {
           // nếu không tồn tại thuộc tính Answer trong mảng thì là câu bỏ trống
           this.blank_question += 1
+          e.idIncorrect={id:e.id,state:0}
         }
       })
-      console.log(this.blank_question, this.correct_question, this.incorrect_question)
+      // console.log(this.blank_question, this.correct_question, this.incorrect_question)
     },
     // kiểm tra các câu đúng
     CheckAnswer (correctAns, answerSelected) {
@@ -492,6 +469,7 @@ export default {
       this.ListAnswerSelected()
       // set mảng answers
       this.answers = []
+      const questionIncorect = []
       // duyệt mảng question để lấy dữ liệu câu trả lời người dùng rồi đổ vào mảng answers
       this.questions.forEach((e) => {
         if (e.Answer)
@@ -506,8 +484,15 @@ export default {
             })
           }
         }
+        if (e.idIncorrect)
+        {
+          questionIncorect.push({
+            id: e.idIncorrect.id,
+            state: e.idIncorrect.state
+          })
+        }
       })
-      // console.log(this.answers)
+      // console.log(this.questions)
       this.score = this.scoreQuestion * this.correct_question
       const user = decodeTokenStudent()
       const result = await createResult({
@@ -518,18 +503,9 @@ export default {
         blank_question: this.blank_question,
         correct_question: this.correct_question,
         incorrect_question: this.questions.length - this.blank_question - this.correct_question,
-        answers: this.answers
+        listQuestionIncorrect: questionIncorect,
+        answers: this.answers,
       })
-      // console.log({
-      //   id_user: user.data.id,
-      //   id_exam: parseInt(this.id),
-      //   score: this.score,
-      //   duration: this.durationExam * 60 - this.countdown,
-      //   blank_question: this.blank_question,
-      //   correct_question: this.correct_question,
-      //   incorrect_question: this.questions.length - this.blank_question - this.correct_question,
-      //   answers: this.answers
-      // })
       if (result)
       {
         this.stopCountdown()
