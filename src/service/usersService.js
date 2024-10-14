@@ -32,6 +32,10 @@ export const resetPassword = async (option) => {
     const result = await put(`users/reset-password`, option);
     return result;
 }
+export const resetPasswordForgot = async (option) => {
+    const result = await put(`users/reset-passwordForgot`, option);
+    return result;
+}
 // export const checkToken = async () => {
 //     const result = await get()
 // }

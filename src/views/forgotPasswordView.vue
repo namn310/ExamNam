@@ -47,9 +47,11 @@
 <script>
 import { forgotPasswordView } from '@/service/usersService'
 
+
 export default {
   data() {
     return {
+      id: '',
       email: '',
       url: './src/assets/img/LogoWeb.png'
     }
@@ -57,7 +59,7 @@ export default {
   methods: {
     async submitForgotPassword() {
       try {
-        const response = await forgotPasswordView({ email: this.email })
+        const response = await forgotPasswordView({ email: this.email, id: this.id })
         alert(response.message)
       } catch (e) {
         alert('Có lỗi xảy ra, vui lòng thử lại!')
