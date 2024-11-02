@@ -1,4 +1,4 @@
-import { get, del, post, put } from "../utils/request";
+import { get, delAdmin, postAdmin, putAdmin } from "../utils/request";
 
 export const getExamList = async (page) => {
     const result = await get(`exams?page=${page}`);
@@ -34,17 +34,17 @@ export const getExamByCategory = async (id) => {
   return result
 }
 export const EditExam = async (id, option) => {
-    const result = put(`exams/update/${id}`, option)
+    const result = putAdmin(`exams/update/${id}`, option)
     return result;
 }
 
 export const createExam = async (option) => {
-    const result = await post("exams/create",option);
+    const result = await postAdmin("exams/create",option);
     return result;
 }
 
 export const deleteExam = async (id) => {
-    const result = await del(`exams/delete/${id}`);
+    const result = await delAdmin(`exams/delete/${id}`);
     return result;
 }
 // lấy số lượng người làm sai câu hỏi

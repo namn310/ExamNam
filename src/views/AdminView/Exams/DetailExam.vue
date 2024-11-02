@@ -6,8 +6,10 @@
       <RouterLink :to="{name:'thongke',params:{id: id}}">
         <button class="btn btn-primary mb-3">Thống kê dữ liệu làm bài kiểm tra</button>
       </RouterLink>
+      <button @click="exportPDF()" class="btn btn-danger ms-3 mb-3">Xuất pdf<i class="ms-2 fa-solid fa-file-pdf fa-lg"></i></button>
     </div>
-    <div style="margin-bottom: 15px">Danh sách câu hỏi: <el-switch v-model="fill" /></div>
+    <div style="margin-bottom: 15px" ref="dataQuestion" >
+    <!-- Danh sách câu hỏi: <el-switch v-model="fill" /> -->
     <el-space :fill="fill" wrap>
       <el-card v-for="(i, index) in question" :key="i" class="box-card">
         <template #header>
@@ -22,6 +24,7 @@
               :src="i.ImageQuestionUrl"
               style="border: 1px solid black; border-radius: 5px"
               class="img-fluid"
+              
             />
           </div>
         </div>
@@ -35,25 +38,34 @@
                  i.ListImageAnswerUrl && i.ListImageAnswerUrl.length > 0 && i.ListImageAnswerUrl[index2].imageUrl
                 "
               >
-                <img :src="i.ListImageAnswerUrl[index2].imageUrl" class="img-fluid" />
+                <img :src="i.ListImageAnswerUrl[index2].imageUrl" class="img-fluid"
+               
+                 />
               </div>
             </div>
             
           </div>
         </div>
-        <div class="text item text-blue-700 font-semibold">Đáp án : {{ i.correctAns }}</div>
+        <div class="text item text-blue-700 font-semibold">Đáp án : {{ (i.correctAns) }}</div>
       </el-card>
     </el-space>
+  </div>
   </div>
 </template>
 
 <script lang="js" setup>
+// eslint-disable-next-line no-unused-vars
+import axios from 'axios';
 import { getQuestionExam } from '@/service/examsService'
 import { getImageAnswer } from '@/service/questionsService'
 // import { a } from 'vitest/dist/suite-IbNSsUWN';
 import { onMounted, ref, nextTick } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
-
+// thư viện pdfmake
+// import PdfPrinter from 'pdfmake'
+// eslint-disable-next-line no-unused-vars
+import html2canvas from 'html2canvas'
+import jsPDF from 'jspdf'
 const question = ref([])
 const route = useRoute()
 // const ListImageAnswer = ref([])
@@ -61,7 +73,7 @@ const route = useRoute()
 // const imgUrl = ref([])
 const id = route.params.id
 // const answer = ref( [] );
-const fill = ref(false)
+const fill = ref(true)
 const getLabel = (index) => {
   return String.fromCharCode(65 + index) // Từ mã ASCII để tạo A, B, C, D,...
 }
@@ -71,18 +83,63 @@ const renderMath = () => {
     nextTick(() => {
       window.MathJax.typesetPromise()
         .then(() => {
-          // console.log("MathJax rendering completed");
+          
         })
         .catch((err) => console.error('MathJax rendering error:', err))
     })
   }
 }
+const dataQuestion = ref(null)
+const exportPDF = async () => {
+  try
+  {
+    const doc = new jsPDF()
+    if(dataQuestion.value){
+    await doc.html(dataQuestion.value, {
+      callback: (doc) => {
+        doc.save("document.pdf"); // Lưu file PDF
+      },
+      x: 10, // Khoảng cách từ bên trái
+      y: 10, // Khoảng cách từ trên
+      width: 190, // Chiều rộng
+      windowWidth: 1024, // Chiều rộng của cửa sổ 
+      html2canvas: {
+        scale: 2,
+        useCORS:true // cho phép truy cập hình ảnh từ nguồn khác để tránh báo lỗi CORS
+      }
+    });
+    }
+    else
+    {
+    console.log("Có lỗi xảy ra")
+  }
+  }
+  catch (e)
+  {
+    console.log(e)
+  }
+}
+// const fetchImageAsBase64 = async (url) => {
+//       const response = await axios.get(url, { responseType: 'blob' });
+//       const blob = response.data; // This is a Blob
+
+//       return new Promise((resolve, reject) => {
+//         const reader = new FileReader();
+//         reader.onloadend = () => {
+//           const base64String = reader.result; // This is the Base64 string
+//           resolve(base64String);
+//         };
+//         reader.onerror = reject; // Handle error
+//         reader.readAsDataURL(blob); // Convert Blob to Data URL
+//       });
+//     }
 const fetchData = async () => {
   const result = await getQuestionExam(id)
   if (result) {
     question.value = result['data']
     // lấy danh sách câu hỏi
     // khi dùng await trong for thì nên dùng for of để xử lý hoàn tất hàm bất đồng bộ trước khi sang phần tử mới
+    // eslint-disable-next-line no-unused-vars
     for (const [index, e] of question.value.entries()) {
       e.answerlist = JSON.parse(e.answerlist)
       // answer.value.push( {'idQues':e.id,'listAns':e.answerlist} );
@@ -110,12 +167,8 @@ const fetchData = async () => {
           e.ListImageAnswerUrl.push(element)
         }
       }
+      // renderMath()
     }
-    // // console.log(question.value[0].ListImageAnswerUrl[0].imageUr)
-    // question.value.forEach(e => {
-    //   console.log(e.ListImageAnswerUrl[0].imageUrl)
-    // })
-    // console.log(question.value)
     renderMath()
   }
 }

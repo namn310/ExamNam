@@ -145,6 +145,7 @@ import { createResult } from '@/service/resultServeice'
 import { decodeTokenStudent } from '@/service/decodeToken'
 import { useRoute } from 'vue-router'
 import { getImageAnswer } from '@/service/questionsService'
+import CryptoJS from 'crypto-js';
 // import CheckAnswerResult from './CheckAnswerResult.vue'
 // import Cookies from 'js-cookie'
 export default {
@@ -190,6 +191,8 @@ export default {
     if (question)
     {
       this.questions = question.data
+      
+      // eslint-disable-next-line no-unused-vars
       for (const [index, e] of this.questions.entries())
       {
         e.answerlist = JSON.parse(e.answerlist)
@@ -217,10 +220,10 @@ export default {
             e.ListImageAnswerUrl.push(element)
           }
         }
+        // this.renderMath()
       }
+      this.renderMath()
     }
-    this.renderMath()
-    console.log(this.questions)
   },
   mounted () {
     // Thêm sự kiện `beforeunload` khi component được mount
@@ -274,6 +277,7 @@ export default {
     }
   },
   methods: {
+  
      scrollToQuesstion(index) {
       const element = document.getElementById(`question_${index-1}`)
       if (element) {

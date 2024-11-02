@@ -3,25 +3,47 @@
     <div class="topnav-container">
       <nav class="navbar navbar-expand-lg">
         <span class="navbar-brand">
-          <a class="topnav-brand ms-4" href="/"> <img :src="imgageLogo" style="width:90px;height:90px" class="topnav-logo image-fluid"/>ExamTutor </a>
+          <a class="topnav-brand ms-4" href="/"> <img :src=" imgageLogo " style="width:90px;height:90px"
+              class="topnav-logo image-fluid" />ExamTutor </a>
         </span>
         <button @click=" toggleMenu " class="navbar-toggler pull-xs-right d-lg-none" type="button"
           data-toggle="collapse" data-target="#navbar-collapse">
           ☰
         </button>
         <!-- small menu -->
-        <div v-show="visible " class="menuSmallContainer">
+        <div v-show=" visible " class="menuSmallContainer">
           <div class="menuSmall pt-3">
             <ul>
-              <li class="nav-item">
-                <RouterLink class="nav-link" :to=" { name: 'home' } ">Đề thi online</RouterLink>
+              <li class="nav-item" @mouseover="checkHover['nav_item1'] = true"
+                @mouseleave="checkHover['nav_item1'] = false" :class=" { 'nav-item-active': checkHover['nav_item1'] } ">
+                <RouterLink class="nav-link" :to=" { name: 'home' } "><i class="fa-solid fa-book-open fa-xl me-2"
+                    style="color: #74C0FC;"></i> Đề thi online</RouterLink>
               </li>
-              <!-- <li class="nav-item">
-                <a class="nav-link">Kết quả thi</a>
-              </li> -->
-              <li v-if="checkToken()">
+              <li class="nav-item" @mousemove="checkHover['nav_item2'] = true"
+                @mouseleave="checkHover['nav_item2'] = false" :class=" { 'nav-item-active': checkHover['nav_item2'] } "
+                v-if=" !checkToken() ">
                 <RouterLink :to=" { name: 'Login' } ">Đăng nhập</RouterLink>
               </li>
+              <li class="nav-item" @mousemove="checkHover['nav_item3'] = true"
+                @mouseleave="checkHover['nav_item3'] = false" :class=" { 'nav-item-active': checkHover['nav_item3'] } ">
+                <RouterLink :to=" { name: 'ResultExam' } "><i class="fa-solid fa-circle-user fa-xl me-2"
+                    style="color: #74C0FC;"></i>Tài khoản</RouterLink>
+              </li>
+              <li class="nav-item"  @mousemove="checkHover['nav_item4'] = true"
+                @mouseleave="checkHover['nav_item4'] = false" :class=" { 'nav-item-active': checkHover['nav_item4'] } ">
+                <RouterLink :to=" { name: 'reset-password' } ">
+                  <i class="fa-solid fa-unlock fa-xl me-2" style="color: #74C0FC;"></i>Đổi mật khẩu
+                </RouterLink>
+              </li>
+              <li class="nav-item"  @mousemove="checkHover['nav_item5'] = true"
+                @mouseleave="checkHover['nav_item5'] = false" :class=" { 'nav-item-active': checkHover['nav_item5'] } ">
+                <RouterLink :to=" { name: 'ResultExam' } ">
+                  <i class="fa-solid fa-square-poll-horizontal fa-xl me-2" style="color: #74C0FC;"></i>Kết quả làm bài
+                </RouterLink>
+              </li>
+              <li class="nav-item" style="cursor: pointer;" @click="logOut()"  @mousemove="checkHover['nav_item6'] = true"
+                @mouseleave="checkHover['nav_item6'] = false" :class=" { 'nav-item-active': checkHover['nav_item6'] } "><i
+                  class="fa-solid fa-arrow-right-from-bracket fa-xl me-2" style="color: #74C0FC;"></i>Đăng xuất</li>
             </ul>
           </div>
         </div>
@@ -34,25 +56,29 @@
             <!-- <li class="nav-item">
               <a class="nav-link">Kết quả thi</a>
             </li> -->
-            <li v-if="!checkToken()">
-                <RouterLink :to=" { name: 'Login' } ">Đăng nhập</RouterLink>
-              </li>
+            <li v-if=" !checkToken() ">
+              <RouterLink :to=" { name: 'Login' } ">Đăng nhập</RouterLink>
+            </li>
             <!-- toogle khi user đã đăng nhập -->
-            <li v-if="checkToken()" class="ms-3">
-              <button class="btn btn-white" @click="toggleUser">
+            <li v-if=" checkToken() " class="ms-3">
+              <button class="btn btn-white" @click=" toggleUser ">
                 <i class="fa-solid fa-circle-user fa-xl" style="color: #000000"></i><i
                   class="fa-solid fa-chevron-down fa-xs ms-3"></i>
               </button>
             </li>
             <!-- toggle user function -->
-              <div v-show="UserToggleVisible ">
-            <div class="toggleFunctionUserContainer">
+            <div v-show=" UserToggleVisible ">
+              <div class="toggleFunctionUserContainer">
                 <ul>
                   <li>
-                    <RouterLink :to="{name : 'ResultExam'}" >Tài khoản</RouterLink>
+                    <RouterLink :to=" { name: 'ResultExam' } ">Tài khoản</RouterLink>
                   </li>
-                  <RouterLink :to="{name: 'reset-password'}"><li>Đổi mật khẩu</li></RouterLink>
-                  <RouterLink :to="{name:'ResultExam'}"><li>Kết quả làm bài</li></RouterLink>
+                  <RouterLink :to=" { name: 'reset-password' } ">
+                    <li>Đổi mật khẩu</li>
+                  </RouterLink>
+                  <RouterLink :to=" { name: 'ResultExam' } ">
+                    <li>Kết quả làm bài</li>
+                  </RouterLink>
                   <li style="cursor: pointer;" @click="logOut()">Đăng xuất</li>
                 </ul>
               </div>
@@ -60,6 +86,7 @@
             <!-- end toggle user function -->
           </ul>
         </div>
+
       </nav>
     </div>
   </div>
@@ -75,10 +102,18 @@ export default {
     return {
       visible: false,
       UserToggleVisible: false,
-      imgageLogo: LogoWeb
+      imgageLogo: LogoWeb,
+      checkHover: {
+        'nav_item1': false,
+        'nav_item2': false,
+        'nav_item3': false,
+        'nav_item4': false,
+        'nav_item5': false,
+        'nav_item6': false,
+      },
     }
   },
-  created() {
+  created () {
     this.checkToken()
   },
   methods: {
@@ -96,20 +131,20 @@ export default {
       else
       {
         return false;
-       }
+      }
     },
     logOut () {
       Cookies.remove('tokenStudent');
-      Cookies.remove('tokenAdmin');
+      // Cookies.remove('tokenAdmin');
       window.location.reload();
     }
   },
   watch: {
-  // Theo dõi sự thay đổi của token
-  'checkToken': function() {
-    this.$forceUpdate();
+    // Theo dõi sự thay đổi của token
+    'checkToken': function () {
+      this.$forceUpdate();
+    }
   }
-}
 }
 </script>
 <style scoped lang="css">
@@ -143,6 +178,10 @@ export default {
     flex-flow: row nowrap;
     justify-content: flex-start;
   }
+}
+
+.d-lg-block {
+  display: none;
 }
 
 .navbar {
@@ -189,32 +228,44 @@ export default {
 /* nav small */
 .menuSmallContainer {
   height: 10000px;
-  width: 30%;
-  background-color: darkgrey;
+  min-width: 30%;
+  background-color: #fff;
   opacity: 1;
   position: absolute;
   top: 69px;
-  right: 0;
+  right: -20px;
+  box-shadow: 5px 5px 5px black;
 }
 
-.menuSmal {}
-
 .menuSmallContainer ul li {
-  color: black;
+  color: #35509a;
   z-index: 4;
   list-style-type: none;
+  height: 30px;
+  padding: 10px;
+  border-radius: 10px;
   font-size: 2vw;
   font-size: 2vh;
   margin-bottom: 10px;
+  /* background-color: bisque; */
 }
 
-.menuSmallContainer ul li a {
+/* on click li */
+.nav-item-active {
+  color: red;
+  background-color: dodgerblue;
+}
+
+@media (min-width: 992px) {
+  .menuSmall {
+   display: none;
+  }
+}
+/* .menuSmallContainer ul li a {
   text-decoration: none;
   color: #35509a;
-}
-
+} */
 /* end nav small */
-
 /* toggleFunctionUserContainer */
 .toggleFunctionUserContainer {
   position: absolute;

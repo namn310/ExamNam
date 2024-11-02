@@ -140,7 +140,7 @@ export default {
             }
           })
         }
-        console.log(this.question)
+        // console.log(this.question)
       }
       this.renderMath()
     }

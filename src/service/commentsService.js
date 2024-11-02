@@ -1,16 +1,16 @@
-import { get, del, post, put } from "../utils/request";
+import { get, postStudent } from '../utils/request'
 
 export const getCommentsList = async (id) => {
-    const result = await get(`comments/${id}`);
-    return result;
+  const result = await get(`comments/${id}`)
+  return result
 }
 
 export const getChildCommentsList = async (id) => {
-    const result = await get(`child-comments/${id}`);
-    return result;
+  const result = await get(`child-comments/${id}`)
+  return result
 }
 
 export const createComment = async (option) => {
-    const result = await post("comments/create",option);
-    return result;
+  const result = await postStudent('comments/create', option)
+  return result
 }

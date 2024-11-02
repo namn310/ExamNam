@@ -86,7 +86,7 @@ export default {
       data: {
         email: '',
         password: '',
-        role: ''
+        role: 'student'
       }
     }
   },

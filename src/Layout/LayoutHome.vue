@@ -1,97 +1,41 @@
 <template>
-    <div class="LayoutClient">
-        <NavBarView/>
-        <div class="LayoutBody">
-            <div class="site-content-wrapper container-fluid">
-                <div class="content-header pb-0 gray-bg">
-
-                <!-- <div class="container-fluid pb-0">
-                    <div class="col-12 col-md-9 order-md-1">
-                    <h1 id="thư-viện-đề-thi" style="font-size: 3vh; font-size: 3vw; font-weight: 500">
-                        Thư viện đề thi
-                    </h1>
-                    <br />
-                    <div class="test-exams">
-                        <ul class="nav nav-pills flex-wrap">
-                            <li class="nav-item w-auto">
-                                <RouterLink :to="{name: 'home'}" :class="{ 'nav-link active': !route.params.id }">Tất cả</RouterLink>
-                            </li>
-                            <li class="nav-item w-auto" v-for="item in dataCetegory" :key="item.id">
-                                <RouterLink :to="`/category/${item.id}`" class="nav-link" 
-                                :class="{ 'active': route.params.id === item.id }">{{ item.title }}</RouterLink>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <br />
-                    <form method="GET">
-                        <div class="row">
-                        <div class="col-12">
-                            <div class="form-group">
-                            <div class="input-addon inner-addon right-addon">
-                                <div class="input-group flex-nowrap">
-                                <input
-                                    type="text"
-                                    style="width: 30vw"
-                                    class="form-control"
-                                    enterkeyhint="done"
-                                    placeholder="Nhập từ khoá bạn muốn tìm kiếm: tên sách, dạng câu hỏi ..."
-                                    name="term"
-                                    value=""
-                                />
-                                <button class="btn btn-primary">
-                                    <i class="fa-solid fa-magnifying-glass fa-lg text-white"></i>
-                                </button>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-                        </div>
-                    </form>
-                    <br />
-                    </div>
-
-                    <ul class="nav nav-tabs">
-                    <li class="nav-item">
-                        <a class="nav-link active">Tất cả</a>
-                    </li>
-                    </ul>
-                </div> -->
-
-                </div>
-                <div class="content-wrapper mt-4 ms-4 me-4">
-                <div class="d-flex flex-column flex-wrap">
-                    <slot />
-                </div>
-                </div>
-      </div>
-            <!-- <RouterView></RouterView> -->
+  <div class="LayoutClient">
+    <NavBarView />
+    <div class="LayoutBody">
+      <div class="site-content-wrapper container-fluid">
+        <div class="content-header pb-0 gray-bg"></div>
+        <div class="content-wrapper mt-4 ms-4 me-4">
+          <div class="d-flex flex-column flex-wrap" >
+            <slot />
+          </div>
         </div>
-            <FooterView/>
+        <!-- box chat -->
+      </div>
     </div>
+    <FooterView />
+  </div>
 </template>
 <script setup>
-import FooterView from '@/components/FooterView.vue';
-import NavBarView from '@/components/NavBarView.vue';
-import { getCategoryExamList } from '@/service/examsService';
-import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import FooterView from '@/components/FooterView.vue'
+import NavBarView from '@/components/NavBarView.vue'
+import { getCategoryExamList } from '@/service/examsService'
+import { onMounted, ref } from 'vue'
+// import { useRoute } from 'vue-router'
 // import HomeView from '@/views/HomeView.vue';
 
-const route = useRoute()
-  // const id = ref()
-  const dataCetegory = ref([]);
-  const fetchDataCatgory = async () => {
-    const result = await getCategoryExamList()
-    if(result){
-      dataCetegory.value = result['data']['data']
-    }
+// const route = useRoute()
+// const id = ref()
+const dataCetegory = ref([])
+const fetchDataCatgory = async () => {
+  const result = await getCategoryExamList()
+  if (result) {
+    dataCetegory.value = result['data']['data']
+  }
 }
-  
-  onMounted(() =>{
-    fetchDataCatgory()
-  })
 
+onMounted(() => {
+  fetchDataCatgory()
+})
 </script>
 
 <style scoped>

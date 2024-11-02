@@ -34,9 +34,18 @@
           </form>
           <div class="row mt-3">
             <small>
-              Bạn nhớ mật khẩu? 
+              Bạn nhớ mật khẩu?
               <RouterLink :to="{ name: 'Login' }"> Đăng Nhập </RouterLink>
             </small>
+          </div>
+          <div class="mt-3 ms-5 d-flex justify-content-center" v-if="showLoading">
+            <button class="btn btn-primary" type="button" disabled>
+              <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+              <span role="status">Vui lòng chờ trong giây lát...</span>
+            </button>
+          </div>
+          <div class="mt-4">
+            <p><i>Trong trường hợp không thấy Gmail gửi về hãy kiểm tra trong thư mục thư spam</i></p>
           </div>
         </div>
       </div>
@@ -46,23 +55,61 @@
 
 <script>
 import { forgotPasswordView } from '@/service/usersService'
-
-
+import { ElNotification } from 'element-plus'
+import Cookies from 'js-cookie'
 export default {
   data() {
     return {
       id: '',
       email: '',
-      url: './src/assets/img/LogoWeb.png'
+      url: './src/assets/img/LogoWeb.png',
+      showLoading:false
     }
   },
   methods: {
-    async submitForgotPassword() {
+    async submitForgotPassword () {
+      this.showLoading = true
       try {
-        const response = await forgotPasswordView({ email: this.email, id: this.id })
-        alert(response.message)
+        const response = await forgotPasswordView({ email: this.email })
+        if (response)
+        {
+          if (response.message === "Email đã gửi !")
+          {
+            ElNotification({
+              title: 'Thông báo',
+              message: 'Vui lòng truy cập vào Email để lấy mã OTP !',
+              type:'success'
+            })
+            this.showLoading = false
+              Cookies.set('tokenForgetPass', response.tokenResetPass, {
+                expires: 1, //set life cookie 1 ngày,
+                secure: true,
+                samesite: 'Strict'
+              })
+              this.$router.push({name:'reset-passwordForgot'})
+          }
+          else if (response.message === 'Email không tồn tại !')
+          {
+            ElNotification({
+              title: 'Thông báo',
+              message: response.message,
+              type:'error'
+            })
+            this.showLoading = false
+          }
+          else
+          {
+            ElNotification({
+              title: 'Thông báo',
+              message: 'Có lỗi xảy ra !',
+              type:'error'
+            })
+            this.showLoading = false
+          }
+        }
       } catch (e) {
-        alert('Có lỗi xảy ra, vui lòng thử lại!')
+        console.log(e)
+        this.showLoading = false
       }
     }
   }

@@ -27,30 +27,30 @@
               </label>
             </div>
             <div class="form-group mb-3 mt-2">
-              <input type="username" name="name" :class=" validateName() == true ? 'is-valid' : '' "  class="form-control form-control-lg bg-light fs-6" id="username"
-                placeholder="Tên người dùng" v-model=" data.name " @input=" validateName " />
-              <p class="text-danger" v-if=" ErrorName ">{{ ErrorName }}</p>
+              <input type="username" name="name" :class=" validateName() == true ? 'is-valid' : 'is-invalid' "  class="form-control form-control-lg bg-light fs-6" id="username"
+                placeholder="Tên người dùng" v-model=" data.name " @click=" validateName " />
+              <p class="text-danger" v-if=" ErrorName = null ">{{ ErrorName }}</p>
             </div>
             <div class="form-group mb-3">
-              <input type="email" name="email" :class="validateEmail() == true ? 'is-valid' : ''" class="form-control form-control-lg bg-light fs-6" id="email_signup"
+              <input type="email" name="email" :class="validateEmail() == true ? 'is-valid' : 'is-invalid'" class="form-control form-control-lg bg-light fs-6" id="email_signup"
                 placeholder="Địa chỉ Email" v-model=" data.email " @input=" validateEmail " />
-              <p class="text-danger" v-if=" ErrorEmail ">{{ ErrorEmail }}</p>
+              <p class="text-danger" v-if=" ErrorEmail == null ">{{ ErrorEmail }}</p>
             </div>
             <div class="form-group mb-3">
-              <input type="text" name="phone" :class="validatePhone() == true ? 'is-valid' : ''" class="form-control form-control-lg bg-light fs-6" id="phone_signup"
+              <input type="text" name="phone" :class="validatePhone() == true ? 'is-valid' : 'is-invalid'" class="form-control form-control-lg bg-light fs-6" id="phone_signup"
                 placeholder="Số điện thoại" v-model=" data.phone " @input=" validatePhone " />
-              <p class="text-danger" v-if=" ErrorPhone ">{{ ErrorPhone }}</p>
+              <p class="text-danger" v-if=" ErrorPhone == null ">{{ ErrorPhone }}</p>
             </div>
             <div class="form-group mb-3">
-              <input type="password" name="pass" :class="validatePass() == true ?'is-valid':''" class="form-control form-control-lg bg-light fs-6" id="password_signup"
-                placeholder="Mật Khẩu" v-model=" data.password " @input=" validatePass " />
-              <p class="text-danger" v-if=" ErrorPass ">{{ ErrorPass }}</p>
+              <input type="password" name="pass" :class="validatePass() == true ?'is-valid':'is-invalid'" class="form-control form-control-lg bg-light fs-6" id="password_signup"
+                placeholder="Mật Khẩu" v-model=" data.password " @input=" validatePass" />
+              <p class="text-danger" v-if=" ErrorPass == null ">{{ ErrorPass }}</p>
             </div>
             <div class="form-group mb-3">
               <input type="password" name="Repass"  class="form-control form-control-lg bg-light fs-6"
                 id="Re_password_signup" placeholder="Nhập lại mật khẩu" v-model=" data.ConfirmPassword "
                 @input=" validateConfirmPass " />
-              <p class="text-danger" v-if=" ErrorConfirmPassword ">{{ ErrorConfirmPassword }}</p>
+              <p class="text-danger" v-if=" ErrorConfirmPassword == null ">{{ ErrorConfirmPassword }}</p>
             </div>
             <div class="input-group mb-3">
               <button class="btn btn-lg btn-warning w-100 fs-6" type="submit" name="dangky" id="submit">
@@ -75,18 +75,18 @@ export default {
     return {
       url: './src/assets/img/LogoWeb.png',
       data: {
-        role: '',
+        role: 'student',
         name: '',
         email: '',
         phone: '',
         password: '',
         ConfirmPassword: ''
       },
-      ErrorName: "",
-      ErrorEmail: "",
-      ErrorPhone: "",
-      ErrorPass:  "",
-      ErrorConfirmPassword:  "",
+      ErrorName: null,
+      ErrorEmail: null,
+      ErrorPhone: null,
+      ErrorPass:  null,
+      ErrorConfirmPassword:  null,
     }
   },
   methods: {
@@ -96,7 +96,7 @@ export default {
         alert("Vui lòng kiểm tra lại thông tin !");
       }
       else
-      {
+      { 
         const response = await createUser(this.data);
         if (response.message === 'Đăng ký tài khoản thành công')
         {
@@ -111,7 +111,7 @@ export default {
     },
     validateName () {
       const regex =
-        /^[A-Za-z\sAÀẢÃÁẠĂẰẲẴẮẶÂẦẨẪẤẬBCDĐEÈẺẼÉẸÊỀỂỄẾỆFGHIÌỈĨÍỊJKLMNOÒỎÕÓỌÔỒỔỖỐỘƠỜỞỠỚỢPQRSTUÙỦŨÚỤƯỪỬỮỨỰVWXYỲỶỸÝỴZaàảãáạăằẳẵắặâầẩẫấậbcdđeèẻẽéẹêềểễếệfghiìỉĩíịjklmnoòỏõóọôồổỗốộơờởỡớợpqrstuùủũúụưừửữứựvwxyỳỷỹýỵz]+$/
+        /^[A-Za-z\sAÀẢÃÁẠĂẰẲẴẮẶÂẦẨẪẤẬBCDĐEÈẺẼÉẸÊỀỂỄẾỆFGHIÌỈĨÍỊJKLMNOÒỎÕÓỌÔỒỔỖỐỘƠỜỞỠỚỢPQRSTUÙỦŨÚỤƯỪỬỮỨỰVWXYỲỶỸÝỴZaàảãáạăằẳẵắặâầẩẫấậbcdđeèẻẽéẹêềểễếệfghiìỉĩíịjklmnoòỏõóọôồổỗốộơờởỡớợpqrstuùủũúụưừửữứựvwxyỳỷỹýỵz]+$/;
       if (this.data.name === '')
       {
         this.ErrorName = 'Tên không được để trống';
@@ -119,6 +119,7 @@ export default {
       } else if (!regex.test(this.data.name))
       {
         this.ErrorName = 'Tên không đúng định dạng'
+        // console.log(this.ErrorName)
         return false;
       } else
       {

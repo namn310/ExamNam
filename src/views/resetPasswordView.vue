@@ -50,11 +50,11 @@
                 </button>
               </div>
             </form>
-            <div class="row mt-3">
+            <!-- <div class="row mt-3">
               <small>
                 <RouterLink :to="{ name: 'Login' }"> Quay lại trang đăng nhập </RouterLink>
               </small>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -96,26 +96,24 @@ import Cookies from 'js-cookie';
           });
           if(response.message === 'Đổi mật khẩu thành công !'){
               ElNotification({
-            title: 'Success',
+            title: 'Thông báo',
             message: response.message,
             type: 'success'
           })
-          Cookies.remove('tokenStudent')
+          // Cookies.remove('tokenStudent')
           //  window.location.reload().then(()=>{})
-          this.$router.push({ name: 'Login' }).then(()=>{
-             window.location.reload()
-          })
+          this.$router.push({ name: 'home' })
           }
           else{
              ElNotification({
-            title: 'Error',
+            title: 'Thông báo',
             message: 'Mật khẩu cũ không chính xác',
             type: 'error'
           })
           }
         } catch (e) {
            ElNotification({
-            title: 'Error',
+            title: 'Thông báo',
             message: 'Có lỗi xảy ra, vui lòng thử lại!',
             type: 'error'
           })

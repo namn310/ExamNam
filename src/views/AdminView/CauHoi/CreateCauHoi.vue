@@ -278,8 +278,6 @@ export default {
         // {
         //   console.log(key, value);  // key là tên trường, value là giá trị tương ứng
         // }
-        console.log(this.question.image)
-        console.log(this.ListImageAnswer)
         const response = await PostData(dataQuestion)
         console.log(response)
         if (!response) {

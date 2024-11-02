@@ -117,6 +117,7 @@
   import { createComment, getChildCommentsList, getCommentsList } from '@/service/commentsService';
   import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
   import { getExamDetail } from '@/service/examsService';
+  // eslint-disable-next-line no-unused-vars
   import { computed, onMounted, ref } from 'vue';
   import { useRoute } from 'vue-router';
   import { decodeTokenStudent } from '@/service/decodeToken'
@@ -133,12 +134,9 @@
   const listChildComments = ref([])
   
   const checkLogin = ref(false);
-  
-
   const toggleModal =  () => {
     showModal.value = !showModal.value
   } 
-
   const fetchListComment = async () =>{
     const result = await getCommentsList(id);
     if(result){
@@ -149,20 +147,17 @@
   const getChildComments = (parentId) => {
       return listChildComments.value.filter(comment => comment.parent_id === parentId);
     }
-
   const fetchListChildComment = async () =>{
     const result = await getChildCommentsList(id);
     if(result){
       listChildComments.value = result.data;
     }
   }
-
   const fetchData = () =>{
     const fetchApi = async () => {
         const result = await getExamDetail(id);
         if(result){
           data.value = result.data
-
         }
     }
     fetchApi();
@@ -171,9 +166,8 @@
         fetchData();
         fetchListComment();
         fetchListChildComment();
-        checkLogin.value = !!Cookies.get('tokenStudent');
+        checkLogin.value = !Cookies.get('tokenStudent');
     });
-
     const handleComment = async () =>{
       if(input1.value != ''){
         const user = decodeTokenStudent()
@@ -187,9 +181,7 @@
           input1.value = ''
         }
       }
-      
     }
-
     const handleRepComment = async (parentId) =>{
       const user = decodeTokenStudent();
       if(input2.value != ''){

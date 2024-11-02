@@ -18,6 +18,7 @@ import CheckAnswerResult from '@/views/CheckAnswerResult.vue'
 import TestView from '@/views/TestView.vue'
 
 // src admin
+// eslint-disable-next-line no-unused-vars
 import HomeAdmin from '@/views/AdminView/HomeAdmin.vue'
 import User from '@/views/AdminView/User/User.vue'
 import CreateUser from '@/views/AdminView/User/CreateUser.vue'
@@ -32,7 +33,8 @@ import DetailExam from '@/views/AdminView/Exams/DetailExam.vue'
 import StatisticExam from '@/views/AdminView/Exams/StatisticExam.vue'
 import CategoryExam from '@/views/AdminView/Exams/CategoryExam.vue'
 import CartExam from '@/views/CartExam.vue'
-import UserInfo from '@/views/UserInfo.vue'
+// import UserInfo from '@/views/UserInfo.vue'
+import UserDetailAdmin from '@/views/AdminView/Infor/UserDetailAdmin.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -141,12 +143,12 @@ const router = createRouter({
           path: '/testView',
           name: 'test',
           component: TestView
-        },
-        {
-          path: '/user-info',
-          name: 'userInfo',
-          component: UserInfo
         }
+        // {
+        //   path: '/user-info',
+        //   name: 'userInfo',
+        //   component: UserInfo
+        // }
       ]
     },
     // layout admin
@@ -157,6 +159,14 @@ const router = createRouter({
           path: '',
           name: 'homeAdmin',
           component: User,
+          meta: {
+            layout: 'admin'
+          }
+        },
+        {
+          path: 'userDetail',
+          name: 'userDetailAdmin',
+          component: UserDetailAdmin,
           meta: {
             layout: 'admin'
           }
@@ -262,8 +272,9 @@ const router = createRouter({
     }
   ]
 })
+
+// kiểm tra tokenAdmin trước khi truy cập vào các page của admin
 router.beforeEach((to, from, next) => {
-  // to and from are both route objects. must call `next`.
   const adminToken = Cookies.get('tokenAdmin')
   if (to.path.startsWith('/admin') && !adminToken) {
     next({ name: 'Login' })
@@ -274,7 +285,6 @@ router.beforeEach((to, from, next) => {
 //kiểm tra xem người dùng đã đăng nhập hay chưa
 router.beforeEach((to, from, next) => {
   const userToken = Cookies.get('tokenStudent') // Lấy token từ cookies
-
   // Kiểm tra xem route có yêu cầu đăng nhập không
   if (to.matched.some((record) => record.meta.requiresAuth) && to.path.startsWith('/')) {
     if (!userToken) {
