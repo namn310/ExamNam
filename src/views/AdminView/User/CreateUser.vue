@@ -56,18 +56,28 @@
 
   
   const onSubmit = () => {
-      const fetchApi = async () => {
-          try {
-              const result = await createUser(userForm)
-              console.log(result);
-              if(result){
-                  ElMessage.success('Tạo thông tin người dùng thành công');
-                  router.replace({name : 'user'});
-              }
-          } catch (error) {
-              console.error("Đã xảy ra lỗi khi tạo thông tin người dùng:", error);
-              ElMessage.error('Tạo thông tin người dùng thất bại');
+    const fetchApi = async () => {
+      if (userForm['name'] !== '' && userForm['password'] !=='' && userForm['role']!=='' && userForm['email']!=='')
+      {
+        try
+        {
+          const result = await createUser(userForm)
+          console.log(result);
+          if (result)
+          {
+            ElMessage.success('Tạo thông tin người dùng thành công');
+            router.replace({ name: 'user' });
           }
+        } catch (error)
+        {
+          console.error("Đã xảy ra lỗi khi tạo thông tin người dùng:", error);
+          ElMessage.error('Tạo thông tin người dùng thất bại');
+        }
+      }
+      else
+      {
+        alert("Vui lòng nhập đủ thông tin !")
+      }
       }
       fetchApi();
   }

@@ -209,7 +209,7 @@ export default {
         const questionDetail = await GetDetail(this.idques)
         // lấy danh sách ảnh
         const ListImage = await getImageAnswer(this.idques)
-        console.log(ListImage.data)
+        // console.log(ListImage.data)
         const CAT = await getCategoryExamList()
         this.category = CAT.data.data
         if (!questionDetail) {
@@ -240,41 +240,53 @@ export default {
 
     async UpdateQuestion() {
       const dataQuestion = new FormData()
-      dataQuestion.append('class', this.question.class)
-      dataQuestion.append('Subject', this.question.Subject)
-      dataQuestion.append('title', this.question.title)
-      dataQuestion.append('created_by', this.question.created_by)
-      dataQuestion.append('image', this.question.image)
-      dataQuestion.append('answerlist', JSON.stringify(this.answer))
-      dataQuestion.append('correctAns', JSON.stringify(this.correctAns))
-      dataQuestion.append('created_at', this.question.created_at)
-      // for (let [key, value] of dataQuestion.entries()) {
-      //   console.log(key, value) // key là tên trường, value là giá trị tương ứng
-      // }
-      this.ListImageAnswer.forEach((file, index) => {
-        // Nếu kiểu dữ liệu là File thì append vào mảng answerImage
-        if (file instanceof File) {
-          dataQuestion.append(`answerImage_${index}`, file)
-        }
-      })
-      try {
-        const ques = await PutData(this.idques, dataQuestion)
-        console.log(ques.data)
-        if (ques.message == 'Cập nhật bài thi không thành công !') {
-          ElNotification({
-            title: 'Error',
-            message: 'Cập nhật câu hỏi thất bại !',
-            type: 'error'
-          })
-        }
-        ElNotification({
-          title: 'Success',
-          message: 'Cập nhật câu hỏi thành công !',
-          type: 'success'
+      if (this.question.class !== '' && this.question.Subject !== 'Lựa chọn môn học' && this.question.title !== '' && Object.keys(this.answer).length > 0 && Object.keys(this.correctAns).length > 0)
+      {
+        dataQuestion.append('class', this.question.class)
+        dataQuestion.append('Subject', this.question.Subject)
+        dataQuestion.append('title', this.question.title)
+        dataQuestion.append('created_by', this.question.created_by)
+        dataQuestion.append('image', this.question.image)
+        dataQuestion.append('answerlist', JSON.stringify(this.answer))
+        dataQuestion.append('correctAns', JSON.stringify(this.correctAns))
+        dataQuestion.append('created_at', this.question.created_at)
+        // for (let [key, value] of dataQuestion.entries()) {
+        //   console.log(key, value) // key là tên trường, value là giá trị tương ứng
+        // }
+        this.ListImageAnswer.forEach((file, index) => {
+          // Nếu kiểu dữ liệu là File thì append vào mảng answerImage
+          if (file instanceof File)
+          {
+            dataQuestion.append(`answerImage_${index}`, file)
+          }
         })
-        // this.$router.push({ name: 'cauhoi' })
-      } catch (Error) {
-        console.log(Error)
+        try
+        {
+          const ques = await PutData(this.idques, dataQuestion)
+          console.log(ques.data)
+          if (ques.message == 'Cập nhật bài thi không thành công !')
+          {
+            ElNotification({
+              title: 'Error',
+              message: 'Cập nhật câu hỏi thất bại !',
+              type: 'error'
+            })
+          }
+          ElNotification({
+            title: 'Success',
+            message: 'Cập nhật câu hỏi thành công !',
+            type: 'success'
+          })
+          // this.$router.push({ name: 'cauhoi' })
+        }
+        catch (Error)
+        {
+          console.log(Error)
+        }
+      }
+      else
+      {
+        alert("Vui lòng kiểm tra lại thông tin câu hỏi")
       }
     }
   }

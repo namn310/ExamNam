@@ -91,18 +91,23 @@ onMounted(fetchCategorys)
 onMounted(getId)
 const onSubmit = () => {
   const fetchApi = async () => {
-    const result = await createExam( sizeForm )
-    console.log(result)
-    if ( result ) {
-      console.log(result)
-      ElNotification({
-        title: 'Success',
-        message: h('i', { style: 'color: teal' }, 'Tạo bài kiểm tra thành công')
-      })
-      router.replace({ name: 'exams' })
+    if (sizeForm['title']!=='' && sizeForm['category']!=='' && sizeForm['duration']!== '' && sizeForm['class']!=='' && sizeForm['totalQuestion']!=='') {
+      const result = await createExam( sizeForm )
+      // console.log(result)
+      if ( result ) {
+        console.log( result )
+        ElNotification( {
+          title: 'Success',
+          message: h( 'i', { style: 'color: teal' }, 'Tạo bài kiểm tra thành công' )
+        } )
+        router.replace( { name: 'exams' } )
+      }
+    }
+    else {
+      alert("Vui lòng nhập đầy đủ thông tin bài kiểm tra")
     }
   }
   fetchApi()
-  console.log(sizeForm)
+  // console.log(sizeForm)
 }
 </script>

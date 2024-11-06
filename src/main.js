@@ -12,9 +12,11 @@ import './style.css'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import { Ckeditor } from '@ckeditor/ckeditor5-vue'
+
 // const app = createApp(App)
 const app = createApp(App)
 registerGlobalComponents(app)
+
 app.use(ElementPlus)
 app.use(createPinia())
 app.use(router)

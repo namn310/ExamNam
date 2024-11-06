@@ -145,6 +145,7 @@ import { createResult } from '@/service/resultServeice'
 import { decodeTokenStudent } from '@/service/decodeToken'
 import { useRoute } from 'vue-router'
 import { getImageAnswer } from '@/service/questionsService'
+// eslint-disable-next-line no-unused-vars
 import CryptoJS from 'crypto-js';
 // import CheckAnswerResult from './CheckAnswerResult.vue'
 // import Cookies from 'js-cookie'

@@ -182,8 +182,11 @@ export default {
         const user = decodeTokenStudent()
         this.userId = user.data.id
         const data = await ChatByUserId(this.userId)
-        this.messages = data
-        console.log(this.messages)
+        if (data !== null)
+        {
+          this.messages = data
+          console.log(this.messages)
+        }
       }
     },
     ToggleChatBox () {

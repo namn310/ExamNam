@@ -40,14 +40,15 @@
         <!-- ô tìm kiếm -->
         <div class="d-flex border border-danger mt-2" style="border-radius: 15px">
           <button class="btn btn-white"><i class="fa-solid fa-magnifying-glass"></i></button>
-          <input class="form-control me-2" id="inputBox" v-model="searchPersonChatInput" @input="searchChat()" type="text" placeholder="Tìm kiếm..." />
+          <input class="form-control me-2" id="inputBox" v-model=" searchPersonChatInput " @input="searchChat()"
+            type="text" placeholder="Tìm kiếm..." />
         </div>
         <!-- body -->
         <div class="mt-2" style="height: 400px; border-radius: 20px">
           <!-- <p v-if="isnull">Không có người dùng nào</p> -->
           <!-- chat element -->
           <div style="width: 370px; box-shadow: 2px 1px 2px #ff9966; border-radius: 15px;cursor: pointer;"
-            class="mt-2 d-flex chatElement" v-for="( user, index) in userList" :key=" index "
+            class="mt-2 d-flex chatElement" v-for="(   user, index) in userList" :key=" index "
             @click="showUserBoxChat( user.id_user )">
             <!-- avt user -->
             <div class="p-2">
@@ -73,7 +74,7 @@
             </div>
           </div>
           <!-- nếu length của userlist bằng 0 thì hiện dòng này ra -->
-             <p v-if="userList.length < 1">Không có người dùng nào</p>
+          <p v-if=" userList.length < 1 ">Không có người dùng nào</p>
         </div>
       </div>
     </div>
@@ -93,7 +94,7 @@
       <div style="max-height: 320px; background-color: white; overflow-y: hidden">
         <!-- line chat -->
         <div class="chatbox mt-3" ref="messages" style="overflow-y: auto; height: 300px">
-          <div v-for="( message, index) in currentListUserChatShow" :key=" index ">
+          <div v-for="(   message, index) in currentListUserChatShow" :key=" index ">
             <!-- tin nhắn của user ở bên trái -->
             <div v-if=" message.type_sender !== 'admin' " class="align-items-left ms-1 me-3 d-flex p-1"
               id="message-admin">
@@ -145,12 +146,12 @@
         </div>
       </div>
       <!-- footer chat -->
-      <div class="d-flex ms-1 me-1" >
+      <div class="d-flex ms-1 me-1">
         <div class="input-group mb-1">
           <!-- <div>
             <input class="custom-file-input" type="file" hidden>
           </div> -->
-           <input v-model=" inputMessage " @keyup.enter=" sendMessage " type="text" class="form-control"
+          <input v-model=" inputMessage " @keyup.enter=" sendMessage " type="text" class="form-control"
             placeholder="Nhập tin nhắn của bạn" style="text-wrap: wrap;" />
           <div class="input-group-append">
             <button class="btn btn-outline-secondary" type="button" @click=" sendMessage ">
@@ -164,7 +165,8 @@
     <div>
       <button class="btn btn-primary" @click=" ToggleChatBox ">
         <i class="fa-solid fa-comments fa-lg" style="color: white"></i>
-        <span v-if="countMessageNotRead != 0"  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+        <span v-if=" countMessageNotRead != 0 "
+          class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
           {{ countMessageNotRead }}
           <i class="fa-regular fa-bell"></i>
         </span>
@@ -181,7 +183,7 @@ import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { decodeToken } from '@/service/decodeToken'
 import { getUserDetail } from '@/service/usersService'
-import { ListChat,updateIsread  } from '@/service/chatService'
+import { ListChat, updateIsread } from '@/service/chatService'
 export default {
   props: {
     toggleSidebar: {
@@ -247,7 +249,7 @@ export default {
         }
 
         // cập nhật trạng thái isRead của đoạn chat thành 0
-         const updateIsRead = await updateIsread(userId)
+        const updateIsRead = await updateIsread(userId)
         if (updateIsRead && updateIsRead.response === 1)
         {
           user.isRead = 0
@@ -262,7 +264,7 @@ export default {
           dataNewMess: messageData['create_at'],
           id_user: userId,
           isread: false,
-          isRead:0,
+          isRead: 0,
           lengthListMess: 1,
           list_message: [
             {
@@ -278,8 +280,8 @@ export default {
         // push vào manngr
         this.userList.push(newUserListData)
 
-          // cập nhật trạng thái isRead của đoạn chat thành 0
-         const updateIsRead = await updateIsread(userId)
+        // cập nhật trạng thái isRead của đoạn chat thành 0
+        const updateIsRead = await updateIsread(userId)
         if (updateIsRead && updateIsRead.response === 1)
         {
           user.isRead = 0
@@ -301,12 +303,15 @@ export default {
     },
     countMessageNotRead () {
       var count = 0
-      this.userList.forEach(e=>{
-        if (e.isRead === 0)
-        {
-          count++
-        }
-      })
+      if (this.userList !== null)
+      {
+        this.userList.forEach(e => {
+          if (e.isRead === 0)
+          {
+            count++
+          }
+        })
+      }
       return count
     }
   },
@@ -378,26 +383,30 @@ export default {
     // lấy danh sách người dùng chat user
     async getUserChat () {
       const data = await ListChat()
-      this.userList = data
-      // lấy độ dài mảng tin nhắn
-      this.userList.forEach((e) => {
-        if (e.list_message)
-        {
-          e.lengthListMess = Object.keys(e.list_message).length
-          e.newMess = e.list_message[e.lengthListMess - 1].message
-          e.dateNewMess = e.list_message[e.lengthListMess - 1].create_at
-          e.isread = false
-        }
-      })
-      this.sortListChatUser()
-      // hiển thị ban đầu là user chat đầu tiên
-      const user = this.userList[0]
-      this.userSocketId = user.id_user
-      this.currentUserBoxChatNameShow = user.name
-      this.currentListUserChatShow = user.list_message
-      this.boxChatShow = true
-      // sao chép ra user list ra mảng list user origin
-      this.userListOrigin = this.userList
+      // nếu data không null thì thêm dữ liệu vào mảng user list
+      if (data !== null)
+      {
+        this.userList = data
+        // lấy độ dài mảng tin nhắn
+        this.userList.forEach((e) => {
+          if (e.list_message)
+          {
+            e.lengthListMess = Object.keys(e.list_message).length
+            e.newMess = e.list_message[e.lengthListMess - 1].message
+            e.dateNewMess = e.list_message[e.lengthListMess - 1].create_at
+            e.isread = false
+          }
+        })
+        this.sortListChatUser()
+        // hiển thị ban đầu là user chat đầu tiên
+        const user = this.userList[0]
+        this.userSocketId = user.id_user
+        this.currentUserBoxChatNameShow = user.name
+        this.currentListUserChatShow = user.list_message
+        // this.boxChatShow = true
+        // sao chép ra user list ra mảng list user origin
+        this.userListOrigin = this.userList
+      }
     },
     // toogle box chat
     ToggleChatBox () {
@@ -540,14 +549,21 @@ export default {
   box-shadow: 0 0 0 0 white;
   /* Đổ bóng màu khi focus */
   outline: none;
-};
+}
+
+;
+
 .chatElement:hover {
   background-color: #d3d3d3;
   color: white;
-};
+}
+
+;
+
 .custom-file-input::-webkit-file-upload-button {
   visibility: hidden;
 }
+
 .custom-file-input::before {
   content: 'Select some files';
   display: inline-block;
@@ -563,9 +579,11 @@ export default {
   font-weight: 700;
   font-size: 10pt;
 }
+
 .custom-file-input:hover::before {
   border-color: black;
 }
+
 .custom-file-input:active::before {
   background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
 }
