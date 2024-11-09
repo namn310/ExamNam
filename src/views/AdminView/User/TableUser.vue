@@ -23,7 +23,7 @@ const fetchData = () => {
         const fetchUser = async () => {
             const result = await getUserList();
             if(result){
-                users.value = result['data']   
+                users.value =result['data']   
             }
         }
         fetchUser();

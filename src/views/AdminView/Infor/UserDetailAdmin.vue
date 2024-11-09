@@ -26,6 +26,7 @@
             class="p-2"
             style="margin-left: 30px; cursor: pointer"
             @click="UserPassActive()"
+            v-if="type_account == 'account'"
           >
             <strong>Đổi mật khẩu </strong>
           </p>
@@ -49,7 +50,7 @@
           </form>
         </div>
         <!-- change pass -->
-        <div class="user-pass mt-5" v-if="userPassShow == true">
+        <div class="user-pass mt-5" v-if="userPassShow == true ">
           <!-- <form> -->
           <div class="d-flex">
             <input
@@ -107,6 +108,7 @@ import { ElNotification } from 'element-plus'
 export default {
   data() {
     return {
+      type_account:'',
       url: '../src/assets/img/3607444.png',
       data: [],
       id: null,
@@ -129,6 +131,7 @@ export default {
   methods: {
     async getUser() {
       const decode = decodeToken()
+      this.type_account = decode.data.type_account
       this.id = decode.data.id
       // console.log(decode);
       const data2 = await getUserDetail(this.id)

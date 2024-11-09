@@ -75,7 +75,8 @@ import CardExam from '@/components/CardExam.vue'
 // import router from '@/router';
 import { getCategoryExamList, getExamList } from '@/service/examsService'
 import { onMounted, ref } from 'vue'
-
+// eslint-disable-next-line no-unused-vars
+import axios from 'axios'
 const dataCetegory = ref([])
 const data = ref([])
 const originData = ref([])
@@ -103,6 +104,10 @@ const search = (event) => {
     data.value = originData.value
   }
 }
+// const getAnxios = async () => {
+//   const result = axios.get('http://localhost:8080/exams')
+//   console.log(result)
+// }
 const getExamBySearch = () => {
   const result = SearchInput.value.toLowerCase()
   if (result !== ' ')
@@ -133,7 +138,6 @@ const fetchDataExam = async () => {
     data.value = result['data']['data']
     originData.value = result['data']['data']
     totalPage.value = result['data']['total_page']
-    console.log(data.value)
   }
 }
 // const renderMath = () => {
@@ -145,6 +149,7 @@ const fetchDataExam = async () => {
 onMounted(() => {
   fetchDataCatgory()
   fetchDataExam()
+  // getAnxios()
 })
 </script>
 

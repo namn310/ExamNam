@@ -61,9 +61,10 @@
               <div>
                 <img :src=" iconGoogle " style="width:30px;height:30px" class="img-fluid me-2">
               </div>
-              <div>
-                <a style="text-decoration: none; color: black">Đăng nhập bằng Google</a>
+              <div :disabled=" isLoggingIn ">
+                <a style="text-decoration: none; color: black" @click="loginGoogle()">Đăng nhập bằng Google</a>
               </div>
+
             </button>
           </div>
           <div class="row">
@@ -78,6 +79,11 @@
 <script>
 import { Login } from '@/service/usersService'
 import Cookies from 'js-cookie'
+// eslint-disable-next-line no-unused-vars
+import { googleAuthCodeLogin } from "vue3-google-login"
+// eslint-disable-next-line no-unused-vars
+import { googleTokenLogin } from "vue3-google-login"
+import { googleSdkLoaded } from "vue3-google-login"
 export default {
   data () {
     return {
@@ -87,9 +93,10 @@ export default {
         email: '',
         password: '',
         role: 'student'
-      }
+      },
     }
   },
+
   methods: {
     async checkLogin () {
       if (this.data.role == '')
@@ -141,6 +148,98 @@ export default {
         {
           alert(e)
         }
+      }
+    },
+    async loginGoogle () {
+      try
+      {
+        googleSdkLoaded((google) => {
+          // Initialize the Google OAuth 2.0 client with the correct configuration
+          google.accounts.id.initialize({
+            client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,  // Your Google Client ID
+            callback: (response) => {
+              // This callback function will receive the ID token in response.credential
+              // console.log("Google Login Response:", response);
+              const idToken = response.credential;  // This is the ID token you need
+              // console.log(idToken)
+              this.verifyTokenGoogle(idToken);  // Call your backend to verify the ID token
+            }
+          });
+
+          // Prompt the user to log in with Google
+          google.accounts.id.prompt();  // This will display the Google login prompt
+        });
+      }
+      catch
+      {
+        console.log('Error !')
+      }
+    },
+    async verifyTokenGoogle (token) {
+      try
+      {
+        const dataSend = {
+          token: token,
+          role: this.data.role
+        }
+        const sendData = await fetch('http://localhost:8080/users/loginGoogle', {
+          method: 'POST',
+          body: JSON.stringify(dataSend),
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        })
+        const data = await sendData.json();
+        // console.log(data)
+        // kiểm tra token và điều hướng đến giao diện
+        if (this.data.role == 'student')
+        {
+          if (data.jwtStudent)
+          {
+            Cookies.set('tokenStudent', data.jwtStudent, {
+              expires: 1, //set life cookie 1 ngày,
+              secure: true,
+              samesite: 'Strict'
+              // httponly: true
+            })
+            alert(data.message)
+            this.$router.push({ name: 'home' }).then(() => {
+              window.location.reload()
+            })
+          }
+          else
+          {
+            alert(data.message)
+          }
+        }
+
+        if (this.data.role == 'admin')
+        {
+          if (data.jwtAdmin)
+          {
+            Cookies.set('tokenAdmin', data.jwtAdmin, {
+              expires: 1, //set life cookie 1 ngày,
+              secure: true,
+              samesite: 'Strict'
+              // httponly: true
+            })
+          }
+          alert(data.message)
+
+          this.$router.push({ name: 'homeAdmin' })
+        }
+        // if (data.sucess)
+        // {
+        //   console.log('User authenticated successfully:', data);
+        // }
+        // else
+        // {
+        //   console.log('User authenticated successfully:', data);
+        // }
+      }
+      catch (e)
+      {
+        console.log(e)
       }
     }
   }

@@ -73,7 +73,7 @@
                   <li>
                     <RouterLink :to=" { name: 'ResultExam' } ">Tài khoản</RouterLink>
                   </li>
-                  <RouterLink :to=" { name: 'reset-password' } ">
+                  <RouterLink  :to=" { name: 'reset-password' } " v-if="type_account == 'account'">
                     <li>Đổi mật khẩu</li>
                   </RouterLink>
                   <RouterLink :to=" { name: 'ResultExam' } ">
@@ -95,11 +95,13 @@
 // nếu để ảnh ở trong mục src thì để tránh lỗi không hiển thị đc ảnh khi load trang thì ta nên import ảnh 
 import LogoWeb from '@/assets/img/LogoWeb.png'
 import Cookies from 'js-cookie';
+import { decodeTokenStudent } from '@/service/decodeToken'
 // nếu không thì để ảnh ở trong file public thì có thể dùng đường dẫn tuyệt đối để dẫn truyền file
 export default {
   name: 'NavBarView',
   data () {
     return {
+      type_account:'',
       visible: false,
       UserToggleVisible: false,
       imgageLogo: LogoWeb,
@@ -115,6 +117,7 @@ export default {
   },
   created () {
     this.checkToken()
+    console.log(this.type_account)
   },
   methods: {
     toggleMenu () {
@@ -126,6 +129,8 @@ export default {
     checkToken () {
       if (Cookies.get('tokenStudent') !== undefined)
       {
+        const user = decodeTokenStudent()
+        this.type_account = user.data.type_account
         return true;
       }
       else

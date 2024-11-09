@@ -185,7 +185,6 @@ export default {
         if (data !== null)
         {
           this.messages = data
-          console.log(this.messages)
         }
       }
     },

@@ -117,9 +117,9 @@ const exportPDF = async () => {
   const result = await fetch('http://localhost:8080/assets/image/AnswerQuestion/1727429989_Screenshot 2024-09-27 163718.png',{
     method: 'GET',
     // mode: 'no-cors',  
-     headers: { 'Accept': 'image/png' }
+    // headers: { 'Accept': 'image/png' }
   });
-  console.log(result)
+  console.log(result.json())
   // const blob = await result.blob();
   // console.log(blob)
 
