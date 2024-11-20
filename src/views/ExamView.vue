@@ -17,6 +17,9 @@
           </template>
         </ModalView>
       </h1>
+        <div class="alert alert-warning w-50 mt-2" role="alert">
+        Các đề thi có công thức toán học sẽ mất một chút thời gian gian nhỏ để load các công thức toán học ! 
+      </div>
       <hr />
       <form class="test-form mt-2" autocomplete="off" @submit.prevent enctype="multipart/form-data">
         <div class="test-wrapper d-flex">
@@ -140,7 +143,7 @@
 </template>
 <script>
 import ModalView from '@/components/ModalView.vue'
-import { getExamDetail, getQuestionExam } from '@/service/examsService'
+import { getExamDetail, getQuestionToDoExam } from '@/service/examsService'
 import { createResult } from '@/service/resultServeice'
 import { decodeTokenStudent } from '@/service/decodeToken'
 import { useRoute } from 'vue-router'
@@ -167,10 +170,8 @@ export default {
       data: [],
       id: 0,
       score: 0,
-      scoreQuestion: 0,
+      totalQuestion:0,
       blank_question: null,
-      correct_question: null,
-      incorrect_question: null
     }
   },
   // mounted () {
@@ -186,9 +187,8 @@ export default {
       this.data = result['data']
       this.durationExam = result['data'].duration
       this.startCountDown()
-      this.scoreQuestion = 10 / result['data'].totalQuestion
-    }
-    const question = await getQuestionExam(id)
+      this.totalQuestion = result['data'].totalQuestion    }
+    const question = await getQuestionToDoExam(id)
     if (question)
     {
       this.questions = question.data
@@ -197,7 +197,7 @@ export default {
       for (const [index, e] of this.questions.entries())
       {
         e.answerlist = JSON.parse(e.answerlist)
-        e.correctAns = JSON.parse(e.correctAns)
+        // e.correctAns = JSON.parse(e.correctAns)
         // lấy hình ảnh câu hỏi
         if (e.image !== null && e.image !== '')
         {
@@ -224,6 +224,7 @@ export default {
         // this.renderMath()
       }
       this.renderMath()
+      console.log(this.questions)
     }
   },
   mounted () {
@@ -341,7 +342,7 @@ export default {
       localStorage.setItem('dataQuestion', JSON.stringify(this.questions))
       event.preventDefault()
       event.returnValue = ''
-      console.log('nam')
+      console.log('Load lại trang thời gian vẫn giữ nguyên không bị refresh')
     },
     startCountDown () {
       // localStorage.clear();
@@ -424,30 +425,31 @@ export default {
     // Làm danh sách câu trả lời người dùng đã chọn để làm so sánh đáp án
     ListAnswerSelected () {
       this.blank_question = 0
-      this.correct_question = 0
-      this.incorrect_question = 0
       // hiển thị hộp thông báo nộp bài
       this.questions.forEach((e) => {
         if (e.Answer)
         {
-          if (Object.keys(e.Answer[0]).length > 0)
-          {
-            if (this.CheckAnswer(e.correctAns, Object.values(e.Answer[0])) === true)
-            {
-              // nếu hàm check answer true thì câu đúng cộng thêm 1
-              this.correct_question += 1
-            } else
-            {
-              // false thì câu này sai
-              this.incorrect_question += 1
-              e.idIncorrect={id:e.id,state:0}
-            }
-          } else
+          // if (Object.keys(e.Answer[0]).length > 0)
+          // {
+          //   if (this.CheckAnswer(e.correctAns, Object.values(e.Answer[0])) === true)
+          //   {
+          //     // nếu hàm check answer true thì câu đúng cộng thêm 1
+          //     this.correct_question += 1
+          //   } else
+          //   {
+          //     // false thì câu này sai
+          //     this.incorrect_question += 1
+          //     e.idIncorrect={id:e.id,state:0}
+          //   }
+          // } else
+          // {
+          if (!Object.keys(e.Answer[0]).length > 0)
           {
             // nếu chưa chọn thì đây là câu bỏ trống
             this.blank_question += 1
-            e.idIncorrect={id:e.id,state:0}
+            e.idIncorrect = { id: e.id, state: 0 }
           }
+          // }
         } else
         {
           // nếu không tồn tại thuộc tính Answer trong mảng thì là câu bỏ trống
@@ -457,6 +459,7 @@ export default {
       })
       // console.log(this.blank_question, this.correct_question, this.incorrect_question)
     },
+    
     // kiểm tra các câu đúng
     CheckAnswer (correctAns, answerSelected) {
       if (correctAns.length !== answerSelected.length)
@@ -472,44 +475,86 @@ export default {
     // Nộp bài kiểm tra
     async handleSubmit () {
       this.ListAnswerSelected()
-      // set mảng answers
+      // tạo mảng danh sách câu trả lời của người dùng theo từng câu hỏi để gửi dữ liệu đi
       this.answers = []
-      const questionIncorect = []
+      const questionCheck = []
       // duyệt mảng question để lấy dữ liệu câu trả lời người dùng rồi đổ vào mảng answers
       this.questions.forEach((e) => {
+        // mảng dùng để thực hiện việc đối chiếu đáp án với đáp án đúng
+         questionCheck.push({
+            id: e.id,
+            state: 0
+          })
+        // danh sách câu hỏi người dùng chọn 
+        const ArrayAnswerToPush = [];
         if (e.Answer)
         {
+          // kiểm tra nếu danh sách câu trả lời lớn hơn 0 
           if (Object.keys(e.Answer[0]).length > 0)
           {
-            Object.values(e.Answer[0]).forEach((e1) => {
-              this.answers.push({
-                id: e.id,
-                answer: e1
-              })
+            // dữ liệu answer được lưu ở dạng đối tượng
+            // duyệt phần tử đầu tiên và thêm vào mảng ArrayAnswerToPush
+            Object.values(e.Answer[0]).forEach(value => {
+              ArrayAnswerToPush.push(value)
+            })
+            // thêm dữ liệu câu trả lời gồm id câu hỏi và danh sách câu trả lời mà người dùng chọn
+            this.answers.push({
+              id: e.id,
+              answer:ArrayAnswerToPush
+            })
+            // const answersFromQuestion = Object.values(e.Answer[0]);
+
+            // Object.values(e.Answer[0]).forEach((e1) => {
+
+            //   // this.answers.forEach(e2 => {
+            //   //   if (e2.id === e.id)
+            //   //   {
+            //   //     e2.answer.push(e1);
+            //   //   }
+            //   //     else
+            //   // {
+            //   //   this.answers.push({
+            //   //     id: e.id,
+            //   //     answer: e1
+            //   //   })
+            //   // }
+            //   // })
+             
+            
+            // })
+
+          }
+          // nếu độ dài câu trả lời là 0 thì thêm một mảng câu hỏi rỗng 
+          else
+          {
+             this.answers.push({
+              id: e.id,
+              answer:ArrayAnswerToPush
             })
           }
         }
-        if (e.idIncorrect)
-        {
-          questionIncorect.push({
-            id: e.idIncorrect.id,
-            state: e.idIncorrect.state
-          })
-        }
+        // if (e.idIncorrect)
+        // {
+        //   questionIncorect.push({
+        //     id: e.idIncorrect.id,
+        //     state: e.idIncorrect.state
+        //   })
+        // }
       })
-      // console.log(this.questions)
+      console.log(this.questions,this.answers,questionCheck)
       this.score = this.scoreQuestion * this.correct_question
       const user = decodeTokenStudent()
       const result = await createResult({
         id_user: user.data.id,
         id_exam: parseInt(this.id),
-        score: this.score,
+        // score: this.score,
         duration: this.durationExam * 60 - this.countdown,
         blank_question: this.blank_question,
-        correct_question: this.correct_question,
-        incorrect_question: this.questions.length - this.blank_question - this.correct_question,
-        listQuestionIncorrect: questionIncorect,
+        // correct_question: this.correct_question,
+        // incorrect_question: this.questions.length - this.blank_question - this.correct_question,
+        listQuestionCheck: questionCheck,
         answers: this.answers,
+        totalQuestion: this.totalQuestion,
       })
       if (result)
       {
@@ -522,7 +567,7 @@ export default {
             localStorage.removeItem(key)
           }
         }
-        // console.log(result)
+        console.log(result)
         this.$router.replace({ name: 'detailResultExam', params: { id: result.lastInsert } })
       }
     }

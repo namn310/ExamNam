@@ -107,11 +107,11 @@ const data = ref([])
 const route = useRoute()
 const id = route.params.id
 const ExamName = ref()
- const convertToMinutes = (seconds) => {
-      const minutes = Math.floor(seconds / 60);
-      const remainingSeconds = seconds % 60;
-      return `${minutes} p ${remainingSeconds} s`;
-} 
+const convertToMinutes = (seconds) => {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  return `${minutes} p ${remainingSeconds} s`;
+}
     
 const fetchData = async () => {
   const result = await getResultDetail(id)
