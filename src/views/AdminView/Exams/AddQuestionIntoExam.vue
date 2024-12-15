@@ -1,5 +1,10 @@
 <template>
   <div class="mx-auto container bg-color-white">
+    <div class="mt-3">
+      <p>
+        <strong>Đề: {{ titleExam }} </strong>
+      </p>
+    </div>
     <div class="text-[50px] text-center">Thêm câu hỏi</div>
     <form class="mb-5" @submit.prevent enctype="multipart/form-data">
       <div class="class">
@@ -97,17 +102,16 @@
 <!-- eslint-disable no-unused-vars -->
 <script>
 import { decodeToken } from '@/service/decodeToken'
-import { PostData } from '@/service/questionsService'
-import { onMounted, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+// import { onMounted, reactive, ref } from 'vue'
+// import { useRouter } from 'vue-router'
 // ckeditor
 import { Ckeditor } from '@ckeditor/ckeditor5-vue'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 // import thư viện làm toast message
 import { ElNotification } from 'element-plus'
-import { getCategoryExamList } from '@/service/examsService'
+import { getCategoryExamList, getNameExam, AddQuestionIntoExamOption } from '@/service/examsService'
 import axios from 'axios'
-import { data } from 'autoprefixer'
+// import { data } from 'autoprefixer'
 export default {
   components: {
     Ckeditor
@@ -134,22 +138,31 @@ export default {
       answer: ['', '', '', ''],
       correctAns: [],
       ListImageAnswer: [],
-      ListImageAnswerUrl: []
+      ListImageAnswerUrl: [],
+      idExam: this.$route.params.id,
+      titleExam: ''
     }
   },
   watch: {
     correctAns () {
       this.renderMath()
-    },
-
+    }
   },
   mounted () {
     this.renderMath()
     this.getId()
     this.getCat()
+    this.getNameExam()
   },
   created () { },
   methods: {
+    async getNameExam () {
+      var result = await getNameExam(this.idExam)
+      if (result !== null)
+      {
+        this.titleExam = result.title
+      }
+    },
     renderMath () {
       // Kiểm tra xem MathJax đã được tải chưa
       this.$nextTick(() => {
@@ -204,72 +217,76 @@ export default {
       this.question.created_by = id.data.id
     },
     async postQuestion () {
-      // if (this.question.class === '' || this.question.Subject === '' ||this.question.Subject==='Lựa chọn môn học'|| this.question.title === '' || this.question.answer === '' || this.correctAns === '')
-      // {
-      //   alert('Vui lòng điền đầy đủ thông tin câu hỏi')
-      // }
-      // else
-      // {
-      try
+        try {
+      // chuyển về json
+      this.question.answerlist = JSON.stringify(this.answer, null, 2)
+      this.question.correctAns = JSON.stringify(this.correctAns, null, 1)
+      
+      if (
+        this.question.class !== '' &&
+        this.question.Subject !== 'Lựa chọn môn học' &&
+        this.question.title !== '' &&
+        Object.keys(this.answer).length > 0 &&
+        Object.keys(this.correctAns).length > 0
+      )
       {
-        // chuyển về json
-        this.question.answerlist = JSON.stringify(this.answer, null, 2)
-        this.question.correctAns = JSON.stringify(this.correctAns, null, 1)
         const dataQuestion = new FormData()
-        if (this.question.class !== '' && this.question.Subject !== 'Lựa chọn môn học' && this.question.title !== '' && Object.keys(this.answer).length > 0 && Object.keys(this.correctAns).length > 0)
+        dataQuestion.append('class', (this.question.class))
+        dataQuestion.append('Subject', (this.question.Subject))
+        dataQuestion.append('title', (this.question.title))
+        dataQuestion.append('created_by', (this.question.created_by))
+        dataQuestion.append('image', (this.question.image))
+        dataQuestion.append('answerlist', JSON.stringify(this.answer))
+        dataQuestion.append('correctAns', JSON.stringify(this.correctAns))
+        this.ListImageAnswer.forEach((file, index) => {
+          if (file)
+          {
+            dataQuestion.append(`answerImage_${index}`, (file))
+          }
+        })
+        // Kiểm tra từng giá trị trong FormData
+        // for (let [key, value] of dataQuestion.entries())
+        // {
+        //   console.log(key, value);  // key là tên trường, value là giá trị tương ứng
+        // }
+        const response = await AddQuestionIntoExamOption(this.idExam, dataQuestion)
+        console.log(response)
+        if (response)
         {
-          dataQuestion.append('class', this.question.class)
-          dataQuestion.append('Subject', this.question.Subject)
-          dataQuestion.append('title', this.question.title)
-          dataQuestion.append('created_by', this.question.created_by)
-          dataQuestion.append('image', this.question.image)
-          dataQuestion.append('answerlist', JSON.stringify(this.answer))
-          dataQuestion.append('correctAns', JSON.stringify(this.correctAns))
-          this.ListImageAnswer.forEach((file, index) => {
-            if (file)
-            {
-              dataQuestion.append(`answerImage_${index}`, file)
-            }
-          })
-          // Kiểm tra từng giá trị trong FormData
-          // for (let [key, value] of dataQuestion.entries())
-          // {
-          //   console.log(key, value);  // key là tên trường, value là giá trị tương ứng
-          // }
-          const response = await PostData(dataQuestion)
-          console.log(response,dataQuestion)
-          if (!response)
+          if (response.data.result == 'success')
           {
             ElNotification({
-              title: 'Error',
-              message: response.data.message,
+              title: 'Thông báo',
+              message: 'Thêm câu hỏi thành công',
+              type: 'success'
+            })
+          } else
+          {
+            ElNotification({
+              title: 'Thông báo',
+              message: 'Thêm câu hỏi thất bại. Có lỗi xảy ra',
               type: 'error'
             })
           }
+        } else
+        {
           ElNotification({
             title: 'Success',
-            message: response.data.message,
+            message: response.data.result,
             type: 'success'
           })
-          this.$router.push({ name: 'create-cauhoi' })
         }
-        else
-        {
-          alert("Vui lòng nhập đầy đủ thông tin câu hỏi")
-        }
-
-      } catch (Error)
+        //   this.$router.push({ name: 'create-cauhoi' })
+      } else
       {
-        alert('Có lỗi xảy ra '.Error)
+        alert('Vui lòng nhập đầy đủ thông tin câu hỏi')
       }
-      // }
+        } catch (Error) {
+          console.log(Error)
+        }
+      
     }
   }
 }
 </script>
-<style scoped>
-/* .Subject .ck-editor__editable_inline {
-    min-height: 400px;
-    /* Set the minimum height for the editor */
-/* } * */
-</style>
+<style scoped></style>

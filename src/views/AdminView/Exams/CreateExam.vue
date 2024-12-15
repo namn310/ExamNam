@@ -1,6 +1,6 @@
 <template>
   <div class="mx-auto container bg-color-white">
-    <div class="text-[50px] text-center">Thêm bài kiểm tra</div>
+    <div class="text-[50px] text-center">Thêm bài kiểm tra Random câu hỏi</div>
     <el-form class="w-full p-3" :model="sizeForm" label-width="auto" size="large">
       <el-form-item label="Tên bài thi">
         <el-input v-model="sizeForm.title" />
@@ -93,9 +93,7 @@ const onSubmit = () => {
   const fetchApi = async () => {
     if (sizeForm['title']!=='' && sizeForm['category']!=='' && sizeForm['duration']!== '' && sizeForm['class']!=='' && sizeForm['totalQuestion']!=='') {
       const result = await createExam( sizeForm )
-      // console.log(result)
       if ( result ) {
-        console.log( result )
         ElNotification( {
           title: 'Success',
           message: h( 'i', { style: 'color: teal' }, 'Tạo bài kiểm tra thành công' )

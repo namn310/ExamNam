@@ -17,15 +17,6 @@ import { Ckeditor } from '@ckeditor/ckeditor5-vue'
 import vue3GoogleLogin from 'vue3-google-login'
 const app = createApp(App)
 registerGlobalComponents(app)
-// app.use(GoogleSignInPlugin, {
-//   clientId: '423759799337-qi08peeppaunb0dc4lcndr9qbdra49sh.apps.googleusercontent.com'
-// })
-// app.use(gAuthPlugin, {
-//   clientId: '423759799337-qi08peeppaunb0dc4lcndr9qbdra49sh.apps.googleusercontent.com',
-//   scope: 'email',
-//   prompt: 'consent',
-//   fetch_basic_profile: false
-// })
 
 app.use(vue3GoogleLogin, {
   clientId: '423759799337-qi08peeppaunb0dc4lcndr9qbdra49sh.apps.googleusercontent.com'

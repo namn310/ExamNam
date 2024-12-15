@@ -2,7 +2,7 @@
   <div class="content-wrapper p-4 mb-4">
     <div class="xl-container">
       <h1 class="h4 text-center mb-4">
-        {{ data.title }}
+        {{ data && data.title ? data.title :"N/A" }}
         <button class="btn btn-warning btn-sm" @click=" toggleModal2 ">Thoát</button>
         <ModalView :visible=" showModal2 " @close=" toggleModal2 ">
           <template v-slot:modal-body>
@@ -184,10 +184,11 @@ export default {
     const result = await getExamDetail(id)
     if (result)
     {
-      this.data = result['data']
-      this.durationExam = result['data'].duration
+      // console.log(result)
+      this.data = result['result']
+      this.durationExam = result['result'].duration
       this.startCountDown()
-      this.totalQuestion = result['data'].totalQuestion    }
+      this.totalQuestion = result['result'].totalQuestion    }
     const question = await getQuestionToDoExam(id)
     if (question)
     {
@@ -224,7 +225,7 @@ export default {
         // this.renderMath()
       }
       this.renderMath()
-      console.log(this.questions)
+      // console.log(this.questions)
     }
   },
   mounted () {
@@ -567,7 +568,7 @@ export default {
             localStorage.removeItem(key)
           }
         }
-        console.log(result)
+        // console.log(result)
         this.$router.replace({ name: 'detailResultExam', params: { id: result.lastInsert } })
       }
     }

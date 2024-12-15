@@ -12,12 +12,12 @@
               <span>Thời gian làm bài: {{data.duration}} phút</span> |
               <span>{{ data.totalQuestion }} câu hỏi</span>
 
-              | <span>1806 bình luận</span>
+              | <span>{{ totalComment   }} bình luận</span>
             </div>
 
             <div>
                <i class="fa-solid fa-user-pen me-2"></i>
-              567453 người đã luyện tập đề thi này
+              {{ data.count_user_do }} người đã luyện tập đề thi này
             </div>
             <br />
             <div class="tab-content" id="nav-tabContent">
@@ -129,7 +129,8 @@
   const showModal = ref(false);
   const route = useRoute();
   const id = route.params.id;
-  const data = ref([]);
+const data = ref([]);
+const totalComment = ref();
   const listComments = ref([]);
   const listChildComments = ref([])
   
@@ -157,7 +158,8 @@
     const fetchApi = async () => {
         const result = await getExamDetail(id);
         if(result){
-          data.value = result.data
+          data.value = result.result
+          totalComment.value = result.Totalcomment.total
         }
     }
     fetchApi();

@@ -6,6 +6,11 @@ export const getQuestionList = async () => {
   const result = await get(`questions`)
   return result
 }
+// lấy danh sách câu hỏi theo danh mục
+export const getQuestionListByCategory = async (idCat, page) => {
+  const result = await get(`questions?category=${idCat}&page=${page}`)
+  return result
+}
 export const getUserCreate = async () => {
   const result = await get('questions/userCreate')
   return result
@@ -42,7 +47,7 @@ export const GetDetail = async (id) => {
   const result = await get(`questions/detail/${id}`)
   return result
 }
-export const questionsPage = async (page) => {
-  const result = await get(`questions?page=${page}`)
+export const questionsPage = async (category, page) => {
+  const result = await get(`questions?category=${category}&page=${page}`)
   return result
 }

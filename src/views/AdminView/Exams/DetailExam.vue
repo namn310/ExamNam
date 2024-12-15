@@ -3,20 +3,38 @@
 <template>
   <div class="p-10">
     <div>
+      <RouterLink :to=" { name: 'AddQuestion-into-Exam', params: { id: id } } ">
+        <button class="btn btn-success mb-3 me-3"> <i class="fa-solid fa-plus fa-lg me-2"></i>Thêm câu hỏi vào bài thi
+        </button>
+      </RouterLink>
       <RouterLink :to=" { name: 'thongke', params: { id: id } } ">
         <button class="btn btn-primary mb-3">Thống kê dữ liệu làm bài kiểm tra</button>
+      </RouterLink>
+      <RouterLink :to=" { name: 'IRT_EXAM', params: { id: id } } ">
+        <button class="btn btn-primary mb-3 ms-3">Dữ liệu tính theo IRT </button>
       </RouterLink>
       <button @click="exportPDF()" class="btn btn-danger ms-3 mb-3">Xuất pdf<i
           class="ms-2 fa-solid fa-file-pdf fa-lg"></i></button>
     </div>
-    <div style="margin-bottom: 15px" ref="dataQuestion" class="dataQuestion">
+    <div>
+      <div class="nameExam d-flex justify-content-center">
+        <p style="font-size:3vw;font-size:3vh"><strong>{{ ExamDetail.title }} </strong></p>
+      </div>
+      <div class="d-flex justify-content-end">
+        <p>Thời gian làm bài: {{ ExamDetail.duration }} phút</p>
+      </div>
+    </div>
+    <div style="margin-bottom: 15px" ref="dataQuestion" class="dataQuestion mt-2">
       <!-- Danh sách câu hỏi: <el-switch v-model="fill" /> -->
       <el-space :fill=" fill " wrap>
-        <el-card v-for="(  i, index) in question" :key=" i " class="box-card">
+        <el-card v-for="(   i, index) in question" :key=" i " class="box-card">
           <template #header>
             <div class="card-header d-flex">
-              <span>Câu {{ index + 1 }}:</span>
+              <span><strong>Câu {{ index + 1 }}:</strong></span>
               <span class="ms-2" text v-html=" i.title "></span>
+              <div>
+                <button @click="deleteQuestion(i.id)" class="btn btn-danger" style="position: absolute;right: 50px;">x</button>
+              </div>
             </div>
           </template>
           <div v-if=" i.ImageQuestionUrl !== '' && i.ImageQuestionUrl !== null ">
@@ -25,7 +43,7 @@
             </div>
           </div>
           <div>
-            <div v-for="(  ans, index2) in i.answerlist" :key=" index2 " class="text item">
+            <div v-for="(   ans, index2) in i.answerlist" :key=" index2 " class="text item">
               <span>{{ getLabel( index2 ) }}. {{ ans }}</span>
               <div>
                 <div style="position: relative; width: 30%; height: 30%" v-if="
@@ -47,11 +65,12 @@
 <script lang="js" setup>
 // eslint-disable-next-line no-unused-vars
 import axios from 'axios';
-import { getQuestionExam } from '@/service/examsService'
+import { getQuestionExam,DeleteQuestionInExam,getExamDetail } from '@/service/examsService'
 import { getImageAnswer } from '@/service/questionsService'
 // import { a } from 'vitest/dist/suite-IbNSsUWN';
 import { onMounted, ref, nextTick } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
+import { ElNotification } from 'element-plus'
 // thư viện pdfmake
 // import PdfPrinter from 'pdfmake'
 // eslint-disable-next-line no-unused-vars
@@ -59,6 +78,7 @@ import html2canvas from 'html2canvas'
 // eslint-disable-next-line no-unused-vars
 import jsPDF from 'jspdf'
 const question = ref([])
+const ExamDetail = ref([])
 const route = useRoute()
 // const ListImageAnswer = ref([])
 // const ListImageAnswerUrl = ref([])
@@ -82,113 +102,15 @@ const renderMath = () => {
     })
   }
 }
-const dataQuestion = ref(null)
-// const exportPDF = async () => {
-//   try
-//   {
-//     const doc = new jsPDF()
-//     if (dataQuestion.value)
-//     {
-//       await doc.html(dataQuestion.value, {
-//         callback: (doc) => {
-//           doc.save("document.pdf"); // Lưu file PDF
-//         },
-//         x: 10, // Khoảng cách từ bên trái
-//         y: 10, // Khoảng cách từ trên
-//         width: 190, // Chiều rộng
-//         windowWidth: 1024, // Chiều rộng của cửa sổ 
-//         // html2canvas: {
-//         //   scale: 2,
-//         //   useCORS: true // cho phép truy cập hình ảnh từ nguồn khác để tránh báo lỗi CORS
-//         // }
-//       });
-//     }
-//     else
-//     {
-//     console.log("Có lỗi xảy ra")
-//   }
-//   }
-//   catch (e)
-//   {
-//     console.log(e)
-//   }
-// }
-const exportPDF = async () => {
-  const result = await fetch('http://localhost:8080/assets/image/AnswerQuestion/1727429989_Screenshot 2024-09-27 163718.png',{
-    method: 'GET',
-    // mode: 'no-cors',  
-    // headers: { 'Accept': 'image/png' }
-  });
-  console.log(result.json())
-  // const blob = await result.blob();
-  // console.log(blob)
-
-  // try
-  // {
-  // const doc = new jsPDF();
-    
-
-    // if (dataQuestion.value)
-    // {
-    //   await doc.html(dataQuestion.value, {
-    //     callback: async (doc) => {
-    //       const imgElements = dataQuestion.value.querySelectorAll('box-card .img-fluid');
-    //       for (var i = 0; i < imgElements.length; i++)
-    //       {
-    //         const img = imgElements[i];
-    //         const imgUrl = img.src;
-    //         console.log(imgUrl)
-    //         // try
-    //         // {
-    //           // Fetch image as a blob
-    //           const response = await fetch(imgUrl, {
-    //             method: 'GET',
-    //             mode: 'no-cors',
-    //           });
-    //           console.log(imgUrl)
-    //           const blob = await response.blob();
-
-    //           // Convert blob to Base64
-    //           const reader = new FileReader();
-    //           reader.onloadend = () => {
-    //             const imgData = reader.result;
-
-    //             // Set image position and dimensions
-    //             const x = parseFloat(img.getAttribute("data-x") || 10);
-    //             const y = parseFloat(img.getAttribute("data-y") || 10);
-    //             const width = parseFloat(img.getAttribute("data-width") || 50);
-    //             const height = parseFloat(img.getAttribute("data-height") || 50);
-
-    //             // Add image to PDF
-    //             doc.addImage(imgData, "JPEG", x, y, width, height);
-    //           };
-    //           reader.readAsDataURL(blob); // Convert blob to Base64
-    //         // } catch (error)
-    //         // {
-    //         //   console.error("Error fetching or converting image:", error);
-    //         // }
-    //       }
-
-    //       // Save the PDF
-    //       doc.save("document.pdf");
-    //     },
-    //     x: 10,
-    //     y: 10,
-    //     width: 190,
-    //     windowWidth: 1024
-    //   });
-    // } else
-    // {
-    //   console.log("Có lỗi xảy ra");
-    // }
-  // } catch (e)
-  // {
-  //   console.log(e);
-  // }
-};
 // lấy dữ liệu từ api
 const fetchData = async () => {
   const result = await getQuestionExam(id)
+  const Exam = await getExamDetail(id)
+  if (Exam)
+  {
+    ExamDetail.value = Exam.result
+  }
+  console.log(ExamDetail.value)
   if (result)
   {
     question.value = result['data']
@@ -230,7 +152,47 @@ const fetchData = async () => {
       }
       // renderMath()
     }
+    // console.log(question.value)
     renderMath()
+  }
+}
+const deleteQuestion = async (idQues) => {
+  if (confirm("Bạn có muốn xóa câu hỏi này không ?"))
+  {
+   
+      const result = await DeleteQuestionInExam(idQues, id)
+      if (result)
+      {
+        console.log(result)
+        if (result.result == 'true')
+        {
+          // xóa câu hỏi
+          // câu hỏi nào có id trùng thì xóa đi
+          question.value = question.value.filter((q) => q.id !== idQues);
+           ElNotification({
+              title: 'Thông báo',
+              message: 'Xóa câu hỏi thành công',
+              type: 'success'
+            })
+        }
+        else
+        {
+           ElNotification({
+              title: 'Thông báo',
+              message: 'Xóa câu hỏi thất bại',
+              type: 'error'
+            })
+        }
+      }
+      else
+      {
+        alert("Có lỗi xảy ra")
+      }
+    // console.log(id)
+  }
+  else
+  {
+    return
   }
 }
 onMounted(fetchData)

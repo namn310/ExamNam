@@ -1,3 +1,4 @@
+/* eslint-disable vue/multi-word-component-names */
 import { defineAsyncComponent } from "vue";
 
 export function registerGlobalComponents(app) {

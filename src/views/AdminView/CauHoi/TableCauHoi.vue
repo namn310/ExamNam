@@ -9,9 +9,9 @@
   <div class="pt-8">
     <!-- lọc data theo yêu cầu -->
     <div class="mb-2" style="width: 30%">
-      <select class="form-select" @change=" getOptionBySubject " v-model=" currentSubject ">
-        <option selected>Lựa chọn môn học</option>
-        <option v-for="( choice, index) in category" :key=" index ">{{ choice['title'] }}</option>
+      <select class="form-select" @change="getOptionBySubject " v-model=" currentSubject ">
+        <option selected>Tất cả</option>
+        <option v-for="( choice, index) in category" :key=" index " :value="choice.id">{{ choice.title }}</option>
       </select>
     </div>
     <!-- search -->
@@ -78,7 +78,8 @@ import {
   getQuestionList,
   DeleteQues,
   questionsPage,
-  getUserCreate
+  getUserCreate,
+  getQuestionListByCategory
 } from '@/service/questionsService'
 import { ElNotification } from 'element-plus'
 // import Cookies from 'js-cookie'
@@ -98,10 +99,11 @@ export default {
       TotalQuestion: 0,
       ListPages: [],
       TotalPage: 0,
-      currentPage: 0,
+      currentPage: 1,
       search: null,
       category: [],
-      currentSubject: 'Lựa chọn môn học'
+      currentSubject: 'Tất cả',
+      currentIdSubject:0
     }
   },
   watch: {
@@ -110,7 +112,7 @@ export default {
       this.renderMath();
     }
   },
-  created () {
+  mounted () {
     this.fetchQuestion()
     this.renderMath()
   },
@@ -129,17 +131,51 @@ export default {
       }
     },
     // lấy tên môn học cần lọc
-    getOptionBySubject () {
-      // console.log(this.currentSubject)
-      if (this.currentSubject.toLowerCase() == 'lựa chọn môn học')
+    async getOptionBySubject (event) {
+      this.currentIdSubject = event.target.value
+      // if (this.currentSubject === 'Lựa chọn môn học')
+      // {
+      //   this.currentIdSubject = 0
+      // }
+      const result = await getQuestionListByCategory(this.currentIdSubject, this.currentPage)
+      console.log(result)
+      if (result)
       {
-        return (this.data = this.data2)
-      }
-      else
-      {
-        this.data = this.data2.filter((ques) => {
-          return ques.CatSucject.toLowerCase() == this.currentSubject.toLowerCase()
+        // Thêm thuộc tính creator cho dữ liệu
+        result.question.data.forEach((e) => {
+          e.CreatorName = ''
         })
+        this.data = []
+        this.data = result.question.data
+        // data2 là dữ liệu gốc để sau dùng cho việc tìm kiếm
+        this.data2 = result.question.data
+        // set thông tin người tạo câu hỏi vào mảng
+        this.data.forEach((ques) => {
+          this.creator.forEach((cre) => {
+            if (cre.id === ques.created_by)
+            {
+              ques.CreatorName = cre.name
+            }
+          })
+        })
+        // lấy tên danh mục
+        this.data.forEach((ques) => {
+          this.category.forEach((cat) => {
+            if (ques.Subject === cat.id)
+            {
+              ques.CatSucject = cat.title
+            }
+          })
+        })
+        // lấy tổng số bản ghi
+        this.TotalQuestion = result.question.record_total
+        this.TotalPage = result.question.total_page
+        // set danh sách page rỗng
+        this.ListPages = []
+        // set lại tổng số trang về 0
+        this.TotalPage = result.question.total_page
+        this.listpage()
+        this.currentPage = 1
       }
     },
     // lấy dữ liệu question từ api
@@ -151,6 +187,9 @@ export default {
       const CAT = await getCategoryExamList()
       this.category = CAT.data.data
       this.creator = response.data
+      // console.log(this.category[0].title)
+      // this.currentSubject = this.category[0].title
+      // console.log(this.currentSubject)
       if (result)
       {
         // Thêm thuộc tính creator cho dữ liệu
@@ -191,7 +230,7 @@ export default {
     async getQuestionByPage (page) {
       try
       {
-        const result = await questionsPage(page)
+        const result = await questionsPage(this.currentIdSubject,page)
         if (!result)
         {
           alert('Có lỗi trong quá trình lấy dữ liệu')
@@ -215,37 +254,37 @@ export default {
             }
           })
         })
-        this.getOptionBySubject()
+        // this.getOptionBySubject()
       } catch (Error)
       {
-        alert(Error)
+        console.log(Error)
       }
     },
     // Tìm kiếm câu hỏi
-    SearchQuestion () {
-      const input = this.search
-      // const origin = this.data
-      if (input !== '')
-      {
-        if (this.currentSubject === 'Lựa chọn môn học')
-        {
-          this.data = this.data2.filter((ques) => {
-            return ques.title.toLowerCase().includes(input)
-          })
-        } else
-        {
-          this.data = this.data2.filter((ques) => {
-            return (
-              ques.title.toLowerCase().includes(input) &&
-              ques.Subject == this.currentSubject
-            )
-          })
-        }
-      } else
-      {
-        this.data = this.data2
-      }
-    },
+    // SearchQuestion () {
+    //   const input = this.search
+    //   // const origin = this.data
+    //   if (input !== '')
+    //   {
+    //     if (this.currentSubject === 'Lựa chọn môn học')
+    //     {
+    //       this.data = this.data2.filter((ques) => {
+    //         return ques.title.toLowerCase().includes(input)
+    //       })
+    //     } else
+    //     {
+    //       this.data = this.data2.filter((ques) => {
+    //         return (
+    //           ques.title.toLowerCase().includes(input) &&
+    //           ques.Subject == this.currentSubject
+    //         )
+    //       })
+    //     }
+    //   } else
+    //   {
+    //     this.data = this.data2
+    //   }
+    // },
     toggleModalEdit () {
       this.showModalEdit = !this.showModalEdit
     },

@@ -104,10 +104,6 @@ const search = (event) => {
     data.value = originData.value
   }
 }
-// const getAnxios = async () => {
-//   const result = axios.get('http://localhost:8080/exams')
-//   console.log(result)
-// }
 const getExamBySearch = () => {
   const result = SearchInput.value.toLowerCase()
   if (result !== ' ')
@@ -125,7 +121,6 @@ const handlePageChange = (newPage) => {
   page = newPage
   fetchDataExam()
 }
-
 const fetchDataCatgory = async () => {
   const result = await getCategoryExamList()
   if (result) {
@@ -140,12 +135,6 @@ const fetchDataExam = async () => {
     totalPage.value = result['data']['total_page']
   }
 }
-// const renderMath = () => {
-//   // Gọi MathJax để render công thức LaTeX
-//    if (window.MathJax) {
-//         window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub, "output"]);
-//       }
-// }
 onMounted(() => {
   fetchDataCatgory()
   fetchDataExam()

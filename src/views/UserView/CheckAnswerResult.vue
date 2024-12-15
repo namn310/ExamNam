@@ -226,7 +226,7 @@ export default {
           }
           if (result3)
           {
-            this.titleExam = result3.data.title
+            this.titleExam = result3.result.title
           }
           // push thuộc tính câu trả lời người dùng làm vào mảng ques
           this.questions.forEach((e) => {
@@ -251,9 +251,9 @@ export default {
     getLable (index) {
       return String.fromCharCode(65 + index) // Từ mã ASCII để tạo A, B, C, D,...
     },
+    // kiểm tra xem đáp án này đã được chọn hay chưa 
     checkSelected (answer, id) {
       var flag = 0;
-
       this.UserAnswer.forEach(e => {
         if (e.answer !== null && e.answer !== undefined)
         {
@@ -294,10 +294,12 @@ export default {
       var flagCorrect = 0
       var flagIncorrect = 0
       this.questions.forEach(e => {
+        // nếu id câu hỏi đang xét trùng với id câu hỏi trong danh sách câu hỏi và trong danh sách đáp án có tồn tại biến answer thì flagCorrect++
         if (e.id === id && e.correctAns.includes(answer))
         {
           flagCorrect++
         }
+        // nếu id câu hỏi đang xét trùng với id câu hỏi trong danh sách câu hỏi và trong danh sách đáp án có tồn tại biến answer và đây là câu trả lời của thí sinh thì flagInCorrect++
         if (e.id === id && !e.correctAns.includes(answer) && this.checkSelected(answer, id) > 0)
         {
           flagIncorrect++
@@ -311,6 +313,7 @@ export default {
       {
         return false
       }
+      // mặc định là null nếu không thỏa mãn 2 trường hợp trên
       return null
     }
   }

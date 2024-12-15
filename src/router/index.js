@@ -3,19 +3,19 @@ import Cookies from 'js-cookie'
 
 // src client
 // import LayoutClient from '@/Layout/LayoutClient.vue'
-import HomeView from '../views/HomeView.vue'
-import RegisterView from '@/views/RegisterView.vue'
-import LoginView from '@/views/LoginView.vue'
-import forgotPasswordView from '@/views/forgotPasswordView.vue'
-import resetPasswordForgotView from '@/views/resetPasswordForgotView.vue'
-import resetPasswordView from '@/views/resetPasswordView.vue'
-import AboutView from '@/views/AboutView.vue'
-import ExamInfor from '@/views/ExamInfor.vue'
-import ExamView from '@/views/ExamView.vue'
-import ExamResult from '@/views/ExamResult.vue'
-import DetailExamResult from '@/views/DetailExamResult.vue'
-import CheckAnswerResult from '@/views/CheckAnswerResult.vue'
-import TestView from '@/views/TestView.vue'
+import HomeView from '@/views/UserView/HomeView.vue'
+import RegisterView from '@/views/UserView/RegisterView.vue'
+import LoginView from '@/views/UserView/LoginView.vue'
+import forgotPasswordView from '@/views/UserView/forgotPasswordView.vue'
+import resetPasswordForgotView from '@/views/UserView/resetPasswordForgotView.vue'
+import resetPasswordView from '@/views/UserView/resetPasswordView.vue'
+import AboutView from '@/views/UserView/AboutView.vue'
+import ExamInfor from '@/views/UserView/ExamInfor.vue'
+import ExamView from '@/views/UserView/ExamView.vue'
+import ExamResult from '@/views/UserView/ExamResult.vue'
+import DetailExamResult from '@/views/UserView/DetailExamResult.vue'
+import CheckAnswerResult from '@/views/UserView/CheckAnswerResult.vue'
+import TestView from '@/views/UserView/TestView.vue'
 
 // src admin
 // eslint-disable-next-line no-unused-vars
@@ -28,11 +28,16 @@ import CreateCauHoi from '@/views/AdminView/CauHoi/CreateCauHoi.vue'
 import ChangeCauHoi from '@/views/AdminView/CauHoi/ChangeCauHoi.vue'
 import Exams from '@/views/AdminView/Exams/Exams.vue'
 import CreateExam from '@/views/AdminView/Exams/CreateExam.vue'
+// tạo bài kiểm tra tùy ý thêm câu hỏi
+import CreateExamOption from '@/views/AdminView/Exams/CreateExamOption.vue'
+// trang điều hướng thêm câu hỏi sau khi thêm bài kiểm tra thành công
+import AddQuestionIntoExam from '@/views/AdminView/Exams/AddQuestionIntoExam.vue'
 import EditExam from '../views/AdminView/Exams/EditExam.vue'
 import DetailExam from '@/views/AdminView/Exams/DetailExam.vue'
 import StatisticExam from '@/views/AdminView/Exams/StatisticExam.vue'
+import IRT_DATA from '@/views/AdminView/Exams/IRT_DATA.vue'
 import CategoryExam from '@/views/AdminView/Exams/CategoryExam.vue'
-import CartExam from '@/views/CartExam.vue'
+import CartExam from '@/views/UserView/CartExam.vue'
 // import UserInfo from '@/views/UserInfo.vue'
 import UserDetailAdmin from '@/views/AdminView/Infor/UserDetailAdmin.vue'
 
@@ -235,6 +240,26 @@ const router = createRouter({
             layout: 'admin'
           }
         },
+        // tạo exam tùy chọn câu hỏi
+        {
+          path: 'create-exam-option',
+          name: 'create-exam-option',
+          component: CreateExamOption,
+          meta: {
+            layout: 'admin'
+          }
+        },
+        // sau khi đã thêm bài kiểm tra thì điều hướng đến giao diện thêm câu hỏi vào bài kiểm tra vừa mới tạo
+        {
+          path: 'AddQuestion-into-Exam/:id',
+          name: 'AddQuestion-into-Exam',
+          component: AddQuestionIntoExam,
+          meta: {
+            layout: 'admin'
+          }
+        },
+        //khi click vào nút xem danh sách câu hỏi của bài kiểm tra thì điều hướng đến detail của exam đó để xem được các câu hỏi đã thêm
+        // {},
         {
           path: 'edit-exam/:id',
           name: 'edit-exam',
@@ -256,6 +281,15 @@ const router = createRouter({
           path: 'statistic-exam/:id',
           name: 'thongke',
           component: StatisticExam,
+          meta: {
+            layout: 'admin'
+          }
+        },
+        // dữ liệu IRT bài kiểm tra
+        {
+          path: 'IRT_EXAM/:id',
+          name: 'IRT_EXAM',
+          component: IRT_DATA,
           meta: {
             layout: 'admin'
           }
