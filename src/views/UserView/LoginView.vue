@@ -61,7 +61,7 @@
               <div>
                 <img :src=" iconGoogle " style="width:30px;height:30px" class="img-fluid me-2">
               </div>
-              <div :disabled=" isLoggingIn ">
+              <div >
                 <a style="text-decoration: none; color: black" @click="loginGoogle()">Đăng nhập bằng Google</a>
               </div>
 

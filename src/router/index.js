@@ -33,6 +33,7 @@ import CreateExamOption from '@/views/AdminView/Exams/CreateExamOption.vue'
 // trang điều hướng thêm câu hỏi sau khi thêm bài kiểm tra thành công
 import AddQuestionIntoExam from '@/views/AdminView/Exams/AddQuestionIntoExam.vue'
 import EditExam from '../views/AdminView/Exams/EditExam.vue'
+import ClassManage from '@/views/AdminView/Class/ClassManage.vue'
 import DetailExam from '@/views/AdminView/Exams/DetailExam.vue'
 import StatisticExam from '@/views/AdminView/Exams/StatisticExam.vue'
 import IRT_DATA from '@/views/AdminView/Exams/IRT_DATA.vue'
@@ -272,6 +273,14 @@ const router = createRouter({
           path: 'detail-exam/:id',
           name: 'detail-exam',
           component: DetailExam,
+          meta: {
+            layout: 'admin'
+          }
+        },
+        {
+          path: 'class',
+          name: 'class',
+          component: ClassManage,
           meta: {
             layout: 'admin'
           }

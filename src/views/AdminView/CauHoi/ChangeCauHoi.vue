@@ -1,10 +1,19 @@
 <template>
   <div class="mx-auto container bg-color-white">
-    <div class="text-[50px] text-500 text-center">Cập nhật câu hỏi</div>
+    <RouterLink :to="{name:'cauhoi'}">
+      <button class="btn btn-secondary mt-2"><i class="fa-solid fa-arrow-left-long"></i></button>
+    </RouterLink>
+    
+    <div class="text-[30px] text-500 text-center">Cập nhật câu hỏi</div>
     <form class="mb-5" @submit.prevent enctype="multipart/form-data">
       <div class="class">
-        <label for="class" class="form-label"> Lớp </label>
-        <input v-model=" question.class " id="class" type="text" class="form-control" />
+        <label for="class" class="form-label"> Lớp học </label>
+        <select size="" v-model=" question.class " id="class" class="form-select border border-secondary">
+          <option>Lựa chọn lớp học</option>
+          <option :value=" choice['id'] " v-for="( choice, index) in ListClass" :key=" index ">
+            {{ choice['class'] }}
+          </option>
+        </select>
       </div>
 
       <div class="Subject">
@@ -87,13 +96,14 @@
 <script>
 import { PutData, GetDetail, getImageAnswer } from '@/service/questionsService'
 import { onMounted, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import { Ckeditor } from '@ckeditor/ckeditor5-vue'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 import { ElNotification } from 'element-plus'
 import { data } from 'autoprefixer'
 import { get } from '@/utils/request'
 import { getCategoryExamList } from '@/service/examsService'
+import { getAllClass } from '@/service/class'
 export default {
   components: {
     Ckeditor
@@ -112,7 +122,8 @@ export default {
       category: [],
       imgUrl: '',
       ListImageAnswer: [],
-      ListImageAnswerUrl: []
+      ListImageAnswerUrl: [],
+      ListClass:[],
     }
   },
   watch: {
@@ -124,6 +135,7 @@ export default {
     }
   },
   created () {
+    this.getClass()
     this.renderMath()
     this.getDetailQues()
   },
@@ -140,6 +152,13 @@ export default {
             })
             .catch((err) => console.error('MathJax rendering error:', err))
         })
+      }
+    },
+    async getClass () {
+      const result = await getAllClass()
+      if (result)
+      {
+        this.ListClass = result.data
       }
     },
     InsertImageAnswer (event, index) {
@@ -208,9 +227,6 @@ export default {
             `http://localhost:8080/assets/image/AnswerQuestion/${e.imageAns}`
           this.ListImageAnswer[e.stt] = e.imageAns
         })
-        // console.log(this.question)
-        // console.log(this.answer)
-        // console.log(this.ListImageAnswerUrl, this.ListImageAnswer)
       } catch (Error)
       {
         alert(Error)

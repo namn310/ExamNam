@@ -7,8 +7,8 @@ export const getQuestionList = async () => {
   return result
 }
 // lấy danh sách câu hỏi theo danh mục
-export const getQuestionListByCategory = async (idCat, page) => {
-  const result = await get(`questions?category=${idCat}&page=${page}`)
+export const getQuestionListByCategory = async (idCat, idClass, page) => {
+  const result = await get(`questions?category=${idCat}&page=${page}&class=${idClass}`)
   return result
 }
 export const getUserCreate = async () => {

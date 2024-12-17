@@ -3,12 +3,12 @@
                <div v-show="visible" > 
               <div class="MODAL" >
                 <div class="modalContent">
-                  <div class="modal-header d-flex justify-content-between ">
-                    <h5>Thông báo </h5>
-                    <button id="modalClose" @click="closeModal">&times;</button>
+                  <div class="modal-header d-flex justify-content-between mb-2">
+                    <h5 style="font-size:20px">Thông báo</h5>
+                    <button id="modalClose" style="font-size: 25px;" @click="closeModal">&times;</button>
                   </div>
                   <hr>
-                  <div class="modal-body">
+                  <div class="modal-body text-center mt-4" style="height:70px;font-size: 19px;">
                    <slot name="modal-body"></slot>
                   </div>
                   <div class="modal-footer mt-3">

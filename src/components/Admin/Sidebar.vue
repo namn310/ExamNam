@@ -135,7 +135,7 @@ export default {
                                 class="flex w-full justify-between items-center hover:bg-gray-950 hover:text-gray-100 rounded-md py-2 px-4">
                                 <Routerlink :to=" { name: 'product' } "
                                     class="flex items-center text-gray-300  group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100 sidebar-dropdown-toggle">
-                                    <i class="fa-solid fa-file-circle-check fa-lg me-2"></i>
+                                    <i class="fa-regular fa-clipboard fa-lg me-2"></i>
                                     <span class="text-sm">Kiểm tra</span>
                                 </Routerlink>
                                 <ChevronUpIcon :class=" open ? 'rotate-180 transform' : 'rotate-90 transform' "
@@ -155,7 +155,7 @@ export default {
                                             Tạo bài kiểm tra Random câu hỏi</RouterLink>
                                     </li>
                                     <li class="mb-4">
-                                         <RouterLink :to=" { name: 'create-exam-option' } "
+                                        <RouterLink :to=" { name: 'create-exam-option' } "
                                             class="text-gray-300 text-sm flex items-center hover:text-gray-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-gray-300 before:mr-3">
                                             Tạo bài kiểm tra tùy chọn</RouterLink>
                                     </li>
@@ -207,6 +207,24 @@ export default {
                                 </ul>
 
                             </DisclosurePanel>
+                        </Disclosure>
+
+                    </div>
+                </div>
+            </li>
+            <li class="mb-1 group">
+                <div class="w-full ">
+                    <div class="mx-auto w-full">
+                        <Disclosure>
+                            <DisclosureButton
+                                class="flex w-full justify-between items-center hover:bg-gray-950 hover:text-gray-100 rounded-md py-2 px-4">
+                                <RouterLink :to=" { name: 'class' } "
+                                    class="flex items-center text-gray-300  group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100 sidebar-dropdown-toggle">
+                                    <i class="fa-solid fa-graduation-cap fa-lg me-2"></i>
+                                    <span class="text-sm">Lớp học</span>
+                                </RouterLink>
+                            </DisclosureButton>
+
                         </Disclosure>
 
                     </div>

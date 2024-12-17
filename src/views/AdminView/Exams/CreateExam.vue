@@ -1,6 +1,11 @@
 <template>
   <div class="mx-auto container bg-color-white">
-    <div class="text-[50px] text-center">Thêm bài kiểm tra Random câu hỏi</div>
+    <div class="mt-2 ms-2">
+    <RouterLink :to=" { name: 'exams' } ">
+      <button class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i></button>
+    </RouterLink>
+  </div>
+    <div class="text-[30px] text-center">Thêm bài kiểm tra Random câu hỏi</div>
     <el-form class="w-full p-3" :model="sizeForm" label-width="auto" size="large">
       <el-form-item label="Tên bài thi">
         <el-input v-model="sizeForm.title" />
@@ -36,8 +41,15 @@
       <el-form-item label="Thời gian làm bài (Phút)">
         <el-input v-model.number="sizeForm.duration" />
       </el-form-item>
-      <el-form-item label="Lớp học">
-        <el-input v-model.number="sizeForm.class" />
+       <el-form-item label="Lớp học">
+        <el-select v-model="sizeForm.class" clearable placeholder="Select" style="width: 240px">
+          <el-option
+            v-for="item in ListClass"
+            :key="item.id"
+            :label="item.class"
+            :value="item.id"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="Số lượng câu hỏi">
         <el-input v-model.number="sizeForm.totalQuestion" />
@@ -56,11 +68,12 @@ import { decodeToken } from '@/service/decodeToken'
 import { createExam, getCategoryExamList } from '@/service/examsService'
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { getAllClass } from '@/service/class'
 import { h } from 'vue'
 import { ElNotification } from 'element-plus'
 
 const router = useRouter()
-
+const ListClass = ref([])
 const sizeForm = reactive({
   title: '',
   description: '',
@@ -83,6 +96,10 @@ const fetchCategorys = () => {
     if (result) {
     //   console.log(result['data']['data'])
       options.value = result['data']['data'].map((item) => ({ value: item.id, label: item.title }))
+    }
+     const FetchClass = await getAllClass()
+    if (FetchClass) {
+        ListClass.value = FetchClass.data
     }
   }
   fetchApi()

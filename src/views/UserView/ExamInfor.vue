@@ -31,9 +31,10 @@
                 <button class="btn btn-primary" type="submit" @click="toggleModal" >LÀM BÀI</button>
               </div>
             <!-- Modal here -->
+             
              <ModalView :visible="showModal" @close="toggleModal">
                 <template v-slot:modal-body>
-                    <p>Xác nhận làm bài thi này </p>
+                    <p>Bạn có xác nhận làm đề thi này không ? </p>
                 </template>
                 <template v-slot:buttonConfirm>
                    <RouterLink :to="`/test/start/${id}`"><button class="ms-3 btn btn-primary">Xác nhận</button></RouterLink>

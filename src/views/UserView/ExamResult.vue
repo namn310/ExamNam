@@ -23,7 +23,7 @@
       <div v-for="(exam, index) in listExam" :key="index">
         <div class="user-test">
           <h3
-            style="font-weight: 600; font-size: 2vh; font-size: 2vw"
+            style="font-weight: 600; font-size: 1.5vh; font-size: 1.5vw"
             id="new-economy-toeic-test-10"
           >
             {{ exam.title }}

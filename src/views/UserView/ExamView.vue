@@ -17,7 +17,7 @@
           </template>
         </ModalView>
       </h1>
-        <div class="alert alert-warning w-50 mt-2" role="alert">
+        <div class="alert alert-warning mt-2" role="alert">
         Các đề thi có công thức toán học sẽ mất một chút thời gian gian nhỏ để load các công thức toán học ! 
       </div>
       <hr />
@@ -70,7 +70,7 @@
                         <div class="form-check" v-for="( ans, index2) in question.answerlist" :key=" index2 ">
                           <input @click="ToggleSelected( question.id, index2 )" data-type="question-answer"
                             class="form-check-input" type="checkbox" style="border: 1px solid black" />
-                          <label id="output" class="form-label">
+                          <label id="output" class="form-label"> 
                             {{ getLable( index2 ) }}. {{ ans }}
                             <div>
                               <!-- Nếu có hình ảnh câu trả lời thì load nó ra -->

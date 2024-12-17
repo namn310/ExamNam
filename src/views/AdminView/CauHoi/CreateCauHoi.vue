@@ -1,16 +1,25 @@
 <template>
   <div class="mx-auto container bg-color-white">
-    <div class="text-[50px] text-center">Thêm câu hỏi</div>
+    <RouterLink :to="{name:'cauhoi'}">
+      <button class="btn btn-secondary mt-2"><i class="fa-solid fa-arrow-left-long"></i></button>
+    </RouterLink>
+    <div class="text-[30px] text-center">Thêm câu hỏi</div>
     <form class="mb-5" @submit.prevent enctype="multipart/form-data">
       <div class="class">
-        <label for="class" class="form-label"> Lớp </label>
-        <input v-model=" question.class " id="class" type="text" class="form-control border border-secondary"
-          :class=" { 'is-valid': question.class !== '' } " />
+        <label for="class" class="form-label">Lớp học </label>
+        <select size="" v-model=" question.class " id="class" class="form-select border border-secondary" :class=" {
+          'is-valid': question.class !== '' && question.class !== 'Lựa chọn lớp học'
+        } ">
+          <option>Lựa chọn lớp học</option>
+          <option :value=" choice['id'] " v-for="( choice, index) in ListClass" :key=" index ">
+            {{ choice['class'] }}
+          </option>
+        </select>
       </div>
 
       <div class="Subject">
         <label for="subject" class="form-label"> Môn học </label>
-        <select v-model=" question.Subject " id="subject" class="form-select border border-secondary" :class=" {
+        <select size="" v-model=" question.Subject " id="subject" class="form-select border border-secondary" :class=" {
           'is-valid': question.Subject !== '' && question.Subject !== 'Lựa chọn môn học'
         } ">
           <option>Lựa chọn môn học</option>
@@ -98,8 +107,7 @@
 <script>
 import { decodeToken } from '@/service/decodeToken'
 import { PostData } from '@/service/questionsService'
-import { onMounted, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { getAllClass } from '@/service/class'
 // ckeditor
 import { Ckeditor } from '@ckeditor/ckeditor5-vue'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
@@ -124,12 +132,13 @@ export default {
       },
       category: [],
       question: {
-        class: '',
+        class: 'Lựa chọn lớp học',
         Subject: 'Lựa chọn môn học',
         title: '',
         created_by: '',
         image: ''
       },
+      ListClass:[],
       imgUrl: '',
       answer: ['', '', '', ''],
       correctAns: [],
@@ -144,6 +153,7 @@ export default {
 
   },
   mounted () {
+    this.getClass()
     this.renderMath()
     this.getId()
     this.getCat()
@@ -155,6 +165,13 @@ export default {
       this.$nextTick(() => {
         window.MathJax.typeset() // MathJax v3.x không còn sử dụng Hub.Queue nữa
       })
+    },
+    async getClass () {
+      const result = await getAllClass()
+      if (result)
+      {
+        this.ListClass = result.data
+      }
     },
     InsertImageAnswer (event, index) {
       const file = event.target.files[0]

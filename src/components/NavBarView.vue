@@ -48,6 +48,7 @@
           </div>
         </div>
         <!-- end small menu -->
+         
         <div class="d-lg-block navbar-collapse justify-content-end collapse-hidden" id="navbar-collapse">
           <ul class="nav">
             <li class="nav-item">

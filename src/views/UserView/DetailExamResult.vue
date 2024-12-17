@@ -15,7 +15,9 @@
                   <button class="btn btn-primary">Xem chi tiết kết quả bài làm</button>
                 </RouterLink>
                 |
-                <RouterLink :to="{ name: 'home' }"> Quay về trang chủ</RouterLink>
+                <RouterLink :to="{ name: 'home' }"> 
+                  <button class="btn btn-secondary">Quay về trang chủ </button>
+                  </RouterLink>
               </div>
 
               <div class="result-score-details">

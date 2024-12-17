@@ -1,15 +1,23 @@
 import { get, delAdmin, postAdmin, putAdmin } from '../utils/request'
 import axios from 'axios'
-export const getExamList = async (page) => {
-  const result = await get(`exams?page=${page}`)
+//
+export const getExamList = async (page, category) => {
+  const result = await get(`exams?page=${page}&category=${category}`)
   return result
 }
-
+// export const getListExam = async () => {
+//   const result = await get(`exams`)
+//   return result
+// }
+// lấy danh sách danh mục không phân trang
 export const getCategoryExamList = async () => {
-  const result = await get(`category-exam`)
+  const result = await get(`category-getAll`)
   return result
 }
-
+export const getCategoryExamListByPage = async (page) => {
+  const result = await get(`category-exam?page=${page}`)
+  return result
+}
 export const getCategoryExamDetail = async (id) => {
   const result = await get(`category-exam/${id}`)
   return result
@@ -76,6 +84,21 @@ export const DeleteQuestionInExam = async (idQues, idExam) => {
 }
 export const deleteExam = async (id) => {
   const result = await delAdmin(`exams/delete/${id}`)
+  return result
+}
+// xóa danh mục
+export const deleteCategory = async (id) => {
+  const result = await delAdmin(`category/delete/${id}`)
+  return result
+}
+// thêm danh mục
+export const createCategory = async (option) => {
+  const result = await postAdmin(`categoryExam/create`, option)
+  return result
+}
+// update danh mục
+export const updateCategory = async (id, option) => {
+  const result = await putAdmin(`category/update/${id}`, option)
   return result
 }
 // lấy số lượng người làm sai câu hỏi

@@ -1,145 +1,155 @@
 <template>
-    <div class="container-fluid pb-0">
-                    <div class="col-12 col-md-9 order-md-1">
-                    <h1 id="thư-viện-đề-thi" style="font-size: 3vh; font-size: 3vw; font-weight: 500">
-                        Thư viện đề thi
-                    </h1>
-                    <br />
-                    <div class="test-exams">
-                        <ul class="nav nav-pills flex-wrap">
-                            <li class="nav-item w-auto">
-                                <a class="nav-link" @click="changeIdcat(0)" :class=" { 'nav-link active': idcat === 0 || !idcat }" >Tất cả</a>
-                            </li>
-                            <li class="nav-item w-auto" v-for="item in dataCetegory" :key="item.id">
-                                <a  class="nav-link" :class=" { 'nav-link active': idcat === item.id}" @click="changeIdcat(item.id)"
-                               >{{ item.title }}</a>
-                            </li>
-                        </ul>
-                    </div>
+  <div class="container-fluid pb-0">
+    <div class="col-12 col-md-9 order-md-1">
+      <h1 id="thư-viện-đề-thi" style="font-size: 3vh; font-size: 3vw; font-weight: 500">
+        Thư viện đề thi
+      </h1>
+      <br />
+      <!-- danh mục đề thi -->
+      <div class="test-exams">
+        <ul class="nav nav-pills flex-wrap">
+          <li class="nav-item w-auto">
+            <a
+              class="nav-link"
+              @click="getOptionBySubject(0)"
+              :class="{ active: currentIdSubject === 0 }"
+              >Tất cả</a
+            >
+          </li>
+          <li
+            class="nav-item w-auto"
+            @click="getOptionBySubject(e.id)"
+            v-for="e in ListCategoryExam"
+            :key="e.id"
+          >
+            <a :class="{ active: currentIdSubject === e.id }" class="nav-link">{{ e.title }}</a>
+          </li>
+        </ul>
+      </div>
 
-                    <br />
-                    <!-- <form method="GET"> -->
-                        <div class="row">
-                        <div class="col-12">
-                            <div class="form-group">
-                            <div class="input-addon inner-addon right-addon">
-                                <div class="input-group flex-nowrap">
-                                <input
-                                    type="text"
-                                    style="width: 30vw"
-                                    class="form-control"
-                                    placeholder="Nhập từ khoá bạn muốn tìm kiếm: tên sách, dạng câu hỏi ..."
-                                    @input="search"
-                                />
-                                <button @click="getExamBySearch" class="btn btn-primary">
-                                    <i class="fa-solid fa-magnifying-glass fa-lg text-white"></i>
-                                </button>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-                        </div>
-                    <!-- </form> -->
-                    <br />
-                    </div>
-
-                    <!-- <ul class="nav nav-tabs">
-                    <li class="nav-item">
-                        <a class="nav-link active">Tất cả</a>
-                    </li>
-                    </ul> -->
-                </div>
-  <div class="d-flex justify-content-start flex-wrap" v-if="data !== null && data.length >0">
+      <br />
+      <div class="row">
+        <div class="col-12">
+          <div class="form-group">
+            <div class="input-addon inner-addon right-addon">
+              <div class="input-group flex-nowrap">
+                <!-- search input tìm kiếm đề thi -->
+                <input
+                  type="text"
+                  style="width: 30vw"
+                  class="form-control"
+                  placeholder="Nhập từ khoá bạn muốn tìm kiếm: tên sách, dạng câu hỏi ..."
+                />
+                <button class="btn btn-primary">
+                  <i class="fa-solid fa-magnifying-glass fa-lg text-white"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br />
+    </div>
+  </div>
+  <div class="d-flex justify-content-start flex-wrap" v-if="ListExam && ListExam.length > 0">
     <CardExam
-      v-for="item in data"
-      :key="item.id"
+      v-for="(item,index) in ListExam"
+      :key="index"
       :title="item.title"
       :expire_time="item.duration"
       :countQuestion="item.totalQuestion"
       :idQues="item.id"
+      :countUserDo="item.count_user_do"
     />
   </div>
   <p v-else>Không có bài thi nào !</p>
-  <div>
-    <el-pagination
-      background
-      layout="prev, pager, next"
-      :total="totalPage * 10"
-      @current-change="handlePageChange"
-    />
-  </div>
+  <div class="mb-4 mt-3">
+      <ul class="pagination justify-content-center">
+        <li style="cursor: pointer" class="page-item" :class=" { active: page == currentPage } "
+          v-for="(   page, index) in ListPages" :key=" index ">
+          <a class="page-link" @click="changePage( page )">{{ page }}</a>
+        </li>
+      </ul>
+    </div>
 </template>
 
-<script setup>
-import CardExam from '@/components/CardExam.vue'
+<script>
 // import router from '@/router';
+import router from '@/router'
 import { getCategoryExamList, getExamList } from '@/service/examsService'
-import { onMounted, ref } from 'vue'
-// eslint-disable-next-line no-unused-vars
-import axios from 'axios'
-const dataCetegory = ref([])
-const data = ref([])
-const originData = ref([])
-const idcat =ref()
-let page = 1
-const totalPage = ref(1)
-const SearchInput = ref()
-const changeIdcat = async(id) => {
-  idcat.value = id
-  if (id > 0)
-  {
-    data.value = originData.value.filter(e => {
-      return e.category === id
-    })
-  }
-  else
-  {
-    data.value=originData.value
+import CardExam from '@/components/CardExam.vue'
+export default {
+  components: {
+    CardExam
+  },
+  data() {
+    return {
+      ListCategoryExam: [],
+      ListExam: [],
+      ListPages: [],
+      TotalPage: 0,
+      TotalExam: 0,
+      currentPage: 1,
+      currentIdSubject: 0,
+      currentSubject: 'Tất cả'
+    }
+  },
+  created() {
+    this.fetchData()
+  },
+  methods: {
+    // chọn và active danh mục được chọn
+    CategoryChosen(id) {
+      this.currentIdSubject = id
+    },
+    async fetchData() {
+      const category = await getCategoryExamList()
+      if (category) {
+        this.ListCategoryExam = category['data']['data']
+      }
+      const exam = await getExamList(this.currentPage, 0)
+      if (exam) {
+        this.ListExam = exam.data.data
+        this.TotalPage = exam['data']['total_page']
+        this.TotalExam = exam['data']['record_total']
+        this.listpage()
+      }
+    },
+    listpage() {
+      for (var i = 1; i <= this.TotalPage; i++) {
+        this.ListPages.push(i)
+      }
+    },
+    async changePage(page) {
+      this.currentPage = page
+      await this.getExamByPage(page)
+    },
+    async getExamByPage(page) {
+      const exam = await getExamList(page, 0)
+      if (exam) {
+        this.ListExam = exam['data']['data']
+      } else {
+        alert('Có lỗi xảy ra')
+      }
+    },
+    async getOptionBySubject(id) {
+      this.currentIdSubject = id
+      const exam = await getExamList(this.currentPage, this.currentIdSubject)
+      if (exam) {
+        this.ListExam = exam['data']['data']
+        this.TotalPage = exam['data']['total_page']
+        this.TotalExam = exam['data']['record_total']
+        this.ListPages = []
+        this.listpage()
+        this.currentPage = 1
+        // console.log(exam, this.TotalExam, this.TotalPage)
+      }
+    },
+    detail(id) {
+      router.replace({ name: 'detail-exam', params: { id: id } })
+    }
   }
 }
-const search = (event) => {
-  SearchInput.value = event.target.value
-  if (SearchInput.value === '')
-  {
-    data.value = originData.value
-  }
-}
-const getExamBySearch = () => {
-  const result = SearchInput.value.toLowerCase()
-  if (result !== ' ')
-  {
-    data.value = originData.value.filter(e => {
-      return e.title.toLowerCase().includes(result)
-    })
-  }
-  else
-  {
-    data.value = originData.value
-  }
-}
-const handlePageChange = (newPage) => {
-  page = newPage
-  fetchDataExam()
-}
-const fetchDataCatgory = async () => {
-  const result = await getCategoryExamList()
-  if (result) {
-    dataCetegory.value = result['data']['data']
-  }
-}
-const fetchDataExam = async () => {
-  const result = await getExamList(page)
-  if (result) {
-    data.value = result['data']['data']
-    originData.value = result['data']['data']
-    totalPage.value = result['data']['total_page']
-  }
-}
-onMounted(() => {
-  fetchDataCatgory()
-  fetchDataExam()
-  // getAnxios()
-})
 </script>
 
 <style scoped>
