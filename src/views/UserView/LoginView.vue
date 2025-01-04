@@ -16,10 +16,15 @@
           </div>
           <form id="loginForm" @submit.prevent=" checkLogin ">
             <p class="text-start mb-2" style="font-weight: 500">Bạn là :</p>
-            <div class="form-check text-start">
+              <div class="form-check text-start">
               <input v-model=" data.role " class="form-check-input" type="radio" name="flexRadioDefault"
                 id="flexRadioDefault1" value="admin" />
-              <label class="form-check-label" for="flexRadioDefault1"> Giáo viên </label>
+              <label class="form-check-label" for="flexRadioDefault1"> Quản trị viên </label>
+            </div>
+            <div class="form-check text-start">
+              <input v-model=" data.role " class="form-check-input" type="radio" name="flexRadioDefault"
+                id="flexRadioDefault3" value="teacher" />
+              <label class="form-check-label" for="flexRadioDefault3"> Giáo viên </label>
             </div>
             <div class="form-check text-start">
               <input v-model=" data.role " class="form-check-input" type="radio" name="flexRadioDefault"
@@ -55,16 +60,60 @@
               </button>
             </div>
           </form>
+          <!-- kích hoạt tài khoản -->
+          <div class="input-group mb-2">
+            <button class="btn btn-lg btn-primary w-100 fs-6" id="submit" data-bs-toggle="modal"
+              data-bs-target="#ModalOTP" v-if=" ActiveAccountButton === true" @click="SendToken()">
+              <a style="text-decoration: none; color: white">Kích hoạt tài khoản</a>
+            </button>
+          </div>
+          <!-- modal nhập otp -->
+          <div class="modal fade" id="ModalOTP" tabindex="-1">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Nhập OTP</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="" v-if=" loadSendTokenShow == true ">
+                    <div class="alert alert-info d-flex justify-content-center" role="alert">
+                      <div class="spinner-grow text-primary me-2" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                      </div>
+                      <p>Vui lòng chờ trong giây lát ...</p>
+                    </div>
+                  </div>
+                  <div>
+                    <p>
+                      Vui lòng nhập mã OTP được gửi về Gmail của bạn để xác thực đăng ký
+                      <i>(Lưu ý mã OTP chỉ có hiệu lực trong 30 phút từ thời điểm gửi)</i>
+                    </p>
+                    <input class="form-control border border-secondary mt-2 mb-2" placeholder="Mã OTP" id="OTP"
+                      name="OTP" v-model=" OTP " />
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                    Cancel
+                  </button>
+                  <button type="button" class="btn btn-primary" @click="submitActiveUser()">
+                    Xác nhận
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- đăng nhập google -->
           <div class="input-group mb-3">
             <button class="btn btn-lg btn-white w-100 fs-6 border border-dark d-flex justify-content-center"
               type="submit" id="submit">
               <div>
-                <img :src=" iconGoogle " style="width:30px;height:30px" class="img-fluid me-2">
+                <img :src=" iconGoogle " style="width: 30px; height: 30px" class="img-fluid me-2" />
               </div>
-              <div >
+              <div>
                 <a style="text-decoration: none; color: black" @click="loginGoogle()">Đăng nhập bằng Google</a>
               </div>
-
             </button>
           </div>
           <div class="row">
@@ -77,13 +126,14 @@
   </div>
 </template>
 <script>
-import { Login } from '@/service/usersService'
+import { Login, sendOTPRegist,activeAccount } from '@/service/usersService'
 import Cookies from 'js-cookie'
 // eslint-disable-next-line no-unused-vars
-import { googleAuthCodeLogin } from "vue3-google-login"
+import { googleAuthCodeLogin } from 'vue3-google-login'
 // eslint-disable-next-line no-unused-vars
-import { googleTokenLogin } from "vue3-google-login"
-import { googleSdkLoaded } from "vue3-google-login"
+import { googleTokenLogin } from 'vue3-google-login'
+import { googleSdkLoaded } from 'vue3-google-login'
+import { ElNotification } from 'element-plus'
 export default {
   data () {
     return {
@@ -94,6 +144,10 @@ export default {
         password: '',
         role: 'student'
       },
+      ActiveAccountButton: false,
+      token: '',
+      loadSendTokenShow: false,
+      OTP: ''
     }
   },
 
@@ -108,9 +162,10 @@ export default {
         {
           //   localStorage.removeItem('token')
           const response = await Login(this.data)
+          console.log(response)
           if (this.data.role == 'student')
           {
-            if (response.jwtStudent)
+            if (response.message === 'Đăng nhập thành công !')
             {
               Cookies.set('tokenStudent', response.jwtStudent, {
                 expires: 1, //set life cookie 1 ngày,
@@ -122,16 +177,38 @@ export default {
               this.$router.push({ name: 'home' }).then(() => {
                 window.location.reload()
               })
-            }
-            else
+            } else if (
+              response.message === 'Đăng nhập thất bại ! Tài khoản hoặc mật khẩu không chính xác'
+            )
             {
-              alert(response.message)
+              ElNotification({
+                title: 'Thông báo',
+                message: response.message,
+                type: 'error'
+              })
+            } else if (
+              response.message === 'Tài khoản chưa được kích hoạt ! Vui lòng kích hoạt tài khoản'
+            )
+            {
+              this.ActiveAccountButton = true
+              ElNotification({
+                title: 'Thông báo',
+                message: response.message,
+                type: 'error'
+              })
+            } else
+            {
+              ElNotification({
+                title: 'Thông báo',
+                message: 'Có lỗi xảy ra. Vui lòng thử lại sau',
+                type: 'error'
+              })
             }
           }
-
+          // nếu role là admin
           if (this.data.role == 'admin')
           {
-            if (response.jwtAdmin)
+            if (response.message === 'Đăng nhập thành công !')
             {
               Cookies.set('tokenAdmin', response.jwtAdmin, {
                 expires: 1, //set life cookie 1 ngày,
@@ -139,16 +216,198 @@ export default {
                 samesite: 'Strict'
                 // httponly: true
               })
+              // alert(response.message)
+              this.$router.push({ name: 'homeAdmin' })
+            } else if (
+              response.message === 'Đăng nhập thất bại ! Tài khoản hoặc mật khẩu không chính xác'
+            )
+            {
+              ElNotification({
+                title: 'Thông báo',
+                message: response.message,
+                type: 'error'
+              })
+            } else if (
+              response.message === 'Tài khoản chưa được kích hoạt ! Vui lòng kích hoạt tài khoản'
+            )
+            {
+              ElNotification({
+                title: 'Thông báo',
+                message: response.message,
+                type: 'error'
+              })
+            } else
+            {
+              ElNotification({
+                title: 'Thông báo',
+                message: 'Có lỗi xảy ra. Vui lòng thử lại sau',
+                type: 'error'
+              })
             }
-            alert(response.message)
-
-            this.$router.push({ name: 'homeAdmin' })
+          }
+            // nếu role là teacher
+          if (this.data.role == 'teacher')
+          {
+            if (response.message === 'Đăng nhập thành công !')
+            {
+              Cookies.set('tokenAdmin', response.jwtAdmin, {
+                expires: 1, //set life cookie 1 ngày,
+                secure: true,
+                samesite: 'Strict'
+                // httponly: true
+              })
+              // alert(response.message)
+              this.$router.push({ name: 'homeAdmin' })
+            } else if (
+              response.message === 'Đăng nhập thất bại ! Tài khoản hoặc mật khẩu không chính xác'
+            )
+            {
+              ElNotification({
+                title: 'Thông báo',
+                message: response.message,
+                type: 'error'
+              })
+            } else if (
+              response.message === 'Tài khoản chưa được kích hoạt ! Vui lòng kích hoạt tài khoản'
+            )
+            {
+              ElNotification({
+                title: 'Thông báo',
+                message: response.message,
+                type: 'error'
+              })
+            } else
+            {
+              ElNotification({
+                title: 'Thông báo',
+                message: 'Có lỗi xảy ra. Vui lòng thử lại sau',
+                type: 'error'
+              })
+            }
           }
         } catch (e)
         {
+          // nếu có lỗi thì báo lỗi
           alert(e)
         }
       }
+    },
+    async SendToken () {
+      if (this.data.email !== '')
+      {
+        this.loadSendTokenShow = true
+        this.token = this.generateRandomToken()
+        const response = await sendOTPRegist({
+          email: this.data.email,
+          role: this.data.role,
+          type_token: 'activeAccount',
+          tk: this.token
+        })
+        if (response)
+        {
+          this.loadSendTokenShow = false
+          if (response.message === 'Mã OTP đã được gửi')
+          {
+            ElNotification({
+              title: 'Thông báo',
+              message: 'Mã OTP đã được gửi',
+              type: 'success'
+            })
+            // hiển thị nút nhập token
+          } else if (response.message === 'Email đã tồn tại !')
+          {
+            ElNotification({
+              title: 'Thông báo',
+              message: 'Email đã tồn tại !',
+              type: 'error'
+            })
+          } else
+          {
+            ElNotification({
+              title: 'Thông báo',
+              message: 'Có lỗi xảy ra',
+              type: 'error'
+            })
+          }
+        } else
+        {
+          this.loadSendTokenShow = false
+          alert('Có lỗi xảy ra !')
+        }
+      } else
+      {
+        alert('Vui lòng kiểm tra lại thông tin !')
+      }
+    },
+      async submitActiveUser () {
+      if (this.data.email !== '' && (this.OTP !== '') || this.OTP !== null)
+      {
+        const result = await activeAccount({
+          email: (this.data.email),
+          role: (this.data.role),
+          OTP: this.OTP,
+          token: this.token,
+          type_token: 'activeAccount',
+        })
+        if (result)
+        {
+          console.log(result)
+          var message = result.message
+          console.log(result,message)
+          if (message === 'Mã OTP không hợp lệ')
+          {
+             ElNotification({
+              title: 'Thông báo',
+              message: message,
+              type: 'error'
+            })
+          }
+          else if(message === 'Email không tồn tại'){
+             ElNotification({
+              title: 'Thông báo',
+              message: message,
+              type: 'error'
+            })
+          }
+          else if (message === 'Xác thực tài khoản thành công')
+          {
+             ElNotification({
+              title: 'Thông báo',
+              message: message,
+              type: 'success'
+             })
+            this.$router.replace({ name: 'Login' }).then(() => {
+              window.location.reload()
+            })
+          }
+          else
+          {
+             ElNotification({
+              title: 'Thông báo',
+              message: "Có lỗi xảy ra ! Vui lòng thử lại sau",
+              type: 'error'
+            })
+          }
+        }
+        else
+        {
+          alert("Có lỗi xảy ra !")
+        }
+      }
+      else
+      {
+        alert("Kiểm tra lại thông tin !")
+      }
+    },
+    generateRandomToken (length = 32) {
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+      let token = ''
+      for (let i = 0; i < length; i++)
+      {
+        const randomIndex = Math.floor(Math.random() * characters.length)
+        token += characters[randomIndex]
+      }
+      return token
     },
     async loginGoogle () {
       try
@@ -156,21 +415,20 @@ export default {
         googleSdkLoaded((google) => {
           // Initialize the Google OAuth 2.0 client with the correct configuration
           google.accounts.id.initialize({
-            client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,  // Your Google Client ID
+            client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID, // Your Google Client ID
             callback: (response) => {
               // This callback function will receive the ID token in response.credential
               // console.log("Google Login Response:", response);
-              const idToken = response.credential;  // This is the ID token you need
+              const idToken = response.credential // This is the ID token you need
               // console.log(idToken)
-              this.verifyTokenGoogle(idToken);  // Call your backend to verify the ID token
+              this.verifyTokenGoogle(idToken) // Call your backend to verify the ID token
             }
-          });
+          })
 
           // Prompt the user to log in with Google
-          google.accounts.id.prompt();  // This will display the Google login prompt
-        });
-      }
-      catch
+          google.accounts.id.prompt() // This will display the Google login prompt
+        })
+      } catch
       {
         console.log('Error !')
       }
@@ -187,9 +445,9 @@ export default {
           body: JSON.stringify(dataSend),
           headers: {
             'Content-Type': 'application/json'
-          },
+          }
         })
-        const data = await sendData.json();
+        const data = await sendData.json()
         // console.log(data)
         // kiểm tra token và điều hướng đến giao diện
         if (this.data.role == 'student')
@@ -206,8 +464,7 @@ export default {
             this.$router.push({ name: 'home' }).then(() => {
               window.location.reload()
             })
-          }
-          else
+          } else
           {
             alert(data.message)
           }
@@ -236,8 +493,7 @@ export default {
         // {
         //   console.log('User authenticated successfully:', data);
         // }
-      }
-      catch (e)
+      } catch (e)
       {
         console.log(e)
       }

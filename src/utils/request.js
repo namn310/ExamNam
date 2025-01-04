@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 
-const API_DOMAIN = 'http://localhost:8080/'
+const API_DOMAIN = import.meta.env.VITE_API_PORT
 const tokenAdmin = Cookies.get('tokenAdmin')
 const tokenStudent = Cookies.get('tokenStudent')
 export const get = async (patch) => {

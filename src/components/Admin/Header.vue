@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <div class="py-2 px-6 bg-white flex items-center shadow-md shadow-black/5 sticky top-0 left-0 z-30">
+  <div class="py-2 px-6 bg-white flex items-center shadow-md shadow-black/5 sticky top-0 left-0 z-30" style="box-shadow: 2px 2px 5px gray">
     <button type="button" class="text-lg text-gray-600 sidebar-toggle max-md:hidden" @click=" toggleSidebar ">
       <i class="ri-menu-line"></i>
     </button>
@@ -19,10 +19,11 @@
     </ul>
     <div>
       <button @click="showListChatHandle()" class="btn btn-primary" style="border-radius: 18px">
-        <i class="fa-brands fa-rocketchat fa-lg" style="color: white"></i>
+        <i class="fa-regular fa-message fa-lg"></i>
       </button>
       <!-- list chat dropdown -->
       <div style="
+          border: 1px solid black;
           width: 400px;
           height: 400px;
           position: absolute;
@@ -47,8 +48,8 @@
         <div class="mt-2" style="height: 400px; border-radius: 20px">
           <!-- <p v-if="isnull">Không có người dùng nào</p> -->
           <!-- chat element -->
-          <div style="width: 370px; box-shadow: 2px 1px 2px #ff9966; border-radius: 15px;cursor: pointer;"
-            class="mt-2 d-flex chatElement" v-for="(   user, index) in userList" :key=" index "
+          <div style="width: 370px; box-shadow: 2px 2px 2px #CCCCCC; border-radius: 15px;cursor: pointer;"
+            class="mt-2 d-flex chatElement" v-for="(          user, index) in userList" :key=" index "
             @click="showUserBoxChat( user.id_user )">
             <!-- avt user -->
             <div class="p-2">
@@ -61,11 +62,16 @@
                 <strong>{{ user.name }}</strong>
               </p>
               <div class="d-flex justify-content-between">
-                <p style="font-size: 2.7vw; font-size: 2.7vh" class="ms-2" v-if=" user.isRead === 0 ">
-                  <small><strong>{{ user.newMess }}</strong></small>
+                <p style="font-size: 2.7vw; font-size: 2.7vh" class="ms-2"
+                  v-if=" user.newMess.type_message === 'text' ">
+                  <small><strong>{{ user.newMess.message }}</strong></small>
+                </p>
+                <p style="font-size: 2.7vw; font-size: 2.7vh" class="ms-2"
+                  v-else-if=" user.newMess.type_message === 'image' ">
+                  <small>Hình ảnh</small>
                 </p>
                 <p style="font-size: 2.7vw; font-size: 2.7vh" class="ms-2" v-else>
-                  <small>{{ user.newMess }}</small>
+                  <small>{{ user.newMess.message }}</small>
                 </p>
                 <p style="font-size: 1.5vw; font-size: 1.5vh">
                   <small>{{ user.dateNewMess }}</small>
@@ -82,19 +88,21 @@
 
   <!-- box chat -->
   <div style="position: fixed; right: 0; bottom: 0; margin-right: 20px; padding: 2px; z-index: 100" class="d-flex">
+    <Picker v-if=" showEmojiTable " v-model=" inputMessage " :data=" emojiIndex " set="twitter" @select=" addEmoji " />
     <div v-if=" boxChatShow " class="me-2 border border-secondary bg-white"
-      style="width: 300px; box-shadow: 1px 1px grey">
+      style="width: 350px; box-shadow: 1px 1px grey;border-radius: 10px;">
       <!-- header chat -->
-      <div class="d-flex bg-primary p-2 text-center">
-        <img :src=" srcAvtUser " class="img-fluid" style="width: 30px; height: 30px" />
-        <p class="ms-3 text-white">{{ currentUserBoxChatNameShow }}</p>
+      <div class="d-flex bg-primary p-2 text-center"
+        style="border-top-left-radius: 10px;border-top-right-radius: 10px;">
+        <img :src=" srcAvtUser " class="img-fluid" style="width: 30px; height: 30px;border-radius: 15px;" />
+        <p style="font-size: 18px;" class="ms-3 text-white">{{ currentUserBoxChatNameShow }}</p>
       </div>
       <!-- body chat -->
 
       <div style="max-height: 320px; background-color: white; overflow-y: hidden">
         <!-- line chat -->
         <div class="chatbox mt-3" ref="messages" style="overflow-y: auto; height: 300px">
-          <div v-for="(   message, index) in currentListUserChatShow" :key=" index ">
+          <div v-for="(          message, index) in currentListUserChatShow" :key=" index ">
             <!-- tin nhắn của user ở bên trái -->
             <div v-if=" message.type_sender !== 'admin' " class="align-items-left ms-1 me-3 d-flex p-1"
               id="message-admin">
@@ -104,7 +112,7 @@
               </div>
 
               <!-- tin nhắn -->
-              <div class="ms-2">
+              <div v-if=" message.type_message === 'text' " class="ms-2">
                 <div style="
                     background-color: lightseagreen;
                     color: white;
@@ -118,45 +126,94 @@
                   <small style="font-size: xx-small" class="">{{ message.create_at }}</small>
                 </div>
               </div>
+              <div v-if=" message.type_message === 'image' ">
+                <img v-if=" !message.message_preview " :src=" API_Port + message.message "
+                  style="width:100px;height:80px">
+                <img v-else :src=" message.image " style="width:100px;height:80px">
+                <!-- thời gian nhắn tin -->
+                <div>
+                  <small style="font-size: xx-small" class="">{{ message.create_at }}</small>
+                </div>
+              </div>
             </div>
             <!-- tin nhắn của admin ở bên phải -->
             <div id="message-user" v-else class="d-flex justify-content-end me-1 ms-3 d-flex">
-              <!-- tin nhắn -->
-              <div class="ms-2">
+              <!-- tin nhắn text -->
+              <div v-if=" message.type_message === 'text' " class="ms-2">
                 <div style="
-                    background-color: #33b319;
-                    color: white;
-                    border-radius: 10px;
-                    width: fit-content;
-                    float: right;
-                  ">
+                      background-color: #cdc9c9;
+                      color: black;
+                      border-radius: 10px;
+                      width: fit-content;
+                      float: right;
+                    ">
                   <p class="ms-2 me-2">{{ message.message }}</p>
                 </div>
                 <br />
                 <!-- thời gian nhắn tin -->
-                <div style="float: right">
-                  <small style="font-size: xx-small" class="ms-4">{{ message.create_at }}</small>
+                <div>
+                  <small style="font-size: xx-small" class="">{{ message.create_at }}</small>
                 </div>
               </div>
-              <!-- <div class="ms-1 me-2">
-                  <button><i class="fa-regular fa-user fa-lg" style="color: #33b319"></i></button>
-                </div> -->
+              <!-- tin nhắn hình ảnh -->
+              <div v-if=" message.type_message === 'image' ">
+                <img v-if=" message.message !== '' && message.message !== null && !message.message_preview "
+                  :src=" API_Port + ( message.message ) " style="width:170px;height:120px">
+                <img v-else-if=" message.message === '' && message.image !== '' && message.type_image === 'image_send' "
+                  :src=" ( message.image ) " style="width:170px;height:120px">
+                <img v-else :src=" ( message.message_preview ) " style="width:170px;height:120px">
+                <!-- thời gian nhắn tin -->
+                <div style="float: right;">
+                  <small style="font-size: xx-small" class="">{{ message.create_at }}</small>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
       <!-- footer chat -->
-      <div class="d-flex ms-1 me-1">
+      <div class="d-flex mt-2 ms-1 me-1">
         <div class="input-group mb-1">
-          <!-- <div>
-            <input class="custom-file-input" type="file" hidden>
-          </div> -->
-          <input v-model=" inputMessage " @keyup.enter=" sendMessage " type="text" class="form-control"
-            placeholder="Nhập tin nhắn của bạn" style="text-wrap: wrap;" />
-          <div class="input-group-append">
-            <button class="btn btn-outline-secondary" type="button" @click=" sendMessage ">
-              <i class="fa-regular fa-paper-plane fa-lg" style="color: #74c0fc"></i>
-            </button>
+          <!-- Hiển thị tên tệp đã chọn -->
+          <!-- <p class="file-name">{{ selectedFileName }}</p> -->
+
+          <!-- hiển thị preview ảnh khi người dùng gửi ảnh -->
+          <div style="position: relative;" v-if=" previewImage ">
+            <img class="ms-5" :src=" previewImage " alt="Preview" style="
+                  max-width: 100px;
+                  max-height: 70px;
+                  margin-left: 15px;
+                  border-radius: 5px;
+                  border: 1px solid black;
+                " />
+            <button @click=" deleteImageMessageSend " v-if=" previewImage "
+              style="background-color: red; color: white; padding-left: 5px;padding-right:5px;border-radius: 3px;position: absolute;z-index: 2000;right:50px;top:1px;right:1px">x</button>
+          </div>
+
+          <!-- custom button input type file -->
+          <div class="input-group">
+            <div class="custom-file-upload">
+              <!-- Nhãn để mô phỏng nút tải lên -->
+              <label for="fileInput" class="btn btn-white">
+                <i class="fa-regular fa-image"></i>
+              </label>
+              <!-- Phần tử input file bị ẩn -->
+              <input type="file" id="fileInput" @change=" handleFileChange " style="display: none" />
+            </div>
+            <textarea :disabled=" previewImage !== null "
+              style="word-wrap: break-word; resize: none; height: 50px;border-radius: 10px;" v-model=" inputMessage "
+              @keyup.enter=" sendMessage " type="text" class="form-control ms-2 me-1"
+              placeholder="Nhập tin nhắn của bạn...">
+              </textarea>
+            <button @click=" function () {
+              showEmojiTable = !showEmojiTable
+            } " class="me-1"><i class="fa-regular fa-face-smile fa-lg"></i></button>
+            <div class="input-group-append">
+              <button class="ms-2" style="margin-top:13px;padding-right:2px;border-radius: 5px;" type="button"
+                @click=" sendMessage ">
+                <i class="fa-regular fa-paper-plane fa-lg" style="color: black"></i>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -184,6 +241,13 @@ import { useRouter } from 'vue-router'
 import { decodeToken } from '@/service/decodeToken'
 import { getUserDetail } from '@/service/usersService'
 import { ListChat, updateIsread } from '@/service/chatService'
+// thư viện hiển thị emoji
+// all emoji sets.
+import data from "emoji-mart-vue-fast/data/all.json";
+// Import default CSS
+import "emoji-mart-vue-fast/css/emoji-mart.css";
+import { Picker, EmojiIndex } from "emoji-mart-vue-fast/src";
+var emojiIndex = new EmojiIndex(data);
 export default {
   props: {
     toggleSidebar: {
@@ -191,8 +255,13 @@ export default {
       required: true
     }
   },
+  components: { Picker },
   data () {
     return {
+      emojiIndex: emojiIndex,
+      emojisOutput: "",
+      showEmojiTable: false,
+      API_Port: import.meta.env.VITE_API_PORT_FILE_IMAGE_MESSAGE,
       isDropdownOpen: false,
       popperInstance: null,
       showListChat: false,
@@ -212,25 +281,28 @@ export default {
       currentUserBoxChatNameShow: null,
       currentListUserChatShow: [],
       searchPersonChatInput: null,
+      previewImage: null,
+      // biến lưu trữ ảnh tin nhắn người dùng nếu người dùng gửi ảnh
+      ImageSelected: null
     }
   },
   created () {
     this.getUserChat()
     const user = decodeToken()
     this.adminId = user.data.id
-    this.socket = new WebSocket('ws://localhost:9001')
+    this.socket = new WebSocket(import.meta.env.VITE_WEBSOCKET)
     this.socket.onopen = () => {
       console.log('Kết nối tới WebSocket server')
     }
-
     // hàm nhận tin nhắn
     this.socket.onmessage = async (event) => {
       const messageData = JSON.parse(event.data)
+      console.log(messageData)
       // this.messages.push(messageData); // Nhận và lưu trữ tin nhắn từ người dùng
       // thông báo khi có tin nhắn mới
       const userId = messageData['from']
       // tin nhắn vừa nhận
-      const NewMessage = messageData['message']
+      const NewMessage = messageData
       // kiểm tra xem người nhắn tin đến có tồn tại trong danh sách những người nhắn tin chưa
       const user = this.userList.find((e) => e.id_user === userId && e.id_user !== this.adminId)
       if (user)
@@ -296,6 +368,20 @@ export default {
       // tự động scroll xuống tin nhắn mới nhất
       this.scrollToBottom()
     }
+
+  },
+  beforeUnmount () {
+    // Đảm bảo đóng kết nối WebSocket
+    if (this.socket)
+    {
+      this.socket.close();
+      this.socket = null
+    }
+    document.removeEventListener('click', this.handleClickOutside)
+    if (this.popperInstance)
+    {
+      this.popperInstance.destroy()
+    }
   },
   computed: {
     BreakCurmp () {
@@ -316,6 +402,50 @@ export default {
     }
   },
   methods: {
+    showEmoji (emoji) {
+      this.emojisOutput = this.emojisOutput + emoji.native;
+    },
+    addEmoji (emoji) {
+      this.inputMessage += emoji.native; // Thêm emoji vào chuỗi tin nhắn
+    },
+    handleFileChange (event) {
+      const file = event.target.files[0]; // Lấy tệp được chọn
+      if (file)
+      {
+        // Kiểm tra xem tệp có phải là ảnh không
+        const fileType = file.type.split('/')[0]; // Lấy loại tệp, chỉ lấy phần đầu (image,)
+
+        if (fileType === 'image')
+        { // Nếu là ảnh
+          if (file.size < 5 * 1024 * 1024)
+          { // Kiểm tra kích thước tệp dưới 5MB
+            this.ImageSelected = file;
+            this.previewImage = URL.createObjectURL(file); // Tạo URL tạm thời để hiển thị ảnh
+          } else
+          {
+            alert("Chỉ gửi ảnh dưới 5MB");
+          }
+        } else
+        {
+          alert("Vui lòng chọn ảnh hợp lệ");
+          // Nếu tệp không phải là ảnh, xóa thông tin hiển thị
+          this.selectedFileName = '';
+          this.ImageSelected = null;
+          this.previewImage = null;
+        }
+      } else
+      {
+        // Nếu không có tệp, xóa thông tin hiển thị
+        this.selectedFileName = '';
+        this.ImageSelected = null;
+        this.previewImage = null;
+        alert("Vui lòng chọn ảnh");
+      }
+    },
+    deleteImageMessageSend () {
+      this.previewImage = null
+      this.ImageSelected = null
+    },
     // tìm kiếm đoạn chat người dùng
     searchChat () {
       const input = this.searchPersonChatInput.trim()
@@ -387,12 +517,13 @@ export default {
       if (data !== null)
       {
         this.userList = data
+        // console.log(this.userList)
         // lấy độ dài mảng tin nhắn
         this.userList.forEach((e) => {
           if (e.list_message)
           {
             e.lengthListMess = Object.keys(e.list_message).length
-            e.newMess = e.list_message[e.lengthListMess - 1].message
+            e.newMess = e.list_message[e.lengthListMess - 1]
             e.dateNewMess = e.list_message[e.lengthListMess - 1].create_at
             e.isread = false
           }
@@ -454,11 +585,13 @@ export default {
         {
           const message = {
             message: this.inputMessage,
+            image: '',
             to: this.userSocketId,
             from: this.adminId,
             time: this.currentTime,
             sender: 'admin',
             type_sender: 'admin',
+            type_message: 'text',
             create_at: this.currentTime
           }
           if (this.socket.readyState === WebSocket.OPEN)
@@ -471,8 +604,6 @@ export default {
             }
             // this.messages.push(message)
             // console.log(JSON.stringify(message))
-
-            // console.log(this.userList)
             this.inputMessage = '' // reset ô input sau khi gửi
             this.userListOrigin = this.userList
             this.scrollToBottom()
@@ -484,7 +615,50 @@ export default {
         {
           console.log(e)
         }
-      } else
+      }
+      else if (this.inputMessage === '' && this.ImageSelected !== null && this.ImageSelected !== '')
+      {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const base64Image = reader.result; // Kết quả Base64 của ảnh
+          const message = {
+            message: '',
+            image: base64Image, // Ảnh ở dạng Base64
+            to: this.userSocketId,
+            from: this.adminId,
+            time: this.currentTime,
+            sender: 'admin',
+            type_sender: 'admin',
+            type_message: 'image',
+            create_at: this.currentTime,
+            // giá trị lưu ảnh tạm thời để hiện thị lên khi send tin nhắn đi
+            message_preview: this.previewImage,
+            type_image: 'image_send'
+          };
+
+          // Kiểm tra kết nối của socket
+          if (this.socket.readyState === WebSocket.OPEN)
+          {
+            this.socket.send(JSON.stringify(message));
+            const userCurrent = this.userList.find((e) => e.id_user === this.userSocketId)
+            if (userCurrent)
+            {
+              userCurrent.list_message.push(message)
+            }
+            this.inputMessage = ''; // Reset ô input
+            this.ImageSelected = null; // Reset ảnh
+            this.previewImage = null
+            this.scrollToBottom(); // Cuộn xuống dưới cùng
+          } else
+          {
+            alert('Đang kết nối với máy chủ. Vui lòng đợi!');
+          }
+        };
+
+        // Đọc file và chuyển thành Base64
+        reader.readAsDataURL(this.ImageSelected);
+      }
+      else
       {
         alert('Vui lòng nhập tin nhắn')
       }
@@ -533,13 +707,6 @@ export default {
   mounted () {
     document.addEventListener('click', this.handleClickOutside)
   },
-  beforeUnmount () {
-    document.removeEventListener('click', this.handleClickOutside)
-    if (this.popperInstance)
-    {
-      this.popperInstance.destroy()
-    }
-  }
 }
 </script>
 
@@ -560,31 +727,31 @@ export default {
 
 ;
 
-.custom-file-input::-webkit-file-upload-button {
-  visibility: hidden;
+.custom-file-upload {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.custom-file-input::before {
-  content: 'Select some files';
-  display: inline-block;
-  background: linear-gradient(top, #f9f9f9, #e3e3e3);
-  border: 1px solid #999;
-  border-radius: 3px;
-  padding: 5px 8px;
-  outline: none;
-  white-space: nowrap;
-  -webkit-user-select: none;
+.custom-file-upload .btn {
   cursor: pointer;
-  text-shadow: 1px 1px #fff;
-  font-weight: 700;
-  font-size: 10pt;
 }
 
-.custom-file-input:hover::before {
-  border-color: black;
+.custom-file-upload label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  background-color: white;
+  color: black;
+  border-radius: 5px;
 }
 
-.custom-file-input:active::before {
-  background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
+.file-name {
+  font-size: 14px;
+  color: #555;
+  display: none;
 }
 </style>

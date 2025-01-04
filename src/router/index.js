@@ -5,9 +5,12 @@ import Cookies from 'js-cookie'
 // import LayoutClient from '@/Layout/LayoutClient.vue'
 import HomeView from '@/views/UserView/HomeView.vue'
 import RegisterView from '@/views/UserView/RegisterView.vue'
+// view nhập OTP để xác nhận đăng ký tài khoản
 import LoginView from '@/views/UserView/LoginView.vue'
 import forgotPasswordView from '@/views/UserView/forgotPasswordView.vue'
+// view form quên mật khẩu
 import resetPasswordForgotView from '@/views/UserView/resetPasswordForgotView.vue'
+// view form đổi mật khẩu
 import resetPasswordView from '@/views/UserView/resetPasswordView.vue'
 import AboutView from '@/views/UserView/AboutView.vue'
 import ExamInfor from '@/views/UserView/ExamInfor.vue'
@@ -19,7 +22,7 @@ import TestView from '@/views/UserView/TestView.vue'
 
 // src admin
 // eslint-disable-next-line no-unused-vars
-import HomeAdmin from '@/views/AdminView/HomeAdmin.vue'
+// import HomeAdmin from '@/views/AdminView/HomeAdmin.vue'
 import User from '@/views/AdminView/User/User.vue'
 import CreateUser from '@/views/AdminView/User/CreateUser.vue'
 import EditUser from '@/views/AdminView/User/EditUser.vue'
@@ -41,6 +44,7 @@ import CategoryExam from '@/views/AdminView/Exams/CategoryExam.vue'
 import CartExam from '@/views/UserView/CartExam.vue'
 // import UserInfo from '@/views/UserInfo.vue'
 import UserDetailAdmin from '@/views/AdminView/Infor/UserDetailAdmin.vue'
+import HomeAdmin from '@/views/AdminView/HomeAdmin.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -164,7 +168,7 @@ const router = createRouter({
         {
           path: '',
           name: 'homeAdmin',
-          component: User,
+          component: HomeAdmin,
           meta: {
             layout: 'admin'
           }

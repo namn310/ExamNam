@@ -10,18 +10,34 @@ import {
   putAdmin
 } from '../utils/request'
 
-export const getUserList = async () => {
-  const result = await get(`users`)
+export const getUserList = async (page,role) => {
+  const result = await get(`users?page=${page}&role=${role}`)
   return result
 }
 export const createUser = async (option) => {
   const result = await postNotNeedToken('users/create', option)
   return result
 }
+// gửi mã OTP để active đăng ký người dùng
+export const sendOTPRegist = async (option) => {
+  const result = await postNotNeedToken('users/sendOTP', option)
+  return result
+}
+// active tài khoản nếu tài khoản đã đăng ký mà chưa active
+export const activeAccount = async (option) => {
+  const result = await postNotNeedToken('users/activeAccount', option)
+  return result
+}
 export const deleteUser = async (id) => {
   const result = await delAdmin(`users/delete/${id}`)
   return result
 }
+// update email
+export const updateEmailUser = async (id, option) => {
+  const result = await putStudent(`users/updateEmail/${id}`, option)
+  return result
+}
+
 export const updateUser = async (id, option) => {
   const result = await putStudent(`users/update/${id}`, option)
   return result

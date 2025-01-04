@@ -9,20 +9,10 @@
       <div class="test-exams">
         <ul class="nav nav-pills flex-wrap">
           <li class="nav-item w-auto">
-            <a
-              class="nav-link"
-              @click="getOptionBySubject(0)"
-              :class="{ active: currentIdSubject === 0 }"
-              >Tất cả</a
-            >
+            <a class="nav-link" @click="getOptionBySubject( 0 )" :class=" { active: currentIdSubject === 0 } ">Tất cả</a>
           </li>
-          <li
-            class="nav-item w-auto"
-            @click="getOptionBySubject(e.id)"
-            v-for="e in ListCategoryExam"
-            :key="e.id"
-          >
-            <a :class="{ active: currentIdSubject === e.id }" class="nav-link">{{ e.title }}</a>
+          <li class="nav-item w-auto" @click="getOptionBySubject( e.id )" v-for=" e in ListCategoryExam " :key=" e.id ">
+            <a :class=" { active: currentIdSubject === e.id } " class="nav-link">{{ e.title }}</a>
           </li>
         </ul>
       </div>
@@ -34,12 +24,8 @@
             <div class="input-addon inner-addon right-addon">
               <div class="input-group flex-nowrap">
                 <!-- search input tìm kiếm đề thi -->
-                <input
-                  type="text"
-                  style="width: 30vw"
-                  class="form-control"
-                  placeholder="Nhập từ khoá bạn muốn tìm kiếm: tên sách, dạng câu hỏi ..."
-                />
+                <input type="text" style="width: 30vw" class="form-control"
+                  placeholder="Nhập từ khoá bạn muốn tìm kiếm: đề thi, dạng câu hỏi ..." />
                 <button class="btn btn-primary">
                   <i class="fa-solid fa-magnifying-glass fa-lg text-white"></i>
                 </button>
@@ -51,28 +37,26 @@
       <br />
     </div>
   </div>
-  <div class="d-flex justify-content-start flex-wrap" v-if="ListExam && ListExam.length > 0">
-    <CardExam
-      v-for="(item,index) in ListExam"
-      :key="index"
-      :title="item.title"
-      :expire_time="item.duration"
-      :countQuestion="item.totalQuestion"
-      :idQues="item.id"
-      :countUserDo="item.count_user_do"
-    />
+  <div class="d-flex justify-content-start flex-wrap" v-if=" ListExam && ListExam.length > 0 ">
+    <CardExam v-for="( item, index) in ListExam" :key=" index " :title=" item.title " :expire_time=" item.duration "
+      :countQuestion=" item.totalQuestion " :idQues=" item.id " :countUserDo=" item.count_user_do " />
   </div>
   <p v-else>Không có bài thi nào !</p>
   <div class="mb-4 mt-3">
-      <ul class="pagination justify-content-center">
-        <li style="cursor: pointer" class="page-item" :class=" { active: page == currentPage } "
-          v-for="(   page, index) in ListPages" :key=" index ">
-          <a class="page-link" @click="changePage( page )">{{ page }}</a>
-        </li>
-      </ul>
-    </div>
+    <ul class="pagination justify-content-center">
+      <li style="cursor: pointer">
+        <a @click="prePage()" class="page-link"><i class="fa-solid fa-angles-left"></i></a>
+      </li>
+      <li style="cursor: pointer" class="page-item" :class=" { active: page == currentPage } "
+        v-for="(    page, index) in ListPages" :key=" index ">
+        <a class="page-link" @click="changePage( page )">{{ page }}</a>
+      </li>
+      <li style="cursor: pointer">
+        <a @click="nextPage()" class="page-link"><i class="fa-solid fa-angles-right"></i></a>
+      </li>
+    </ul>
+  </div>
 </template>
-
 <script>
 // import router from '@/router';
 import router from '@/router'
@@ -82,7 +66,7 @@ export default {
   components: {
     CardExam
   },
-  data() {
+  data () {
     return {
       ListCategoryExam: [],
       ListExam: [],
@@ -94,48 +78,123 @@ export default {
       currentSubject: 'Tất cả'
     }
   },
-  created() {
+  created () {
     this.fetchData()
   },
   methods: {
     // chọn và active danh mục được chọn
-    CategoryChosen(id) {
+    CategoryChosen (id) {
       this.currentIdSubject = id
     },
-    async fetchData() {
+    async fetchData () {
       const category = await getCategoryExamList()
-      if (category) {
+      if (category)
+      {
         this.ListCategoryExam = category['data']['data']
       }
       const exam = await getExamList(this.currentPage, 0)
-      if (exam) {
+      if (exam)
+      {
         this.ListExam = exam.data.data
         this.TotalPage = exam['data']['total_page']
         this.TotalExam = exam['data']['record_total']
         this.listpage()
       }
     },
-    listpage() {
-      for (var i = 1; i <= this.TotalPage; i++) {
-        this.ListPages.push(i)
+    async nextPage () {
+      if (this.currentPage === this.TotalPage)
+      {
+        return
+      } else
+      {
+        await this.changePage(this.currentPage + 1)
       }
     },
-    async changePage(page) {
-      this.currentPage = page
-      await this.getExamByPage(page)
+    async prePage () {
+      if (this.currentPage === 1)
+      {
+        return
+      } else
+      {
+        await this.changePage(this.currentPage - 1)
+      }
     },
-    async getExamByPage(page) {
-      const exam = await getExamList(page, 0)
-      if (exam) {
+    listpage () {
+      // for (var i = 1; i <= this.TotalPage; i++)
+      // {
+      //   this.ListPages.push(i)
+      // }
+      this.ListPages = [] // Reset ListPages
+
+      if (this.TotalPage <= 6)
+      {
+        // Hiển thị tất cả các trang nếu số trang <= 7
+        for (let i = 1; i <= this.TotalPage; i++)
+        {
+          this.ListPages.push(i)
+        }
+      } else
+      {
+        // Hiển thị phân trang dạng 12 ... 89
+        if (this.currentPage <= 4)
+        {
+          // Nếu đang ở các trang đầu
+          for (let i = 1; i <= 5; i++)
+          {
+            this.ListPages.push(i)
+          }
+          this.ListPages.push('...')
+          this.ListPages.push(this.TotalPage)
+        } else if (this.currentPage >= this.TotalPage - 3)
+        {
+          // Nếu đang ở các trang cuối
+          this.ListPages.push(1)
+          this.ListPages.push('...')
+          for (let i = this.TotalPage - 4; i <= this.TotalPage; i++)
+          {
+            this.ListPages.push(i)
+          }
+        } else
+        {
+          // Nếu đang ở giữa
+          this.ListPages.push(1)
+          this.ListPages.push('...')
+          for (let i = this.currentPage - 1; i <= this.currentPage + 1; i++)
+          {
+            this.ListPages.push(i)
+          }
+          this.ListPages.push('...')
+          this.ListPages.push(this.TotalPage)
+        }
+      }
+    },
+    async changePage (page) {
+      this.currentPage = page
+      if (page === '...')
+      {
+        return
+      } else
+      {
+        await this.getExamByPage(page)
+        this.listpage()
+      }
+    },
+    async getExamByPage (page) {
+      const exam = await getExamList(page, this.currentIdSubject)
+      if (exam)
+      {
         this.ListExam = exam['data']['data']
-      } else {
+      } else
+      {
         alert('Có lỗi xảy ra')
       }
     },
-    async getOptionBySubject(id) {
+    async getOptionBySubject (id) {
       this.currentIdSubject = id
+      this.currentPage = 1
       const exam = await getExamList(this.currentPage, this.currentIdSubject)
-      if (exam) {
+      if (exam)
+      {
         this.ListExam = exam['data']['data']
         this.TotalPage = exam['data']['total_page']
         this.TotalExam = exam['data']['record_total']
@@ -145,7 +204,7 @@ export default {
         // console.log(exam, this.TotalExam, this.TotalPage)
       }
     },
-    detail(id) {
+    detail (id) {
       router.replace({ name: 'detail-exam', params: { id: id } })
     }
   }
@@ -202,6 +261,7 @@ export default {
 }
 
 @media (min-width: 992px) {
+
   .container,
   .container-lg,
   .container-md,
@@ -217,6 +277,7 @@ export default {
 }
 
 @media (min-width: 768px) {
+
   .container,
   .container-md,
   .container-sm,
@@ -231,6 +292,7 @@ export default {
 }
 
 @media (min-width: 576px) {
+
   .container,
   .container-sm,
   .lg-container,
@@ -350,7 +412,7 @@ ul {
 }
 
 .nav-pills .nav-link.active,
-.nav-pills .show > .nav-link {
+.nav-pills .show>.nav-link {
   color: #fff;
   background-color: #35509a;
 }

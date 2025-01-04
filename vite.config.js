@@ -13,6 +13,6 @@ export default defineConfig({
     }
   },
   optimizeDeps: {
-    include: ['source-map-js'] // Buộc Vite không externalize thư viện này
+    include: ['source-map-js'] // Buộc Vite không externalize thư viện này,
   }
 })

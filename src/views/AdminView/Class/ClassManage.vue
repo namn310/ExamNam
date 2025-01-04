@@ -46,13 +46,13 @@
                 </tr>
             </thead>
             <tbody>
-                <tr @click="ClassSelectedCurrent( e.id, e.class, e.description )" v-for="     e in ListClass     "
-                    :key=" e.id " data-bs-toggle="modal" data-bs-target="#modalUpdate">
-                    <td>
+                <tr v-for="        e in ListClass        "
+                    :key=" e.id ">
+                    <td data-bs-toggle="modal" data-bs-target="#modalUpdate" @click="ClassSelectedCurrent( e.id, e.class, e.description )">
                         {{ e.id }}
                     </td>
-                    <td>{{ e.class }}</td>
-                    <td>{{ e.description }}</td>
+                    <td data-bs-toggle="modal" data-bs-target="#modalUpdate" @click="ClassSelectedCurrent( e.id, e.class, e.description )">{{ e.class }}</td>
+                    <td data-bs-toggle="modal" data-bs-target="#modalUpdate" @click="ClassSelectedCurrent( e.id, e.class, e.description )">{{ e.description }}</td>
                     <td>
                         <button class="btn btn-danger" @click="deleteClassFetch( e.id )">x</button>
                     </td>
@@ -63,9 +63,15 @@
     </div>
     <div class="mb-4">
         <ul class="pagination justify-content-center">
+            <li style="cursor: pointer"><a @click="prePage()" class="page-link"><i
+                        class="fa-solid fa-angles-left"></i></a>
+            </li>
             <li style="cursor: pointer" class="page-item" :class=" { active: page == currentPage } "
-                v-for="(       page, index) in ListPages" :key=" index ">
+                v-for="(      page, index) in ListPages" :key=" index ">
                 <a class="page-link" @click="changePage( page )">{{ page }}</a>
+            </li>
+            <li style="cursor: pointer"><a @click="nextPage()" class="page-link"><i
+                        class="fa-solid fa-angles-right"></i></a>
             </li>
         </ul>
     </div>
@@ -141,9 +147,52 @@ export default {
             }
         },
         listpage () {
-            for (var i = 1; i <= this.TotalPage; i++)
+            // for (var i = 1; i <= this.TotalPage; i++)
+            // {
+            //     this.ListPages.push(i)
+            // }
+            this.ListPages = [] // Reset ListPages
+
+            if (this.TotalPage <= 7)
             {
-                this.ListPages.push(i)
+                // Hiển thị tất cả các trang nếu số trang <= 7
+                for (let i = 1; i <= this.TotalPage; i++)
+                {
+                    this.ListPages.push(i)
+                }
+            } else
+            {
+                // Hiển thị phân trang dạng 12 ... 89
+                if (this.currentPage <= 4)
+                {
+                    // Nếu đang ở các trang đầu
+                    for (let i = 1; i <= 5; i++)
+                    {
+                        this.ListPages.push(i)
+                    }
+                    this.ListPages.push('...')
+                    this.ListPages.push(this.TotalPage)
+                } else if (this.currentPage >= this.TotalPage - 3)
+                {
+                    // Nếu đang ở các trang cuối
+                    this.ListPages.push(1)
+                    this.ListPages.push('...')
+                    for (let i = this.TotalPage - 4; i <= this.TotalPage; i++)
+                    {
+                        this.ListPages.push(i)
+                    }
+                } else
+                {
+                    // Nếu đang ở giữa
+                    this.ListPages.push(1)
+                    this.ListPages.push('...')
+                    for (let i = this.currentPage - 1; i <= this.currentPage + 1; i++)
+                    {
+                        this.ListPages.push(i)
+                    }
+                    this.ListPages.push('...')
+                    this.ListPages.push(this.TotalPage)
+                }
             }
         },
         ClassSelectedCurrent (id, classElement, description) {
@@ -154,7 +203,37 @@ export default {
         },
         async changePage (page) {
             this.currentPage = page
-            await this.getClassByPage(page)
+            if (page === '...')
+            {
+                return
+            }
+            else
+            {
+                await this.getClassByPage(page)
+                this.listpage()
+            }
+        },
+        async nextPage () {
+            if (this.currentPage === this.TotalPage)
+            {
+                return
+            }
+            else
+            {
+                await this.changePage(this.currentPage + 1)
+            }
+
+        },
+        async prePage () {
+            if (this.currentPage === 1)
+            {
+                return
+            }
+            else
+            {
+                await this.changePage(this.currentPage - 1)
+            }
+
         },
         async getClassByPage (page) {
             const result = await getClassList(page)

@@ -6,57 +6,46 @@
           <a class="topnav-brand ms-4" href="/"> <img :src=" imgageLogo " style="width:90px;height:90px"
               class="topnav-logo image-fluid" />ExamTutor </a>
         </span>
-        <button @click=" toggleMenu " class="navbar-toggler pull-xs-right d-lg-none" type="button"
-          data-toggle="collapse" data-target="#navbar-collapse">
-          ☰
-        </button>
         <!-- small menu -->
-        <div v-show=" visible " class="menuSmallContainer">
-          <div class="menuSmall pt-3">
-            <ul>
-              <li class="nav-item" @mouseover="checkHover['nav_item1'] = true"
-                @mouseleave="checkHover['nav_item1'] = false" :class=" { 'nav-item-active': checkHover['nav_item1'] } ">
-                <RouterLink class="nav-link" :to=" { name: 'home' } "><i class="fa-solid fa-book-open fa-xl me-2"
-                    style="color: #74C0FC;"></i> Đề thi online</RouterLink>
-              </li>
-              <li class="nav-item" @mousemove="checkHover['nav_item2'] = true"
-                @mouseleave="checkHover['nav_item2'] = false" :class=" { 'nav-item-active': checkHover['nav_item2'] } "
-                v-if=" !checkToken() ">
-                <RouterLink :to=" { name: 'Login' } ">Đăng nhập</RouterLink>
-              </li>
-              <li class="nav-item" @mousemove="checkHover['nav_item3'] = true"
-                @mouseleave="checkHover['nav_item3'] = false" :class=" { 'nav-item-active': checkHover['nav_item3'] } ">
-                <RouterLink :to=" { name: 'ResultExam' } "><i class="fa-solid fa-circle-user fa-xl me-2"
-                    style="color: #74C0FC;"></i>Tài khoản</RouterLink>
-              </li>
-              <li class="nav-item"  @mousemove="checkHover['nav_item4'] = true"
-                @mouseleave="checkHover['nav_item4'] = false" :class=" { 'nav-item-active': checkHover['nav_item4'] } ">
-                <RouterLink :to=" { name: 'reset-password' } ">
-                  <i class="fa-solid fa-unlock fa-xl me-2" style="color: #74C0FC;"></i>Đổi mật khẩu
-                </RouterLink>
-              </li>
-              <li class="nav-item"  @mousemove="checkHover['nav_item5'] = true"
-                @mouseleave="checkHover['nav_item5'] = false" :class=" { 'nav-item-active': checkHover['nav_item5'] } ">
-                <RouterLink :to=" { name: 'ResultExam' } ">
-                  <i class="fa-solid fa-square-poll-horizontal fa-xl me-2" style="color: #74C0FC;"></i>Kết quả làm bài
-                </RouterLink>
-              </li>
-              <li class="nav-item" style="cursor: pointer;" @click="logOut()"  @mousemove="checkHover['nav_item6'] = true"
-                @mouseleave="checkHover['nav_item6'] = false" :class=" { 'nav-item-active': checkHover['nav_item6'] } "><i
-                  class="fa-solid fa-arrow-right-from-bracket fa-xl me-2" style="color: #74C0FC;"></i>Đăng xuất</li>
-            </ul>
-          </div>
+        <div class="dropdown">
+          <button class="navbar-toggler pull-xs-right d-lg-none btn btn-primary dropdown-toggle" type="button"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-bars fa-lg mt-3 mb-3 ms-2"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end d-lg-none" aria-labelledby="dropdownMenuButton1">
+            <li class="nav-item">
+              <RouterLink class="nav-link" :to=" { name: 'home' } "><i class="fa-solid fa-book-open fa-xl me-2"></i> Đề
+                thi online</RouterLink>
+            </li>
+            <li class="nav-item" v-if=" !checkToken() ">
+              <RouterLink class="nav-link" :to=" { name: 'Login' } "> <i
+                  class="fa-solid fa-door-open fa-lg me-3"></i>Đăng nhập</RouterLink>
+            </li>
+            <li v-if=" checkToken() " class="nav-item">
+              <RouterLink class="nav-link" :to=" { name: 'ResultExam' } "><i class="fa-solid fa-circle-user fa-xl"
+                  style="margin-right:15px"></i>Tài khoản
+              </RouterLink>
+            </li>
+            <li v-if=" checkToken() " class="nav-item">
+              <RouterLink class="nav-link" :to=" { name: 'reset-password' } ">
+                <i class="fa-solid fa-unlock fa-xl me-3"></i>Đổi mật khẩu
+              </RouterLink>
+            </li>
+            <!-- <li v-if=" checkToken() " class="nav-item">
+              <RouterLink class="nav-link" :to=" { name: 'ResultExam' } ">
+                <i class="fa-solid fa-square-poll-horizontal fa-xl me-3"></i>Kết quả làm bài
+              </RouterLink>
+            </li> -->
+            <li v-if=" checkToken() " class="nav-item"><i
+                class="fa-solid fa-arrow-right-from-bracket fa-xl me-3"></i>Đăng xuất</li>
+          </ul>
         </div>
         <!-- end small menu -->
-         
         <div class="d-lg-block navbar-collapse justify-content-end collapse-hidden" id="navbar-collapse">
           <ul class="nav">
             <li class="nav-item">
               <RouterLink class="nav-link" :to=" { name: 'home' } ">Đề thi online</RouterLink>
             </li>
-            <!-- <li class="nav-item">
-              <a class="nav-link">Kết quả thi</a>
-            </li> -->
             <li v-if=" !checkToken() ">
               <RouterLink :to=" { name: 'Login' } ">Đăng nhập</RouterLink>
             </li>
@@ -71,16 +60,18 @@
             <div v-show=" UserToggleVisible ">
               <div class="toggleFunctionUserContainer">
                 <ul>
-                  <li>
-                    <RouterLink :to=" { name: 'ResultExam' } ">Tài khoản</RouterLink>
-                  </li>
-                  <RouterLink  :to=" { name: 'reset-password' } " v-if="type_account == 'account'">
-                    <li>Đổi mật khẩu</li>
-                  </RouterLink>
                   <RouterLink :to=" { name: 'ResultExam' } ">
-                    <li>Kết quả làm bài</li>
+                    <li class="nav-link-largeMenu">
+                      Tài khoản
+                    </li>
                   </RouterLink>
-                  <li style="cursor: pointer;" @click="logOut()">Đăng xuất</li>
+                  <RouterLink :to=" { name: 'reset-password' } " v-if=" type_account == 'account' ">
+                    <li class="nav-link-largeMenu">Đổi mật khẩu</li>
+                  </RouterLink>
+                  <!-- <RouterLink :to=" { name: 'ResultExam' } ">
+                    <li class="nav-link-largeMenu">Kết quả làm bài</li>
+                  </RouterLink> -->
+                  <li class="nav-link-largeMenu" style="cursor: pointer;" @click="logOut()">Đăng xuất</li>
                 </ul>
               </div>
             </div>
@@ -102,18 +93,10 @@ export default {
   name: 'NavBarView',
   data () {
     return {
-      type_account:'',
+      type_account: '',
       visible: false,
       UserToggleVisible: false,
       imgageLogo: LogoWeb,
-      checkHover: {
-        'nav_item1': false,
-        'nav_item2': false,
-        'nav_item3': false,
-        'nav_item4': false,
-        'nav_item5': false,
-        'nav_item6': false,
-      },
     }
   },
   created () {
@@ -154,6 +137,21 @@ export default {
 }
 </script>
 <style scoped lang="css">
+.dropdown-menu li .nav-link {
+  color: black
+}
+
+.dropdown-menu li {
+  color: black;
+  margin-top: 10px;
+  padding-left: 10px;
+}
+
+.dropdown-menu-end.nav-item:hover {
+  background: linear-gradient(90deg, #74C0FC 0%, #4D91F7 100%) !important;
+  color: white !important;
+}
+
 .topnav1 {
   box-shadow: 0 4px 4px -4px rgba(0, 0, 0, 0.2);
   position: fixed;
@@ -256,23 +254,12 @@ export default {
   /* background-color: bisque; */
 }
 
-/* on click li */
-.nav-item-active {
-  color: red;
-  background-color: dodgerblue;
-}
-
 @media (min-width: 992px) {
   .menuSmall {
-   display: none;
+    display: none;
   }
 }
-/* .menuSmallContainer ul li a {
-  text-decoration: none;
-  color: #35509a;
-} */
-/* end nav small */
-/* toggleFunctionUserContainer */
+
 .toggleFunctionUserContainer {
   position: absolute;
   top: 65px;
@@ -298,6 +285,16 @@ export default {
 
 .toggleFunctionUserContainer ul li {
   margin-bottom: 15px;
+}
+
+.nav-link-largeMenu {
+  padding: 4px;
+  border-radius: 10px;
+}
+
+.nav-link-largeMenu:hover {
+  background-color: #4D91F7;
+  color: white;
 }
 
 /* end toggleFunctionUserContainer */

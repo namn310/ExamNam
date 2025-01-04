@@ -3,13 +3,13 @@
   <div class="text-[30px] text-center text-400">Danh sách bài kiểm tra</div>
   <div class="flex justify-between">
     <RouterLink :to=" { name: 'create-exam' } ">
-      <el-button type="primary" plain>Create bài kiểm tra</el-button>
+      <el-button type="primary" plain>Tạo bài kiểm tra</el-button>
     </RouterLink>
   </div>
   <div class="mt-3">
-    <select class="form-select w-40" @change="getOptionBySubject" v-model="currentSubject">
+    <select class="form-select w-40" @change=" getOptionBySubject " v-model=" currentSubject ">
       <option selected>Tất cả</option>
-      <option v-for="(    e, index) in ListCategoryExam" :key=" index " :value="e.id">{{
+      <option v-for="(     e, index) in ListCategoryExam" :key=" index " :value=" e.id ">{{
         e.title
       }}</option>
     </select>
@@ -26,7 +26,7 @@
           <th style="width:10%">Chức năng</th>
         </tr>
       </thead>
-      <tbody v-for="(     e, index) in ListExam" :key=" index ">
+      <tbody v-for="(      e, index) in ListExam" :key=" index ">
         <tr style="cursor: pointer;">
           <td>{{ e.id }}</td>
           <td @click="detail( e.id )">{{ e.title }}</td>
@@ -42,19 +42,23 @@
     </table>
     <p v-else>Không có câu hỏi nào !</p>
   </div>
-   <div class="mb-4">
-      <ul class="pagination justify-content-center">
-        <li style="cursor: pointer" class="page-item" :class=" { active: page == currentPage } "
-          v-for="(   page, index) in ListPages" :key=" index ">
-          <a class="page-link" @click="changePage( page )">{{ page }}</a>
-        </li>
-      </ul>
-    </div>
+  <div class="mb-4">
+    <ul class="pagination justify-content-center">
+      <li style="cursor: pointer"><a @click="prePage()" class="page-link"><i class="fa-solid fa-angles-left"></i></a>
+      </li>
+      <li style="cursor: pointer" class="page-item" :class=" { active: page == currentPage } "
+        v-for="(      page, index) in ListPages" :key=" index ">
+        <a class="page-link" @click="changePage( page )">{{ page }}</a>
+      </li>
+      <li style="cursor: pointer"><a @click="nextPage()" class="page-link"><i class="fa-solid fa-angles-right"></i></a>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script>
 import router from '@/router';
-import {  getCategoryExamList, deleteExam, getExamList } from '@/service/examsService'
+import { getCategoryExamList, deleteExam, getExamList } from '@/service/examsService'
 import { ElNotification } from 'element-plus'
 export default {
   data () {
@@ -79,7 +83,7 @@ export default {
       {
         this.ListCategoryExam = category['data']['data']
       }
-      const exam = await getExamList(this.currentPage,0)
+      const exam = await getExamList(this.currentPage, 0)
       if (exam)
       {
         this.ListExam = exam['data']['data']
@@ -89,17 +93,88 @@ export default {
       }
     },
     listpage () {
-      for (var i = 1; i <= this.TotalPage; i++)
+      // for (var i = 1; i <= this.TotalPage; i++)
+      // {
+      //   this.ListPages.push(i)
+      // }
+      this.ListPages = [] // Reset ListPages
+
+      if (this.TotalPage <= 7)
       {
-        this.ListPages.push(i)
+        // Hiển thị tất cả các trang nếu số trang <= 7
+        for (let i = 1; i <= this.TotalPage; i++)
+        {
+          this.ListPages.push(i)
+        }
+      } else
+      {
+        // Hiển thị phân trang dạng 12 ... 89
+        if (this.currentPage <= 4)
+        {
+          // Nếu đang ở các trang đầu
+          for (let i = 1; i <= 5; i++)
+          {
+            this.ListPages.push(i)
+          }
+          this.ListPages.push('...')
+          this.ListPages.push(this.TotalPage)
+        } else if (this.currentPage >= this.TotalPage - 3)
+        {
+          // Nếu đang ở các trang cuối
+          this.ListPages.push(1)
+          this.ListPages.push('...')
+          for (let i = this.TotalPage - 4; i <= this.TotalPage; i++)
+          {
+            this.ListPages.push(i)
+          }
+        } else
+        {
+          // Nếu đang ở giữa
+          this.ListPages.push(1)
+          this.ListPages.push('...')
+          for (let i = this.currentPage - 1; i <= this.currentPage + 1; i++)
+          {
+            this.ListPages.push(i)
+          }
+          this.ListPages.push('...')
+          this.ListPages.push(this.TotalPage)
+        }
       }
     },
     async changePage (page) {
       this.currentPage = page
-      await this.getExamByPage(page)
+      if (page === '...')
+      {
+        return
+      }
+      else
+      {
+        await this.getExamByPage(page)
+      }
+    },
+    async nextPage () {
+      if (this.currentPage === this.TotalPage)
+      {
+        return
+      }
+      else
+      {
+        await this.changePage(this.currentPage + 1)
+      }
+
+    },
+    async prePage () {
+      if (this.currentPage === 1)
+      {
+        return
+      }
+      else
+      {
+        await this.changePage(this.currentPage - 1)
+      }
     },
     async getExamByPage (page) {
-      const exam = await getExamList(page,0)
+      const exam = await getExamList(page, this.currentIdSubject)
       if (exam)
       {
         this.ListExam = exam['data']['data']
@@ -115,13 +190,13 @@ export default {
       {
         this.currentIdSubject = 0
       }
-      const exam = await getExamList(this.currentPage,this.currentIdSubject)
+      const exam = await getExamList(this.currentPage, this.currentIdSubject)
       if (exam)
       {
         this.ListExam = exam['data']['data']
         this.TotalPage = exam['data']['total_page']
         this.TotalExam = exam['data']['record_total']
-        this.ListPages =[]
+        this.ListPages = []
         this.listpage()
         this.currentPage = 1
         // console.log(exam, this.TotalExam, this.TotalPage)

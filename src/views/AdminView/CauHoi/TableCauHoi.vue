@@ -13,7 +13,8 @@
         <p style="width:30%"><strong>Danh mục: </strong></p>
         <select class="ms-2 form-select" @change=" getOptionBySubject " v-model=" currentSubject ">
           <option selected>Tất cả</option>
-          <option v-for="(   choice, index) in category" :key=" index " :value=" choice.id ">{{ choice.title }}</option>
+          <option v-for="(     choice, index) in category" :key=" index " :value=" choice.id ">{{ choice.title }}
+          </option>
         </select>
       </div>
       <!-- lọc theo lớp học -->
@@ -22,7 +23,7 @@
           <p style="width:30%"><strong>Lớp</strong></p>
           <select class="ms-2 form-select" @change=" getOptionByClass " v-model=" currentClassSelected ">
             <option selected>Tất cả</option>
-            <option v-for="(   choice, index) in ListClass" :key=" index " :value=" choice.id ">{{ choice.class}}
+            <option v-for="(     choice, index) in ListClass" :key=" index " :value=" choice.id ">{{ choice.class }}
             </option>
           </select>
         </div>
@@ -48,7 +49,7 @@
           <th style="width:5%"></th>
         </tr>
       </thead>
-      <tbody id="table-product" v-for="   question in data   " :key=" question.id ">
+      <tbody id="table-product" v-for="     question in data     " :key=" question.id ">
         <tr style="cursor: pointer;">
           <td>{{ question.id }}</td>
           <td @click="changeQuestion( question.id )">
@@ -77,9 +78,13 @@
   </div>
   <div class="mb-4">
     <ul class="pagination justify-content-center">
+      <li style="cursor: pointer"><a @click="prePage()" class="page-link"><i class="fa-solid fa-angles-left"></i></a>
+      </li>
       <li style="cursor: pointer" class="page-item" :class=" { active: page == currentPage } "
-        v-for="(   page, index) in ListPages" :key=" index ">
+        v-for="(     page, index) in ListPages" :key=" index ">
         <a class="page-link" @click="changePage( page )">{{ page }}</a>
+      </li>
+      <li style="cursor: pointer"><a @click="nextPage()" class="page-link"><i class="fa-solid fa-angles-right"></i></a>
       </li>
     </ul>
   </div>
@@ -118,8 +123,8 @@ export default {
       category: [],
       currentSubject: 'Tất cả',
       currentIdSubject: 0,
-      currentClassSelected:'Tất cả',
-      currentIdClass:0,
+      currentClassSelected: 'Tất cả',
+      currentIdClass: 0,
       ListClass: [],
     }
   },
@@ -162,11 +167,11 @@ export default {
       {
         this.currentIdSubject = 0
       }
-       if (this.currentClassSelected === 'Tất cả')
+      if (this.currentClassSelected === 'Tất cả')
       {
         this.currentIdClass = 0
       }
-      const result = await getQuestionListByCategory(this.currentIdSubject,this.currentIdClass, this.currentPage)
+      const result = await getQuestionListByCategory(this.currentIdSubject, this.currentIdClass, this.currentPage)
       // console.log(result)
       if (result)
       {
@@ -214,11 +219,11 @@ export default {
       {
         this.currentIdSubject = 0
       }
-       if (this.currentClassSelected === 'Tất cả')
+      if (this.currentClassSelected === 'Tất cả')
       {
         this.currentIdClass = 0
       }
-      const result = await getQuestionListByCategory(this.currentIdSubject,this.currentIdClass, this.currentPage)
+      const result = await getQuestionListByCategory(this.currentIdSubject, this.currentIdClass, this.currentPage)
       // console.log(result)1
       if (result)
       {
@@ -409,14 +414,88 @@ export default {
       this.$router.push({ name: 'changeQues', params: { id: this.currentQuestionId } })
     },
     listpage () {
-      for (var i = 1; i <= this.TotalPage; i++)
+      // for (var i = 1; i <= this.TotalPage; i++)
+      // {
+      //   this.ListPages.push(i)
+      // }
+
+      this.ListPages = [] // Reset ListPages
+
+      if (this.TotalPage <= 7)
       {
-        this.ListPages.push(i)
+        // Hiển thị tất cả các trang nếu số trang <= 7
+        for (let i = 1; i <= this.TotalPage; i++)
+        {
+          this.ListPages.push(i)
+        }
+      } else
+      {
+        // Hiển thị phân trang dạng 12 ... 89
+        if (this.currentPage <= 4)
+        {
+          // Nếu đang ở các trang đầu
+          for (let i = 1; i <= 5; i++)
+          {
+            this.ListPages.push(i)
+          }
+          this.ListPages.push('...')
+          this.ListPages.push(this.TotalPage)
+        } else if (this.currentPage >= this.TotalPage - 3)
+        {
+          // Nếu đang ở các trang cuối
+          this.ListPages.push(1)
+          this.ListPages.push('...')
+          for (let i = this.TotalPage - 4; i <= this.TotalPage; i++)
+          {
+            this.ListPages.push(i)
+          }
+        } else
+        {
+          // Nếu đang ở giữa
+          this.ListPages.push(1)
+          this.ListPages.push('...')
+          for (let i = this.currentPage - 1; i <= this.currentPage + 1; i++)
+          {
+            this.ListPages.push(i)
+          }
+          this.ListPages.push('...')
+          this.ListPages.push(this.TotalPage)
+        }
       }
     },
     async changePage (page) {
       this.currentPage = page
-      await this.getQuestionByPage(page)
+      if (page === '...')
+      {
+        return
+      }
+      else
+      {
+        await this.getQuestionByPage(page)
+        this.listpage()
+      }
+
+    },
+    async nextPage () {
+      if (this.currentPage === this.TotalPage)
+      {
+        return
+      }
+      else
+      {
+        await this.changePage(this.currentPage + 1)
+      }
+
+    },
+    async prePage () {
+      if (this.currentPage === 1)
+      {
+        return
+      }
+      else
+      {
+        await this.changePage(this.currentPage - 1)
+      }
     }
   },
   computed: {}
