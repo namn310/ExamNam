@@ -10,7 +10,7 @@ import {
   putAdmin
 } from '../utils/request'
 
-export const getUserList = async (page,role) => {
+export const getUserList = async (page, role) => {
   const result = await get(`users?page=${page}&role=${role}`)
   return result
 }
@@ -65,5 +65,10 @@ export const resetPasswordForgot = async (option) => {
 // changePassAdmin
 export const changePassAdmin = async (id, option) => {
   const result = await putAdmin(`usersAdmin/update/${id}`, option)
+  return result
+}
+// tổng số học sinh
+export const getTotalStudent = async () => {
+  const result = await get(`TotalStudent`)
   return result
 }

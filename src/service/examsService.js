@@ -106,3 +106,13 @@ export const getCountDoWrong = async (id) => {
   const result = await get(`exams/count_do_wrong/${id}`)
   return result
 }
+// lấy tổng số đề thi
+export const getTotalExam = async (id) => {
+  const result = await get(`TotalExam/${id}`)
+  return result
+}
+// danh sách đề thi làm nhiều
+export const getListExamDoMore = async () => {
+  const result = await get(`ListExamDoMore`)
+  return result
+}

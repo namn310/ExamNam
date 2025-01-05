@@ -47,7 +47,13 @@ export const GetDetail = async (id) => {
   const result = await get(`questions/detail/${id}`)
   return result
 }
+// lấy câu hỏi theo trang
 export const questionsPage = async (category, page) => {
   const result = await get(`questions?category=${category}&page=${page}`)
+  return result
+}
+// lấy tổng số câu hỏi theo danh mục
+export const TotalQuestion = async (id) => {
+  const result = await get(`TotalQuestion/${id}`)
   return result
 }
