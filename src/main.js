@@ -19,7 +19,7 @@ const app = createApp(App)
 registerGlobalComponents(app)
 
 app.use(vue3GoogleLogin, {
-  clientId: '423759799337-qi08peeppaunb0dc4lcndr9qbdra49sh.apps.googleusercontent.com'
+  clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID
 })
 app.use(ElementPlus)
 app.use(createPinia())

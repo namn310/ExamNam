@@ -23,6 +23,7 @@ import TestView from '@/views/UserView/TestView.vue'
 // src admin
 // eslint-disable-next-line no-unused-vars
 // import HomeAdmin from '@/views/AdminView/HomeAdmin.vue'
+// import LoginAdminView from '@/views/AdminView/LoginAdminView.vue'
 import User from '@/views/AdminView/User/User.vue'
 import CreateUser from '@/views/AdminView/User/CreateUser.vue'
 import EditUser from '@/views/AdminView/User/EditUser.vue'
@@ -165,6 +166,11 @@ const router = createRouter({
     {
       path: '/admin',
       children: [
+        // {
+        //   path: 'LoginAdmin',
+        //   name: 'LoginAdmin',
+        //   component: LoginAdminView
+        // },
         {
           path: '',
           name: 'homeAdmin',
@@ -320,31 +326,26 @@ const router = createRouter({
   ]
 })
 
-// kiểm tra tokenAdmin trước khi truy cập vào các page của admin
 router.beforeEach((to, from, next) => {
   const adminToken = Cookies.get('tokenAdmin')
-  if (to.path.startsWith('/admin') && !adminToken) {
-    next({ name: 'Login' })
-  } else {
-    next()
-  }
-})
-//kiểm tra xem người dùng đã đăng nhập hay chưa
-router.beforeEach((to, from, next) => {
-  const userToken = Cookies.get('tokenStudent') // Lấy token từ cookies
-  // Kiểm tra xem route có yêu cầu đăng nhập không
-  if (to.matched.some((record) => record.meta.requiresAuth) && to.path.startsWith('/')) {
-    if (!userToken) {
-      // Nếu không có token thì về trang đăng nhập
-      next({ name: 'Login' })
-    } else {
-      // Nếu đã đăng nhập thì được truy cập vào
-      next()
+  const userToken = Cookies.get('tokenStudent')
+
+  if (to.path.startsWith('/admin')) {
+    // Kiểm tra nếu là admin route và không có token admin
+    if (!adminToken) {
+      // Nếu không có token admin và không phải trang LoginAdmin, chuyển hướng
+
+      return next({ name: 'Login' })
     }
-  } else {
-    // Nếu không cần đăng nhập thì vẫn được truy cấp
-    next()
+  } else if (to.matched.some((record) => record.meta.requiresAuth)) {
+    // Kiểm tra nếu là user route yêu cầu đăng nhập và không có token user
+    if (!userToken) {
+      return next({ name: 'Login' }) // Chuyển hướng đến login user
+    }
   }
+
+  // Nếu không thuộc các điều kiện trên, cho phép tiếp tục
+  next()
 })
 
 export default router

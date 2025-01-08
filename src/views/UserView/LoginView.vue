@@ -353,7 +353,7 @@ export default {
         {
           console.log(result)
           var message = result.message
-          console.log(result,message)
+          // console.log(result,message)
           if (message === 'Mã OTP không hợp lệ')
           {
              ElNotification({

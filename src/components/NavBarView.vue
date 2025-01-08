@@ -101,7 +101,7 @@ export default {
   },
   created () {
     this.checkToken()
-    console.log(this.type_account)
+    // console.log(this.type_account)
   },
   methods: {
     toggleMenu () {

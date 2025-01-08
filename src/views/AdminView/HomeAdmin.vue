@@ -23,13 +23,14 @@
                                     <div class="card-title">
                                         <select class="form-select" @change=" changeIdSubject ">
                                             <option value="0">Tất cả</option>
-                                            <option v-for="  e in listSubject  " :key=" e.id " :value=" e.id ">{{ e.title
+                                            <option v-for="   e in listSubject   " :key=" e.id " :value=" e.id ">{{
+                                                e.title
                                                 }}
                                             </option>
                                         </select>
                                     </div>
                                     <div class="card-body mt-3">
-                                        <p>Tổng số câu hỏi: <strong class="text-danger">{{ TotalQuestion }}</strong></p>
+                                        <p>Tổng số câu hỏi: <strong class="text-danger">{{ TotalQuestionn }}</strong></p>
                                         <p class="mt-3">Tổng số đề thi: <strong class="text-danger">{{ TotalExam
                                                 }}</strong></p>
                                     </div>
@@ -55,9 +56,11 @@
                             <hr class="dark horizontal my-0">
                             <div class="card-footer p-3">
                                 <p class="mb-0" style="font-size:1vh;font-size: 1vw;font-weight: 500;">Số học sinh:
-                                    <span class="text-danger font-weight-bolder">{{ TotalStudent }}</span></p>
+                                    <span class="text-danger font-weight-bolder">{{ TotalStudent }}</span>
+                                </p>
                                 <p class="mb-0" style="font-size:1vh;font-size: 1vw;font-weight: 500;">Số giáo viên:
-                                    <span class="text-danger font-weight-bolder">{{ TotalTeacher }}</span></p>
+                                    <span class="text-danger font-weight-bolder">{{ TotalTeacher }}</span>
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -89,46 +92,18 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="e in ListExamDoMore " :key="e.id">
+                                            <tr v-for=" e in ListExamDoMore  " :key=" e.id ">
                                                 <td>{{ e.id }}</td>
                                                 <td>{{ e.title }}</td>
-                                                <td>{{ e.TotalQuestion }}</td>
+                                                <td>{{ e.totalQuestion }}</td>
                                                 <td>{{ e.count_user_do }}</td>
                                             </tr>
                                         </tbody>
-
                                     </table>
                                 </div>
                             </div>
                         </div>
-                        <!-- <div class="card w-100 mt-3" style="border:1px solid black">
-                            <div class="card-header pb-0">
-                                <div class="row">
-                                    <div class="col-lg-6 col-7">
-                                        <h4 class="text-black">Sản phẩm hot</h4>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body px-0 pb-2">
-                                <div class="table-responsive">
-                                    <table class="table align-items-center mb-0">
-                                        <thead class="table-primary">
-                                            <tr>
-                                                <th class=" text-xxs font-weight-bolder opacity-7">
-                                                    Tên sản phẩm</th>
-                                                <th class="">
-                                                    Hình ảnh</th>
-                                                <th class="text-center text-xxs font-weight-bolder opacity-7">
-                                                    Giảm giá</th>
-                                                <th class="text-center text-xxs font-weight-bolder opacity-7">
-                                                    Số lượng</th>
-                                            </tr>
-                                        </thead>
 
-                                    </table>
-                                </div>
-                            </div>
-                        </div> -->
                     </div>
 
                 </div>
@@ -137,20 +112,20 @@
     </div>
 </template>
 <script>
-import { getCategoryExamList, getTotalExam,getListExamDoMore } from '@/service/examsService'
+import { getCategoryExamList, getTotalExam, getListExamDoMore } from '@/service/examsService'
 import { TotalQuestion } from '@/service/questionsService';
 import { getTotalStudent } from '@/service/usersService';
 export default {
     data () {
         return {
             listSubject: [],
-            TotalQuestion: 0,
+            TotalQuestionn: 0,
             SucjectSelected: '',
             IdSubjectSelected: 0,
             TotalExam: 0,
             TotalStudent: 0,
             TotalTeacher: 0,
-            ListExamDoMore:[]
+            ListExamDoMore: []
         }
     },
     created () {
@@ -160,7 +135,7 @@ export default {
     methods: {
         async getTotal () {
             const result = await TotalQuestion(this.IdSubjectSelected)
-            this.TotalQuestion = result.totalQues
+            this.TotalQuestionn = result.totalQues
             const result2 = await getTotalExam(this.IdSubjectSelected)
             this.TotalExam = result2.total
             const result3 = await getTotalStudent()
@@ -170,7 +145,7 @@ export default {
             const result4 = await getListExamDoMore()
             // console.log(result4)
             this.ListExamDoMore = result4
-            // console.log(result.totalQues)
+            console.log(result4)
         },
         changeIdSubject (event) {
             this.IdSubjectSelected = event.target.value
