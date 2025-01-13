@@ -40,9 +40,14 @@ export const getQuestionCategory = async (id) => {
   const result = await get(`category-question/${id}`)
   return result
 }
-
+// lấy chi tiết bài kiểm tra + comment
 export const getExamDetail = async (id) => {
   const result = await get(`exams/detail/${id}`)
+  return result
+}
+// chỉ lấy ra chi tiết bài kiểm tra
+export const getDetailExam = async (id) => {
+  const result = await get(`exams/Examdetail/${id}`)
   return result
 }
 export const getExamByCategory = async (id) => {

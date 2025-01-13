@@ -1,5 +1,4 @@
 
-
 <template>
 <div class="d-flex justify-content-start flex-wrap">
     <CardExam v-for="item in data" :key="item.id" :title="item.title" :expire_time="item.duration" :countQuestion="item.totalQuestion" :idQues="item.id"/>
@@ -8,7 +7,7 @@
 
 <script setup>
   import CardExam from '@/components/CardExam.vue'
-  import {  getExamList, getQuestionCategory } from '@/service/examsService';
+  import {  getQuestionCategory } from '@/service/examsService';
   import { onMounted, ref, watch } from 'vue';
     import { useRoute } from 'vue-router';
 

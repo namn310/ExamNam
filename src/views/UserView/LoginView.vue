@@ -440,7 +440,7 @@ export default {
           token: token,
           role: this.data.role
         }
-        const sendData = await fetch('http://localhost:8080/users/loginGoogle', {
+        const sendData = await fetch(import.meta.env.VITE_API_PORT + 'users/loginGoogle', {
           method: 'POST',
           body: JSON.stringify(dataSend),
           headers: {

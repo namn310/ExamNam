@@ -1,12 +1,26 @@
 <template>
-  <div class="d-flex p-5">
+  <div class="d-flex justify-content-center" style="margin-top: 100px;" v-if=" loadingShow ">
+    <div> <svg viewBox="0 0 240 240" height="120" width="120" class="pl ms-2">
+        <circle stroke-linecap="round" stroke-dashoffset="-330" stroke-dasharray="0 660" stroke-width="20" stroke="#000"
+          fill="none" r="105" cy="120" cx="120" class="pl__ring pl__ring--a"></circle>
+        <circle stroke-linecap="round" stroke-dashoffset="-110" stroke-dasharray="0 220" stroke-width="20" stroke="#000"
+          fill="none" r="35" cy="120" cx="120" class="pl__ring pl__ring--b"></circle>
+        <circle stroke-linecap="round" stroke-dasharray="0 440" stroke-width="20" stroke="#000" fill="none" r="70"
+          cy="120" cx="85" class="pl__ring pl__ring--c"></circle>
+        <circle stroke-linecap="round" stroke-dasharray="0 440" stroke-width="20" stroke="#000" fill="none" r="70"
+          cy="120" cx="155" class="pl__ring pl__ring--d"></circle>
+      </svg>
+      <p>Loading ... </p>
+    </div>
+  </div>
+  <div v-else class="d-flex p-5">
     <!-- ảnh -->
     <div class="d-flex flex-column text-center justify-content-between"
       style="background-color: azure; box-shadow: 5px 5px beige">
       <div style="padding: 40px">
         <img :src=" url " class="img-fluid align-items-center" style="max-width: 200px; max-height: 200px" />
         <p style="font-weight: 500; font-size: 3.5vw; font-size: 3.5vh">{{ data.name }}</p>
-        <p style="font-weight: 300; font-size: 1.5vw; font-size: 1.5vh">Chức vụ: {{ data.role }}</p>
+        <p style="font-weight: 400; font-size: 1.7vw; font-size: 1.7vh">Chức vụ: {{ data.role }}</p>
       </div>
     </div>
     <!-- thông tin cá nhân -->
@@ -108,6 +122,7 @@ import { ElNotification } from 'element-plus'
 export default {
   data () {
     return {
+      loadingShow: true,
       type_account: '',
       url: '../src/assets/img/3607444.png',
       data: [],
@@ -220,13 +235,22 @@ export default {
       }
     },
     async getUser () {
-      const decode = decodeToken()
-      this.type_account = decode.data.type_account
-      this.id = decode.data.id
-      // console.log(decode);
-      const data2 = await getUserDetail(this.id)
-      this.data = data2.data
-      // console.log(this.data)
+      try
+      {
+        const decode = decodeToken()
+        this.type_account = decode.data.type_account
+        this.id = decode.data.id
+        // console.log(decode);
+        const data2 = await getUserDetail(this.id)
+        this.data = data2.data
+        // console.log(this.data)
+        this.loadingShow = false
+      }
+      catch (e)
+      {
+        this.loadingShow = false
+        alert("Có lỗi xảy ra trong quá trình lấy dữ liệu")
+      }
     },
     UserInforActive () {
       this.userPassShow = false

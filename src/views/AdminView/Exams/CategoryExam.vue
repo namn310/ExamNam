@@ -1,93 +1,109 @@
 <!-- eslint-disable vue/no-unused-vars -->
 <template>
-    <div class="text-[30px] text-center text-500">Danh mục bài thi</div>
-    <button class="btn btn-success ms-2 mb-2" @click=" toogleFormCreateCat ">Tạo mới danh mục</button>
-    <div class="ms-2" v-if=" FormCreateCategoryShow ">
-        <form @submit.prevent=" SubmitCreateCategory ">
-            <div>
-                <label class="form-label me-2" for="nameCat"><strong>Tên danh mục: </strong></label>
-                <input class="form-control border border-secondary w-25" id="nameCat" placeholder="Nhập tên danh mục"
-                    v-model=" CategoryForm.title " />
-            </div>
-            <div>
-                <label class="form-label me-2" for="desCat"><strong>Mô tả: </strong></label>
-                <input class="form-control border border-secondary w-25" id="desCat"
-                    placeholder="Nhập mô tả (có thể bỏ trống)" v-model=" CategoryForm.description " />
-            </div>
-
-            <button class="btn btn-primary ms-2 mt-2">Tạo</button>
-        </form>
+    <div class="d-flex justify-content-center" v-if=" loadingShow ">
+        <div> <svg viewBox="0 0 240 240" height="120" width="120" class="pl ms-2">
+                <circle stroke-linecap="round" stroke-dashoffset="-330" stroke-dasharray="0 660" stroke-width="20"
+                    stroke="#000" fill="none" r="105" cy="120" cx="120" class="pl__ring pl__ring--a"></circle>
+                <circle stroke-linecap="round" stroke-dashoffset="-110" stroke-dasharray="0 220" stroke-width="20"
+                    stroke="#000" fill="none" r="35" cy="120" cx="120" class="pl__ring pl__ring--b"></circle>
+                <circle stroke-linecap="round" stroke-dasharray="0 440" stroke-width="20" stroke="#000" fill="none"
+                    r="70" cy="120" cx="85" class="pl__ring pl__ring--c"></circle>
+                <circle stroke-linecap="round" stroke-dasharray="0 440" stroke-width="20" stroke="#000" fill="none"
+                    r="70" cy="120" cx="155" class="pl__ring pl__ring--d"></circle>
+            </svg>
+            <p>Loading ... </p>
+        </div>
     </div>
-    <div class="pt-8 ms-2 me-2">
-        <table class="table table-hover table-bordered text-center table-responsive" id="sampleTable"
-            v-if=" ListCategory.length > 0 ">
-            <thead>
-                <tr class="table-secondary text-center">
-                    <th style="width: 20%">Mã</th>
-                    <th style="width: 70%">Danh mục</th>
-                    <!-- <th>Người tạo</th> -->
-                    <th style="width: 10%">Chức năng</th>
-                </tr>
-            </thead>
-            <tbody id="table-product" v-for="   cat in ListCategory   " :key=" cat.id ">
-                <tr style="cursor: pointer">
-                    <td>{{ cat.id }}</td>
-                    <td data-bs-toggle="modal" data-bs-target="#exampleModal"
-                        @click="detailCategory( cat.id, cat.title, cat.description )">
-                        <p v-html=" cat.title "></p>
-                    </td>
-                    <td>
-                        <!-- button delete -->
-                        <button class="btn btn-danger btn-sm trash mb-2" type="button" @click="deleteCat( cat.id )"
-                            title="Xóa">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                        <!-- <button class="btn btn-success btn-sm edit" @click="changeQuestion( question.id )" type="button" title="Sửa"
+    <div v-else>
+        <div class="text-[30px] text-center text-500">Danh mục bài thi</div>
+        <button class="btn btn-success ms-2 mb-2" @click=" toogleFormCreateCat ">Tạo mới danh mục</button>
+        <div class="ms-2" v-if=" FormCreateCategoryShow ">
+            <form @submit.prevent=" SubmitCreateCategory ">
+                <div>
+                    <label class="form-label me-2" for="nameCat"><strong>Tên danh mục: </strong></label>
+                    <input class="form-control border border-secondary w-25" id="nameCat"
+                        placeholder="Nhập tên danh mục" v-model=" CategoryForm.title " />
+                </div>
+                <div>
+                    <label class="form-label me-2" for="desCat"><strong>Mô tả: </strong></label>
+                    <input class="form-control border border-secondary w-25" id="desCat"
+                        placeholder="Nhập mô tả (có thể bỏ trống)" v-model=" CategoryForm.description " />
+                </div>
+
+                <button class="btn btn-primary ms-2 mt-2">Tạo</button>
+            </form>
+        </div>
+        <div class="pt-8 ms-2 me-2">
+            <table class="table table-hover table-bordered text-center table-responsive" id="sampleTable"
+                v-if=" ListCategory.length > 0 ">
+                <thead>
+                    <tr class="table-secondary text-center">
+                        <th style="width: 20%">Mã</th>
+                        <th style="width: 70%">Danh mục</th>
+                        <!-- <th>Người tạo</th> -->
+                        <th style="width: 10%">Chức năng</th>
+                    </tr>
+                </thead>
+                <tbody id="table-product" v-for="     cat in ListCategory     " :key=" cat.id ">
+                    <tr style="cursor: pointer">
+                        <td>{{ cat.id }}</td>
+                        <td data-bs-toggle="modal" data-bs-target="#exampleModal"
+                            @click="detailCategory( cat.id, cat.title, cat.description )">
+                            <p v-html=" cat.title "></p>
+                        </td>
+                        <td>
+                            <!-- button delete -->
+                            <button class="btn btn-danger btn-sm trash mb-2" type="button" @click="deleteCat( cat.id )"
+                                title="Xóa">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                            <!-- <button class="btn btn-success btn-sm edit" @click="changeQuestion( question.id )" type="button" title="Sửa"
               id="show-emp">
               <i class="fas fa-edit"></i>
             </button> -->
-                        <!-- <p>{{ errorPost }}</p> -->
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <p v-else>Không có danh mục nào !</p>
-    </div>
-    <div class="mb-4">
-        <ul class="pagination justify-content-center">
-            <li style="cursor: pointer" class="page-item" :class=" { active: page == currentPage } "
-                v-for="(   page, index) in ListPages" :key=" index ">
-                <a class="page-link" @click="changePage( page )">{{ page }}</a>
-            </li>
-        </ul>
-    </div>
-    <!-- Modal hiển thị chi tiết danh mục dùng cho việc cập nhật thông tin danh mục -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Danh mục</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div>
-                            <label class="form-label me-2" for="nameCat"><strong>Tên danh mục: </strong></label>
-                            <input class="form-control border border-secondary w-30" id="nameCat"
-                                placeholder="Nhập tên danh mục" v-model=" CategorySelect.title " />
-                        </div>
-                        <div>
-                            <label class="form-label me-2" for="desCat"><strong>Mô tả: </strong></label>
-                            <input class="form-control border border-secondary w-30" id="desCat"
-                                placeholder="Nhập mô tả (có thể bỏ trống)" v-model=" CategorySelect.description " />
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" @click="updateCat( CategorySelect.id )">
-                        Cập nhật
-                    </button>
+                            <!-- <p>{{ errorPost }}</p> -->
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p v-else>Không có danh mục nào !</p>
+        </div>
+        <div class="mb-4">
+            <ul class="pagination justify-content-center">
+                <li style="cursor: pointer" class="page-item" :class=" { active: page == currentPage } "
+                    v-for="(     page, index) in ListPages" :key=" index ">
+                    <a class="page-link" @click="changePage( page )">{{ page }}</a>
+                </li>
+            </ul>
+        </div>
+        <!-- Modal hiển thị chi tiết danh mục dùng cho việc cập nhật thông tin danh mục -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Danh mục</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div>
+                                <label class="form-label me-2" for="nameCat"><strong>Tên danh mục: </strong></label>
+                                <input class="form-control border border-secondary w-30" id="nameCat"
+                                    placeholder="Nhập tên danh mục" v-model=" CategorySelect.title " />
+                            </div>
+                            <div>
+                                <label class="form-label me-2" for="desCat"><strong>Mô tả: </strong></label>
+                                <input class="form-control border border-secondary w-30" id="desCat"
+                                    placeholder="Nhập mô tả (có thể bỏ trống)" v-model=" CategorySelect.description " />
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" @click="updateCat( CategorySelect.id )">
+                            Cập nhật
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -109,6 +125,7 @@ import { ElNotification } from 'element-plus'
 export default {
     data () {
         return {
+            loadingShow:true,
             ListCategory: [],
             CategoryForm: {
                 title: '',
@@ -139,14 +156,23 @@ export default {
             this.CategorySelect.id = id
         },
         async fetchCategory () {
-            const result = await getCategoryExamListByPage(1)
-            if (result)
+            try
             {
-                this.ListCategory = result['data']['data']
-                this.TotalPage = result['data']['total_page']
-                this.TotalCategory = result['data']['record_total']
-                this.listpage()
-                // console.log(result,this.TotalCategory,this.TotalPage)
+                const result = await getCategoryExamListByPage(1)
+                if (result)
+                {
+                    this.ListCategory = result['data']['data']
+                    this.TotalPage = result['data']['total_page']
+                    this.TotalCategory = result['data']['record_total']
+                    this.listpage()
+                    // console.log(result,this.TotalCategory,this.TotalPage)
+                }
+                this.loadingShow = false
+            }
+            catch (e)
+            {
+                this.loadingShow = false
+                alert("Có lỗi xảy ra trong quá trình lấy dữ liệu !")
             }
         },
         listpage () {
@@ -160,13 +186,23 @@ export default {
             await this.getCategoryByPage(page)
         },
         async getCategoryByPage (page) {
-            const category = await getCategoryExamListByPage(page)
-            if (category)
+            try
             {
-                this.ListCategory = category['data']['data']
-            } else
+                this.loadingShow = true
+                const category = await getCategoryExamListByPage(page)
+                if (category)
+                {
+                    this.ListCategory = category['data']['data']
+                } else
+                {
+                    alert('Có lỗi xảy ra')
+                }
+                this.loadingShow = false
+            }
+            catch (e)
             {
-                alert('Có lỗi xảy ra')
+                this.loadingShow = false
+                alert("Có lỗi xảy ra trong quá trình lấy dữ liệu")
             }
         },
         // tạo mới danh mục
@@ -176,7 +212,6 @@ export default {
                 alert('Vui lòng nhập tên danh mục')
             } else
             {
-                console.log(this.CategoryForm)
                 const result = await createCategory(this.CategoryForm)
                 if (result.status === 'success')
                 {

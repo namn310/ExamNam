@@ -9,9 +9,10 @@
       <div class="test-exams">
         <ul class="nav nav-pills flex-wrap">
           <li class="nav-item w-auto">
-            <a class="nav-link" @click="getOptionBySubject( 0 )" :class=" { active: currentIdSubject === 0 } ">Tất cả</a>
+            <a class="nav-link" @click="getOptionBySubject( 0 )" :class=" { active: currentIdSubject === 0 } ">Tất
+              cả</a>
           </li>
-          <li class="nav-item w-auto" @click="getOptionBySubject( e.id )" v-for=" e in ListCategoryExam " :key=" e.id ">
+          <li class="nav-item w-auto" @click="getOptionBySubject( e.id )" v-for="  e in ListCategoryExam  " :key=" e.id ">
             <a :class=" { active: currentIdSubject === e.id } " class="nav-link">{{ e.title }}</a>
           </li>
         </ul>
@@ -37,8 +38,23 @@
       <br />
     </div>
   </div>
+
+  <div class="d-flex justify-content-center" v-if="loadingShow">
+    <div> <svg viewBox="0 0 240 240" height="120" width="120" class="pl ms-2">
+        <circle stroke-linecap="round" stroke-dashoffset="-330" stroke-dasharray="0 660" stroke-width="20" stroke="#000"
+          fill="none" r="105" cy="120" cx="120" class="pl__ring pl__ring--a"></circle>
+        <circle stroke-linecap="round" stroke-dashoffset="-110" stroke-dasharray="0 220" stroke-width="20" stroke="#000"
+          fill="none" r="35" cy="120" cx="120" class="pl__ring pl__ring--b"></circle>
+        <circle stroke-linecap="round" stroke-dasharray="0 440" stroke-width="20" stroke="#000" fill="none" r="70"
+          cy="120" cx="85" class="pl__ring pl__ring--c"></circle>
+        <circle stroke-linecap="round" stroke-dasharray="0 440" stroke-width="20" stroke="#000" fill="none" r="70"
+          cy="120" cx="155" class="pl__ring pl__ring--d"></circle>
+      </svg>
+      <p>Loading ... </p>
+    </div>
+  </div>
   <div class="d-flex justify-content-start flex-wrap" v-if=" ListExam && ListExam.length > 0 ">
-    <CardExam v-for="( item, index) in ListExam" :key=" index " :title=" item.title " :expire_time=" item.duration "
+    <CardExam v-for="(  item, index) in ListExam" :key=" index " :title=" item.title " :expire_time=" item.duration "
       :countQuestion=" item.totalQuestion " :idQues=" item.id " :countUserDo=" item.count_user_do " />
   </div>
   <p v-else>Không có bài thi nào !</p>
@@ -48,7 +64,7 @@
         <a @click="prePage()" class="page-link"><i class="fa-solid fa-angles-left"></i></a>
       </li>
       <li style="cursor: pointer" class="page-item" :class=" { active: page == currentPage } "
-        v-for="(    page, index) in ListPages" :key=" index ">
+        v-for="(  page, index) in ListPages" :key=" index ">
         <a class="page-link" @click="changePage( page )">{{ page }}</a>
       </li>
       <li style="cursor: pointer">
@@ -68,6 +84,7 @@ export default {
   },
   data () {
     return {
+      loadingShow: true,
       ListCategoryExam: [],
       ListExam: [],
       ListPages: [],
@@ -88,17 +105,15 @@ export default {
     },
     async fetchData () {
       const category = await getCategoryExamList()
-      if (category)
+      const exam = await getExamList(this.currentPage, 0)
+      if (category && exam)
       {
         this.ListCategoryExam = category['data']['data']
-      }
-      const exam = await getExamList(this.currentPage, 0)
-      if (exam)
-      {
         this.ListExam = exam.data.data
         this.TotalPage = exam['data']['total_page']
         this.TotalExam = exam['data']['record_total']
         this.listpage()
+        this.loadingShow = false
       }
     },
     async nextPage () {
@@ -180,16 +195,20 @@ export default {
       }
     },
     async getExamByPage (page) {
+      this.loadingShow = true
       const exam = await getExamList(page, this.currentIdSubject)
       if (exam)
       {
+        this.loadingShow = false
         this.ListExam = exam['data']['data']
       } else
       {
+        this.loadingShow = false
         alert('Có lỗi xảy ra')
       }
     },
     async getOptionBySubject (id) {
+      this.loadingShow = true
       this.currentIdSubject = id
       this.currentPage = 1
       const exam = await getExamList(this.currentPage, this.currentIdSubject)
@@ -201,6 +220,7 @@ export default {
         this.ListPages = []
         this.listpage()
         this.currentPage = 1
+        this.loadingShow = false
         // console.log(exam, this.TotalExam, this.TotalPage)
       }
     },
@@ -449,5 +469,226 @@ a {
   flex-wrap: wrap;
   margin-right: -0.75rem;
   margin-left: -0.75rem;
+}
+
+
+/* loading */
+.pl {
+  width: 3em;
+  height: 3em;
+}
+
+.pl__ring {
+  animation: ringA 2s linear infinite;
+}
+
+.pl__ring--a {
+  stroke: orange;
+}
+
+.pl__ring--b {
+  animation-name: ringB;
+  stroke: blue;
+}
+
+.pl__ring--c {
+  animation-name: ringC;
+  stroke: greenyellow;
+}
+
+.pl__ring--d {
+  animation-name: ringD;
+  stroke: red;
+}
+
+/* Animations */
+@keyframes ringA {
+
+  from,
+  4% {
+    stroke-dasharray: 0 660;
+    stroke-width: 20;
+    stroke-dashoffset: -330;
+  }
+
+  12% {
+    stroke-dasharray: 60 600;
+    stroke-width: 30;
+    stroke-dashoffset: -335;
+  }
+
+  32% {
+    stroke-dasharray: 60 600;
+    stroke-width: 30;
+    stroke-dashoffset: -595;
+  }
+
+  40%,
+  54% {
+    stroke-dasharray: 0 660;
+    stroke-width: 20;
+    stroke-dashoffset: -660;
+  }
+
+  62% {
+    stroke-dasharray: 60 600;
+    stroke-width: 30;
+    stroke-dashoffset: -665;
+  }
+
+  82% {
+    stroke-dasharray: 60 600;
+    stroke-width: 30;
+    stroke-dashoffset: -925;
+  }
+
+  90%,
+  to {
+    stroke-dasharray: 0 660;
+    stroke-width: 20;
+    stroke-dashoffset: -990;
+  }
+}
+
+@keyframes ringB {
+
+  from,
+  12% {
+    stroke-dasharray: 0 220;
+    stroke-width: 20;
+    stroke-dashoffset: -110;
+  }
+
+  20% {
+    stroke-dasharray: 20 200;
+    stroke-width: 30;
+    stroke-dashoffset: -115;
+  }
+
+  40% {
+    stroke-dasharray: 20 200;
+    stroke-width: 30;
+    stroke-dashoffset: -195;
+  }
+
+  48%,
+  62% {
+    stroke-dasharray: 0 220;
+    stroke-width: 20;
+    stroke-dashoffset: -220;
+  }
+
+  70% {
+    stroke-dasharray: 20 200;
+    stroke-width: 30;
+    stroke-dashoffset: -225;
+  }
+
+  90% {
+    stroke-dasharray: 20 200;
+    stroke-width: 30;
+    stroke-dashoffset: -305;
+  }
+
+  98%,
+  to {
+    stroke-dasharray: 0 220;
+    stroke-width: 20;
+    stroke-dashoffset: -330;
+  }
+}
+
+@keyframes ringC {
+  from {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: 0;
+  }
+
+  8% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -5;
+  }
+
+  28% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -175;
+  }
+
+  36%,
+  58% {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: -220;
+  }
+
+  66% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -225;
+  }
+
+  86% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -395;
+  }
+
+  94%,
+  to {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: -440;
+  }
+}
+
+@keyframes ringD {
+
+  from,
+  8% {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: 0;
+  }
+
+  16% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -5;
+  }
+
+  36% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -175;
+  }
+
+  44%,
+  50% {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: -220;
+  }
+
+  58% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -225;
+  }
+
+  78% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -395;
+  }
+
+  86%,
+  to {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: -440;
+  }
 }
 </style>

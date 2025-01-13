@@ -1,11 +1,25 @@
 <template>
-  <div class="mx-auto container bg-color-white">
+  <div class="d-flex justify-content-center" style="margin-top:80px" v-if=" loadingShow ">
+    <div> <svg viewBox="0 0 240 240" height="120" width="120" class="pl ms-2">
+        <circle stroke-linecap="round" stroke-dashoffset="-330" stroke-dasharray="0 660" stroke-width="20" stroke="#000"
+          fill="none" r="105" cy="120" cx="120" class="pl__ring pl__ring--a"></circle>
+        <circle stroke-linecap="round" stroke-dashoffset="-110" stroke-dasharray="0 220" stroke-width="20" stroke="#000"
+          fill="none" r="35" cy="120" cx="120" class="pl__ring pl__ring--b"></circle>
+        <circle stroke-linecap="round" stroke-dasharray="0 440" stroke-width="20" stroke="#000" fill="none" r="70"
+          cy="120" cx="85" class="pl__ring pl__ring--c"></circle>
+        <circle stroke-linecap="round" stroke-dasharray="0 440" stroke-width="20" stroke="#000" fill="none" r="70"
+          cy="120" cx="155" class="pl__ring pl__ring--d"></circle>
+      </svg>
+      <p>Loading ... </p>
+    </div>
+  </div>
+  <div v-else class="mx-auto container bg-color-white">
     <div class="mt-3">
       <p>
         <strong>Đề: {{ titleExam }} </strong>
       </p>
     </div>
-    <div class="text-[50px] text-center">Thêm câu hỏi</div>
+    <div class="text-[30px] text-center">Thêm câu hỏi</div>
     <form class="mb-5" @submit.prevent enctype="multipart/form-data">
       <div class="class">
         <label for="class" class="form-label"> Lớp </label>
@@ -19,7 +33,7 @@
           'is-valid': question.Subject !== '' && question.Subject !== 'Lựa chọn môn học'
         } ">
           <option>Lựa chọn môn học</option>
-          <option :value=" choice['id'] " v-for="( choice, index) in category" :key=" index ">
+          <option :value=" choice['id'] " v-for="(    choice, index) in category" :key=" index ">
             {{ choice['title'] }}
           </option>
         </select>
@@ -54,7 +68,7 @@
       </div>
       <!-- danh sách các câu trả lời -->
       <p><strong>Các câu trả lời</strong></p>
-      <div v-for="( ans, index) in answer" :key=" index " class="mt-3 mb-3" style="font-weight: 600">
+      <div v-for="(    ans, index) in answer" :key=" index " class="mt-3 mb-3" style="font-weight: 600">
         <span class="d-flex">{{ getLabel( index ) }}:
           <input :class=" { 'is-valid': answer[index] !== '' } " class="form-control border border-secondary"
             v-model=" answer[index] " type="text" :id=" 'answer' + getLabel( index ) " />
@@ -63,8 +77,8 @@
         </span>
         <!-- câu trả lời bằng ảnh -->
         <span><i>Ảnh câu trả lời nếu có</i></span>
-        <input v-if=" !ListImageAnswer[index] " type="file" accept="image/*" @change="InsertImageAnswer( $event, index )"
-          class="form-control border border-primary ms-3 w-50" />
+        <input v-if=" !ListImageAnswer[index] " type="file" accept="image/*"
+          @change="InsertImageAnswer( $event, index )" class="form-control border border-primary ms-3 w-50" />
         <!-- Nếu câu trả lời là ảnh thì hiển thị nó ra -->
         <div>
           <div style="position: relative; width: 30%; height: 30%" v-if=" ListImageAnswerUrl[index] ">
@@ -84,7 +98,7 @@
       <!-- Chọn đáp án đúng của câu hỏi -->
       <div class="correctAnswer mt-4">
         <label for="correctAnswer">Chọn đáp án đúng:</label>
-        <div v-for="( ans, index) in answer" :key=" index " class="mt-2" id="output"
+        <div v-for="(    ans, index) in answer" :key=" index " class="mt-2" id="output"
           :class=" { 'is-valid': correctAns !== '' } ">
           <input type="checkbox" :value=" getLabel( index ) " v-model=" correctAns " />
           {{ getLabel( index ) }}. {{ ans }}
@@ -118,6 +132,7 @@ export default {
   },
   data () {
     return {
+      loadingShow: true,
       editor: ClassicEditor,
       editorConfig: {
         toolbar: ['bold', 'italic', 'math', '|', 'link'],
@@ -149,13 +164,25 @@ export default {
     }
   },
   mounted () {
+    this.fetchData()
     this.renderMath()
-    this.getId()
-    this.getCat()
-    this.getNameExam()
   },
   created () { },
   methods: {
+    async fetchData () {
+      try
+      {
+        this.getId()
+        this.getCat()
+        this.getNameExam()
+        this.loadingShow = false
+      }
+      catch (e)
+      {
+        this.loadingShow = false
+        alert("Có lỗi xảy ra trong quá trình lấy dữ liệu !")
+      }
+    },
     async getNameExam () {
       var result = await getNameExam(this.idExam)
       if (result !== null)
@@ -217,76 +244,302 @@ export default {
       this.question.created_by = id.data.id
     },
     async postQuestion () {
-        try {
-      // chuyển về json
-      this.question.answerlist = JSON.stringify(this.answer, null, 2)
-      this.question.correctAns = JSON.stringify(this.correctAns, null, 1)
-      
-      if (
-        this.question.class !== '' &&
-        this.question.Subject !== 'Lựa chọn môn học' &&
-        this.question.title !== '' &&
-        Object.keys(this.answer).length > 0 &&
-        Object.keys(this.correctAns).length > 0
-      )
+      try
       {
-        const dataQuestion = new FormData()
-        dataQuestion.append('class', (this.question.class))
-        dataQuestion.append('Subject', (this.question.Subject))
-        dataQuestion.append('title', (this.question.title))
-        dataQuestion.append('created_by', (this.question.created_by))
-        dataQuestion.append('image', (this.question.image))
-        dataQuestion.append('answerlist', JSON.stringify(this.answer))
-        dataQuestion.append('correctAns', JSON.stringify(this.correctAns))
-        this.ListImageAnswer.forEach((file, index) => {
-          if (file)
-          {
-            dataQuestion.append(`answerImage_${index}`, (file))
-          }
-        })
-        // Kiểm tra từng giá trị trong FormData
-        // for (let [key, value] of dataQuestion.entries())
-        // {
-        //   console.log(key, value);  // key là tên trường, value là giá trị tương ứng
-        // }
-        const response = await AddQuestionIntoExamOption(this.idExam, dataQuestion)
-        console.log(response)
-        if (response)
+        this.loadingShow = true
+        // chuyển về json
+        this.question.answerlist = JSON.stringify(this.answer, null, 2)
+        this.question.correctAns = JSON.stringify(this.correctAns, null, 1)
+
+        if (
+          this.question.class !== '' &&
+          this.question.Subject !== 'Lựa chọn môn học' &&
+          this.question.title !== '' &&
+          Object.keys(this.answer).length > 0 &&
+          Object.keys(this.correctAns).length > 0
+        )
         {
-          if (response.data.result == 'success')
+          const dataQuestion = new FormData()
+          dataQuestion.append('class', (this.question.class))
+          dataQuestion.append('Subject', (this.question.Subject))
+          dataQuestion.append('title', (this.question.title))
+          dataQuestion.append('created_by', (this.question.created_by))
+          dataQuestion.append('image', (this.question.image))
+          dataQuestion.append('answerlist', JSON.stringify(this.answer))
+          dataQuestion.append('correctAns', JSON.stringify(this.correctAns))
+          this.ListImageAnswer.forEach((file, index) => {
+            if (file)
+            {
+              dataQuestion.append(`answerImage_${index}`, (file))
+            }
+          })
+          // Kiểm tra từng giá trị trong FormData
+          // for (let [key, value] of dataQuestion.entries())
+          // {
+          //   console.log(key, value);  // key là tên trường, value là giá trị tương ứng
+          // }
+          const response = await AddQuestionIntoExamOption(this.idExam, dataQuestion)
+          console.log(response)
+          if (response)
           {
-            ElNotification({
-              title: 'Thông báo',
-              message: 'Thêm câu hỏi thành công',
-              type: 'success'
-            })
+            if (response.data.result == 'success')
+            {
+              ElNotification({
+                title: 'Thông báo',
+                message: 'Thêm câu hỏi thành công',
+                type: 'success'
+              })
+            } else
+            {
+              ElNotification({
+                title: 'Thông báo',
+                message: 'Thêm câu hỏi thất bại. Có lỗi xảy ra',
+                type: 'error'
+              })
+            }
           } else
           {
             ElNotification({
-              title: 'Thông báo',
-              message: 'Thêm câu hỏi thất bại. Có lỗi xảy ra',
-              type: 'error'
+              title: 'Success',
+              message: response.data.result,
+              type: 'success'
             })
           }
+          //   this.$router.push({ name: 'create-cauhoi' })
         } else
         {
-          ElNotification({
-            title: 'Success',
-            message: response.data.result,
-            type: 'success'
-          })
+          this.loadingShow = false
+          alert('Vui lòng nhập đầy đủ thông tin câu hỏi')
         }
-        //   this.$router.push({ name: 'create-cauhoi' })
-      } else
+        this.loadingShow = false
+      } catch (Error)
       {
-        alert('Vui lòng nhập đầy đủ thông tin câu hỏi')
+        this.loadingShow = false
+        alert("Thêm thất bại ! Có lỗi xảy ra")
       }
-        } catch (Error) {
-          console.log(Error)
-        }
-      
+
     }
   }
 }
 </script>
-<style scoped></style>
+<style scoped>
+/* loading */
+.pl {
+  width: 3em;
+  height: 3em;
+}
+
+.pl__ring {
+  animation: ringA 2s linear infinite;
+}
+
+.pl__ring--a {
+  stroke: orange;
+}
+
+.pl__ring--b {
+  animation-name: ringB;
+  stroke: blue;
+}
+
+.pl__ring--c {
+  animation-name: ringC;
+  stroke: greenyellow;
+}
+
+.pl__ring--d {
+  animation-name: ringD;
+  stroke: red;
+}
+
+/* Animations */
+@keyframes ringA {
+
+  from,
+  4% {
+    stroke-dasharray: 0 660;
+    stroke-width: 20;
+    stroke-dashoffset: -330;
+  }
+
+  12% {
+    stroke-dasharray: 60 600;
+    stroke-width: 30;
+    stroke-dashoffset: -335;
+  }
+
+  32% {
+    stroke-dasharray: 60 600;
+    stroke-width: 30;
+    stroke-dashoffset: -595;
+  }
+
+  40%,
+  54% {
+    stroke-dasharray: 0 660;
+    stroke-width: 20;
+    stroke-dashoffset: -660;
+  }
+
+  62% {
+    stroke-dasharray: 60 600;
+    stroke-width: 30;
+    stroke-dashoffset: -665;
+  }
+
+  82% {
+    stroke-dasharray: 60 600;
+    stroke-width: 30;
+    stroke-dashoffset: -925;
+  }
+
+  90%,
+  to {
+    stroke-dasharray: 0 660;
+    stroke-width: 20;
+    stroke-dashoffset: -990;
+  }
+}
+
+@keyframes ringB {
+
+  from,
+  12% {
+    stroke-dasharray: 0 220;
+    stroke-width: 20;
+    stroke-dashoffset: -110;
+  }
+
+  20% {
+    stroke-dasharray: 20 200;
+    stroke-width: 30;
+    stroke-dashoffset: -115;
+  }
+
+  40% {
+    stroke-dasharray: 20 200;
+    stroke-width: 30;
+    stroke-dashoffset: -195;
+  }
+
+  48%,
+  62% {
+    stroke-dasharray: 0 220;
+    stroke-width: 20;
+    stroke-dashoffset: -220;
+  }
+
+  70% {
+    stroke-dasharray: 20 200;
+    stroke-width: 30;
+    stroke-dashoffset: -225;
+  }
+
+  90% {
+    stroke-dasharray: 20 200;
+    stroke-width: 30;
+    stroke-dashoffset: -305;
+  }
+
+  98%,
+  to {
+    stroke-dasharray: 0 220;
+    stroke-width: 20;
+    stroke-dashoffset: -330;
+  }
+}
+
+@keyframes ringC {
+  from {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: 0;
+  }
+
+  8% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -5;
+  }
+
+  28% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -175;
+  }
+
+  36%,
+  58% {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: -220;
+  }
+
+  66% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -225;
+  }
+
+  86% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -395;
+  }
+
+  94%,
+  to {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: -440;
+  }
+}
+
+@keyframes ringD {
+
+  from,
+  8% {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: 0;
+  }
+
+  16% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -5;
+  }
+
+  36% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -175;
+  }
+
+  44%,
+  50% {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: -220;
+  }
+
+  58% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -225;
+  }
+
+  78% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -395;
+  }
+
+  86%,
+  to {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: -440;
+  }
+}
+</style>

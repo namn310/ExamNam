@@ -1,8 +1,22 @@
 <template>
   <div class="content-wrapper p-4 mb-4">
-    <div class="xl-container">
+    <div class="d-flex justify-content-center" v-if=" loadingShow ">
+      <div> <svg viewBox="0 0 240 240" height="120" width="120" class="pl ms-2">
+          <circle stroke-linecap="round" stroke-dashoffset="-330" stroke-dasharray="0 660" stroke-width="20"
+            stroke="#000" fill="none" r="105" cy="120" cx="120" class="pl__ring pl__ring--a"></circle>
+          <circle stroke-linecap="round" stroke-dashoffset="-110" stroke-dasharray="0 220" stroke-width="20"
+            stroke="#000" fill="none" r="35" cy="120" cx="120" class="pl__ring pl__ring--b"></circle>
+          <circle stroke-linecap="round" stroke-dasharray="0 440" stroke-width="20" stroke="#000" fill="none" r="70"
+            cy="120" cx="85" class="pl__ring pl__ring--c"></circle>
+          <circle stroke-linecap="round" stroke-dasharray="0 440" stroke-width="20" stroke="#000" fill="none" r="70"
+            cy="120" cx="155" class="pl__ring pl__ring--d"></circle>
+        </svg>
+        <p>Loading ... </p>
+      </div>
+    </div>
+    <div class="xl-container" v-if=" !loadingShow ">
       <h1 class="h4 text-center mb-4">
-        {{ data && data.title ? data.title :"N/A" }}
+        {{ data && data.title ? data.title : "N/A" }}
         <button class="btn btn-warning btn-sm" @click=" toggleModal2 ">Thoát</button>
         <ModalView :visible=" showModal2 " @close=" toggleModal2 ">
           <template v-slot:modal-body>
@@ -17,8 +31,8 @@
           </template>
         </ModalView>
       </h1>
-        <div class="alert alert-warning mt-2" role="alert">
-        Các đề thi có công thức toán học sẽ mất một chút thời gian gian nhỏ để load các công thức toán học ! 
+      <div class="alert alert-warning mt-2" role="alert">
+        Các đề thi có công thức toán học sẽ mất một chút thời gian gian nhỏ để load các công thức toán học !
       </div>
       <hr />
       <form class="test-form mt-2" autocomplete="off" @submit.prevent enctype="multipart/form-data">
@@ -28,7 +42,7 @@
             <div class="tab-content" id="pills-tabContent">
               <div class="tab-pane active show" id="partcontent-9022" role="tabpanel" aria-labelledby="pills-tab">
                 <div class="context-wrapper"></div>
-                <div class="test-questions-wrapper mb-4 me-2" v-for="( question, index) in questions" :key=" index ">
+                <div class="test-questions-wrapper mb-4 me-2" v-for="(  question, index) in questions" :key=" index ">
                   <div class="question-wrapper" data-qid="144565" id="question-wrapper-144565">
                     <!-- number question -->
                     <div class="d-flex">
@@ -56,7 +70,7 @@
                           }}</strong>
                       </div>
                       <!-- title question -->
-                      <div class="question-text ms-2 mb-2" :id="'question_' + index">
+                      <div class="question-text ms-2 mb-2" :id=" 'question_' + index ">
                         <strong v-html=" question.title " style="display: inline-block"></strong>
                         <div v-if=" question.imageUrl ">
                           <img :src=" question.imageUrl " class="img-fluid" style="width: 35%; height: 35%" />
@@ -67,10 +81,10 @@
                     <div class="question-content text-highlightable">
                       <div class="question-answers mt-3">
                         <!-- Câu trả lời -->
-                        <div class="form-check" v-for="( ans, index2) in question.answerlist" :key=" index2 ">
+                        <div class="form-check" v-for="(  ans, index2) in question.answerlist" :key=" index2 ">
                           <input @click="ToggleSelected( question.id, index2 )" data-type="question-answer"
                             class="form-check-input" type="checkbox" style="border: 1px solid black" />
-                          <label id="output" class="form-label"> 
+                          <label id="output" class="form-label">
                             {{ getLable( index2 ) }}. {{ ans }}
                             <div>
                               <!-- Nếu có hình ảnh câu trả lời thì load nó ra -->
@@ -121,12 +135,12 @@
                 </ModalView>
                 <div class="test-questions-list">
                   <div class="test-questions-list-part d-flex flex-wrap">
-                    <div class="test-questions-list-wrapper" v-for="( question, index) in questions" :key=" index ">
-                      <span @click="scrollToQuesstion(index)" class="test-questions-listitem"
+                    <div class="test-questions-list-wrapper" v-for="(  question, index) in questions" :key=" index ">
+                      <span @click="scrollToQuesstion( index )" class="test-questions-listitem"
                         v-if=" !question.Answer || Object.keys( question.Answer[0] ).length < 1 ">
                         {{ index + 1 }}
                       </span>
-                      <span @click="scrollToQuesstion(index)" class="test-questions-listitem" v-else id="selected">
+                      <span @click="scrollToQuesstion( index )" class="test-questions-listitem" v-else id="selected">
                         {{ index + 1 }}
                       </span>
                     </div>
@@ -159,6 +173,7 @@ export default {
   },
   data () {
     return {
+      loadingShow: true,
       // time count donwn of exam
       durationExam: 0,
       countdown: 0,
@@ -170,7 +185,7 @@ export default {
       data: [],
       id: 0,
       score: 0,
-      totalQuestion:0,
+      totalQuestion: 0,
       blank_question: null,
     }
   },
@@ -182,50 +197,49 @@ export default {
     const id = route.params.id
     this.id = id
     const result = await getExamDetail(id)
-    if (result)
+    const question = await getQuestionToDoExam(id)
+    if (result && question)
     {
       // console.log(result)
       this.data = result['result']
       this.durationExam = result['result'].duration
       this.startCountDown()
-      this.totalQuestion = result['result'].totalQuestion    }
-    const question = await getQuestionToDoExam(id)
-    if (question)
+      this.totalQuestion = result['result'].totalQuestion
+    }
+    this.questions = question.data
+
+    // eslint-disable-next-line no-unused-vars
+    for (const [index, e] of this.questions.entries())
     {
-      this.questions = question.data
-      
-      // eslint-disable-next-line no-unused-vars
-      for (const [index, e] of this.questions.entries())
+      e.answerlist = JSON.parse(e.answerlist)
+      // e.correctAns = JSON.parse(e.correctAns)
+      // lấy hình ảnh câu hỏi
+      if (e.image !== null && e.image !== '')
       {
-        e.answerlist = JSON.parse(e.answerlist)
-        // e.correctAns = JSON.parse(e.correctAns)
-        // lấy hình ảnh câu hỏi
-        if (e.image !== null && e.image !== '')
-        {
-          e.imageUrl = `http://localhost:8080/assets/image/Question/${e.image}`
-        }
-        var idQues = e.id
-        // Lấy danh sách hình ảnh câu trả lời
-        var fetchImageAnswer = await getImageAnswer(idQues)
-        var imageAnswerQuestion = fetchImageAnswer.data
-        // nếu chưa tồn tại list url ảnh thì khởi tạo mảng
-        if (!e.ListImageAnswerUrl)
-        {
-          e.ListImageAnswerUrl = []
-        }
-        for (var img of imageAnswerQuestion.entries())
-        {
-          const imageAnsUrl = `http://localhost:8080/assets/image/AnswerQuestion/${img[1].imageAns}`
-          const element = { imageUrl: imageAnsUrl, stt: img[1].stt }
-          if (img[1].idQues === e.id)
-          {
-            e.ListImageAnswerUrl.push(element)
-          }
-        }
-        // this.renderMath()
+        e.imageUrl = `http://localhost:8080/assets/image/Question/${e.image}`
       }
+      var idQues = e.id
+      // Lấy danh sách hình ảnh câu trả lời
+      var fetchImageAnswer = await getImageAnswer(idQues)
+      var imageAnswerQuestion = fetchImageAnswer.data
+      // nếu chưa tồn tại list url ảnh thì khởi tạo mảng
+      if (!e.ListImageAnswerUrl)
+      {
+        e.ListImageAnswerUrl = []
+      }
+      for (var img of imageAnswerQuestion.entries())
+      {
+        const imageAnsUrl = `http://localhost:8080/assets/image/AnswerQuestion/${img[1].imageAns}`
+        const element = { imageUrl: imageAnsUrl, stt: img[1].stt }
+        if (img[1].idQues === e.id)
+        {
+          e.ListImageAnswerUrl.push(element)
+        }
+      }
+      // this.renderMath()
       this.renderMath()
       // console.log(this.questions)
+      this.loadingShow = false
     }
   },
   mounted () {
@@ -280,10 +294,11 @@ export default {
     }
   },
   methods: {
-  
-     scrollToQuesstion(index) {
-      const element = document.getElementById(`question_${index-1}`)
-      if (element) {
+
+    scrollToQuesstion (index) {
+      const element = document.getElementById(`question_${index - 1}`)
+      if (element)
+      {
         element.scrollIntoView({ behavior: 'smooth' })
       }
     },
@@ -455,12 +470,12 @@ export default {
         {
           // nếu không tồn tại thuộc tính Answer trong mảng thì là câu bỏ trống
           this.blank_question += 1
-          e.idIncorrect={id:e.id,state:0}
+          e.idIncorrect = { id: e.id, state: 0 }
         }
       })
       // console.log(this.blank_question, this.correct_question, this.incorrect_question)
     },
-    
+
     // kiểm tra các câu đúng
     CheckAnswer (correctAns, answerSelected) {
       if (correctAns.length !== answerSelected.length)
@@ -482,10 +497,10 @@ export default {
       // duyệt mảng question để lấy dữ liệu câu trả lời người dùng rồi đổ vào mảng answers
       this.questions.forEach((e) => {
         // mảng dùng để thực hiện việc đối chiếu đáp án với đáp án đúng
-         questionCheck.push({
-            id: e.id,
-            state: 0
-          })
+        questionCheck.push({
+          id: e.id,
+          state: 0
+        })
         // danh sách câu hỏi người dùng chọn 
         const ArrayAnswerToPush = [];
         if (e.Answer)
@@ -501,7 +516,7 @@ export default {
             // thêm dữ liệu câu trả lời gồm id câu hỏi và danh sách câu trả lời mà người dùng chọn
             this.answers.push({
               id: e.id,
-              answer:ArrayAnswerToPush
+              answer: ArrayAnswerToPush
             })
             // const answersFromQuestion = Object.values(e.Answer[0]);
 
@@ -520,17 +535,17 @@ export default {
             //   //   })
             //   // }
             //   // })
-             
-            
+
+
             // })
 
           }
           // nếu độ dài câu trả lời là 0 thì thêm một mảng câu hỏi rỗng 
           else
           {
-             this.answers.push({
+            this.answers.push({
               id: e.id,
-              answer:ArrayAnswerToPush
+              answer: ArrayAnswerToPush
             })
           }
         }
@@ -542,7 +557,7 @@ export default {
         //   })
         // }
       })
-      console.log(this.questions,this.answers,questionCheck)
+      console.log(this.questions, this.answers, questionCheck)
       this.score = this.scoreQuestion * this.correct_question
       const user = decodeTokenStudent()
       const result = await createResult({
@@ -614,5 +629,225 @@ input[type='radio'] {
 
 .hightlightQuestion {
   background-color: yellow;
+}
+
+/* loading */
+.pl {
+  width: 3em;
+  height: 3em;
+}
+
+.pl__ring {
+  animation: ringA 2s linear infinite;
+}
+
+.pl__ring--a {
+  stroke: orange;
+}
+
+.pl__ring--b {
+  animation-name: ringB;
+  stroke: blue;
+}
+
+.pl__ring--c {
+  animation-name: ringC;
+  stroke: greenyellow;
+}
+
+.pl__ring--d {
+  animation-name: ringD;
+  stroke: red;
+}
+
+/* Animations */
+@keyframes ringA {
+
+  from,
+  4% {
+    stroke-dasharray: 0 660;
+    stroke-width: 20;
+    stroke-dashoffset: -330;
+  }
+
+  12% {
+    stroke-dasharray: 60 600;
+    stroke-width: 30;
+    stroke-dashoffset: -335;
+  }
+
+  32% {
+    stroke-dasharray: 60 600;
+    stroke-width: 30;
+    stroke-dashoffset: -595;
+  }
+
+  40%,
+  54% {
+    stroke-dasharray: 0 660;
+    stroke-width: 20;
+    stroke-dashoffset: -660;
+  }
+
+  62% {
+    stroke-dasharray: 60 600;
+    stroke-width: 30;
+    stroke-dashoffset: -665;
+  }
+
+  82% {
+    stroke-dasharray: 60 600;
+    stroke-width: 30;
+    stroke-dashoffset: -925;
+  }
+
+  90%,
+  to {
+    stroke-dasharray: 0 660;
+    stroke-width: 20;
+    stroke-dashoffset: -990;
+  }
+}
+
+@keyframes ringB {
+
+  from,
+  12% {
+    stroke-dasharray: 0 220;
+    stroke-width: 20;
+    stroke-dashoffset: -110;
+  }
+
+  20% {
+    stroke-dasharray: 20 200;
+    stroke-width: 30;
+    stroke-dashoffset: -115;
+  }
+
+  40% {
+    stroke-dasharray: 20 200;
+    stroke-width: 30;
+    stroke-dashoffset: -195;
+  }
+
+  48%,
+  62% {
+    stroke-dasharray: 0 220;
+    stroke-width: 20;
+    stroke-dashoffset: -220;
+  }
+
+  70% {
+    stroke-dasharray: 20 200;
+    stroke-width: 30;
+    stroke-dashoffset: -225;
+  }
+
+  90% {
+    stroke-dasharray: 20 200;
+    stroke-width: 30;
+    stroke-dashoffset: -305;
+  }
+
+  98%,
+  to {
+    stroke-dasharray: 0 220;
+    stroke-width: 20;
+    stroke-dashoffset: -330;
+  }
+}
+
+@keyframes ringC {
+  from {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: 0;
+  }
+
+  8% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -5;
+  }
+
+  28% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -175;
+  }
+
+  36%,
+  58% {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: -220;
+  }
+
+  66% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -225;
+  }
+
+  86% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -395;
+  }
+
+  94%,
+  to {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: -440;
+  }
+}
+
+@keyframes ringD {
+
+  from,
+  8% {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: 0;
+  }
+
+  16% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -5;
+  }
+
+  36% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -175;
+  }
+
+  44%,
+  50% {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: -220;
+  }
+
+  58% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -225;
+  }
+
+  78% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -395;
+  }
+
+  86%,
+  to {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: -440;
+  }
 }
 </style>

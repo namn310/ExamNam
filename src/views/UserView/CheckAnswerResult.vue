@@ -1,13 +1,27 @@
 <template>
   <div class="content-wrapper p-5 mb-4">
-    <div class="xl-container">
+    <div class="d-flex justify-content-center" v-if=" loadingShow ">  
+      <div> <svg viewBox="0 0 240 240" height="120" width="120" class="pl ms-2">
+          <circle stroke-linecap="round" stroke-dashoffset="-330" stroke-dasharray="0 660" stroke-width="20"
+            stroke="#000" fill="none" r="105" cy="120" cx="120" class="pl__ring pl__ring--a"></circle>
+          <circle stroke-linecap="round" stroke-dashoffset="-110" stroke-dasharray="0 220" stroke-width="20"
+            stroke="#000" fill="none" r="35" cy="120" cx="120" class="pl__ring pl__ring--b"></circle>
+          <circle stroke-linecap="round" stroke-dasharray="0 440" stroke-width="20" stroke="#000" fill="none" r="70"
+            cy="120" cx="85" class="pl__ring pl__ring--c"></circle>
+          <circle stroke-linecap="round" stroke-dasharray="0 440" stroke-width="20" stroke="#000" fill="none" r="70"
+            cy="120" cx="155" class="pl__ring pl__ring--d"></circle>
+        </svg>
+        <p>Loading ... </p>
+      </div>
+    </div>
+    <div class="xl-container" v-if=" !loadingShow ">
       <h1 class="h4 text-center mb-4" style="font-size: 3vw; font-size: 3vh; font-weight: 500">
         {{ this.titleExam }}
         <RouterLink :to=" { name: 'ResultExam' } "><button class="ms-3 btn btn-primary">Thoát</button>
         </RouterLink>
       </h1>
-       <div class="alert alert-warning w-50 mt-2" role="alert">
-        Các đề thi có công thức toán học sẽ mất một chút thời gian gian nhỏ để load các công thức toán học ! 
+      <div class="alert alert-warning w-50 mt-2" role="alert">
+        Các đề thi có công thức toán học sẽ mất một chút thời gian gian nhỏ để load các công thức toán học !
       </div>
       <hr />
       <form class="test-form mt-3" autocomplete="off" @submit.prevent enctype="multipart/form-data">
@@ -17,7 +31,7 @@
             <div class="tab-content" id="pills-tabContent">
               <div class="tab-pane active show" id="partcontent-9022" role="tabpanel" aria-labelledby="pills-tab">
                 <div class="context-wrapper"></div>
-                <div class="test-questions-wrapper mb-4 me-2" v-for="(      question, index) in questions"
+                <div class="test-questions-wrapper mb-4 me-2" v-for="(       question, index) in questions"
                   :key=" index ">
                   <div class="question-wrapper" id="question-wrapper-144565">
                     <!-- number question -->
@@ -57,7 +71,7 @@
                     <div class="question-content text-highlightable">
                       <div class="question-answers mt-3">
                         <!-- Câu trả lời -->
-                        <div class="form-check" v-for="(    ans, index2) in question.answerlist" :key=" index2 ">
+                        <div class="form-check" v-for="(     ans, index2) in question.answerlist" :key=" index2 ">
                           <input data-type="question-answer" class="form-check-input" type="checkbox"
                             :checked=" checkSelected( getLable( index2 ), question.id ) > 0 "
                             style="border: 1px solid black" />
@@ -97,7 +111,8 @@
               <div>
                 <div class="test-questions-list mt-3">
                   <div class="test-questions-list-part d-flex flex-wrap">
-                    <div class="test-questions-list-wrapper" v-for="(      question, index) in questions" :key=" index ">
+                    <div class="test-questions-list-wrapper" v-for="(       question, index) in questions"
+                      :key=" index ">
                       <div v-if=" question.state == 1 " @click="scrollToQuesstion( index )">
                         <p class="test-questions-listitem" id="correctAnswer">{{ index + 1 }}</p>
                       </div>
@@ -117,7 +132,7 @@
 </template>
 <script>
 // import ModalView from '@/components/ModalView.vue'
-import { getExamDetail, getQuestionExam } from '@/service/examsService'
+import { getQuestionExam,getDetailExam } from '@/service/examsService'
 import { getResultDetail, getReviewResult } from '@/service/resultServeice'
 import { getImageAnswer } from '@/service/questionsService'
 export default {
@@ -127,6 +142,7 @@ export default {
   },
   data () {
     return {
+      loadingShow: true,
       id: this.$route.params.id,
       showModal: false,
       showModal2: false,
@@ -175,16 +191,17 @@ export default {
       }
     },
     async getExam () {
-      const result1 = await getResultDetail(this.id)
-      if (result1)
+      try
       {
-        const idExam = result1.data.id_exam
-        const idResult = this.$route.params.id
+        const result1 = await getResultDetail(this.id)
+        if (result1)
         {
+          const idExam = result1.data.id_exam
+          const idResult = this.$route.params.id
           const result = await getQuestionExam(idExam)
           const result2 = await getReviewResult(idResult)
-          const result3 = await getExamDetail(idExam)
-          if (result)
+          const result3 = await getDetailExam(idExam)
+          if (result, result2, result3)
           {
             this.questions = result.data
             // eslint-disable-next-line no-unused-vars
@@ -237,10 +254,16 @@ export default {
               }
             })
           })
+
         }
+        // console.log(this.UserAnswer, this.questions,this.CheckAnswer('D',76))
+        this.loadingShow = false
+        this.renderMath()
       }
-      // console.log(this.UserAnswer, this.questions,this.CheckAnswer('D',76))
-      this.renderMath()
+      catch (e)
+      {
+        alert("Có lỗi trong quá trình lấy dữ liệu")
+      }
     },
     toggleModal () {
       this.showModal = !this.showModal
@@ -377,5 +400,224 @@ input[type='radio'] {
 #incorrectAnswer {
   background-color: red;
   color: white;
+}
+/* loading */
+.pl {
+  width: 3em;
+  height: 3em;
+}
+
+.pl__ring {
+  animation: ringA 2s linear infinite;
+}
+
+.pl__ring--a {
+  stroke: orange;
+}
+
+.pl__ring--b {
+  animation-name: ringB;
+  stroke: blue;
+}
+
+.pl__ring--c {
+  animation-name: ringC;
+  stroke: greenyellow;
+}
+
+.pl__ring--d {
+  animation-name: ringD;
+  stroke: red;
+}
+
+/* Animations */
+@keyframes ringA {
+
+  from,
+  4% {
+    stroke-dasharray: 0 660;
+    stroke-width: 20;
+    stroke-dashoffset: -330;
+  }
+
+  12% {
+    stroke-dasharray: 60 600;
+    stroke-width: 30;
+    stroke-dashoffset: -335;
+  }
+
+  32% {
+    stroke-dasharray: 60 600;
+    stroke-width: 30;
+    stroke-dashoffset: -595;
+  }
+
+  40%,
+  54% {
+    stroke-dasharray: 0 660;
+    stroke-width: 20;
+    stroke-dashoffset: -660;
+  }
+
+  62% {
+    stroke-dasharray: 60 600;
+    stroke-width: 30;
+    stroke-dashoffset: -665;
+  }
+
+  82% {
+    stroke-dasharray: 60 600;
+    stroke-width: 30;
+    stroke-dashoffset: -925;
+  }
+
+  90%,
+  to {
+    stroke-dasharray: 0 660;
+    stroke-width: 20;
+    stroke-dashoffset: -990;
+  }
+}
+
+@keyframes ringB {
+
+  from,
+  12% {
+    stroke-dasharray: 0 220;
+    stroke-width: 20;
+    stroke-dashoffset: -110;
+  }
+
+  20% {
+    stroke-dasharray: 20 200;
+    stroke-width: 30;
+    stroke-dashoffset: -115;
+  }
+
+  40% {
+    stroke-dasharray: 20 200;
+    stroke-width: 30;
+    stroke-dashoffset: -195;
+  }
+
+  48%,
+  62% {
+    stroke-dasharray: 0 220;
+    stroke-width: 20;
+    stroke-dashoffset: -220;
+  }
+
+  70% {
+    stroke-dasharray: 20 200;
+    stroke-width: 30;
+    stroke-dashoffset: -225;
+  }
+
+  90% {
+    stroke-dasharray: 20 200;
+    stroke-width: 30;
+    stroke-dashoffset: -305;
+  }
+
+  98%,
+  to {
+    stroke-dasharray: 0 220;
+    stroke-width: 20;
+    stroke-dashoffset: -330;
+  }
+}
+
+@keyframes ringC {
+  from {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: 0;
+  }
+
+  8% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -5;
+  }
+
+  28% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -175;
+  }
+
+  36%,
+  58% {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: -220;
+  }
+
+  66% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -225;
+  }
+
+  86% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -395;
+  }
+
+  94%,
+  to {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: -440;
+  }
+}
+
+@keyframes ringD {
+
+  from,
+  8% {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: 0;
+  }
+
+  16% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -5;
+  }
+
+  36% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -175;
+  }
+
+  44%,
+  50% {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: -220;
+  }
+
+  58% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -225;
+  }
+
+  78% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -395;
+  }
+
+  86%,
+  to {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: -440;
+  }
 }
 </style>

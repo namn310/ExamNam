@@ -1,5 +1,19 @@
 <template>
   <div class="p-5 mt-5">
+    <div class="d-flex justify-content-center" style="margin-top:100px" v-if=" loadingShow ">
+      <div> <svg viewBox="0 0 240 240" height="120" width="120" class="pl ms-2">
+          <circle stroke-linecap="round" stroke-dashoffset="-330" stroke-dasharray="0 660" stroke-width="20"
+            stroke="#000" fill="none" r="105" cy="120" cx="120" class="pl__ring pl__ring--a"></circle>
+          <circle stroke-linecap="round" stroke-dashoffset="-110" stroke-dasharray="0 220" stroke-width="20"
+            stroke="#000" fill="none" r="35" cy="120" cx="120" class="pl__ring pl__ring--b"></circle>
+          <circle stroke-linecap="round" stroke-dasharray="0 440" stroke-width="20" stroke="#000" fill="none" r="70"
+            cy="120" cx="85" class="pl__ring pl__ring--c"></circle>
+          <circle stroke-linecap="round" stroke-dasharray="0 440" stroke-width="20" stroke="#000" fill="none" r="70"
+            cy="120" cx="155" class="pl__ring pl__ring--d"></circle>
+        </svg>
+        <p>Loading ... </p>
+      </div>
+    </div>
     <div class="sm-container">
       <!-- User Profile Section -->
       <div class="card">
@@ -139,7 +153,7 @@
         </li>
       </ul>
       <div v-if=" listExam.length > 0 ">
-        <div v-for="(       exam, index) in listExam" :key=" index ">
+        <div v-for="(        exam, index) in listExam" :key=" index ">
           <div class="user-test">
             <h3 style="font-weight: 600; font-size: 1.5vh; font-size: 1.5vw" id="new-economy-toeic-test-10">
               {{ exam.title }}
@@ -184,7 +198,7 @@
       <div class="mb-4 mt-3">
         <ul class="pagination justify-content-center">
           <li style="cursor: pointer" class="page-item" :class=" { active: page == currentPage } "
-            v-for="(       page, index) in ListPages" :key=" index ">
+            v-for="(        page, index) in ListPages" :key=" index ">
             <a class="page-link" @click="changePage( page )">{{ page }}</a>
           </li>
         </ul>
@@ -201,6 +215,7 @@ import { ElNotification } from 'element-plus'
 export default {
   data () {
     return {
+      loadingShow: true,
       userName: '',
       userId: '',
       listExam: [],
@@ -311,14 +326,11 @@ export default {
       this.userName = user.data.name
       this.userId = user.data.id
       const userDetail = await getUserDetail(this.userId)
-      if (userDetail)
+      const result = await getUserListResult(user.data.id)
+      if (userDetail && result)
       {
         this.userDetail = userDetail.data
         this.email = this.userDetail.email
-      }
-      const result = await getUserListResult(user.data.id)
-      if (result)
-      {
         this.listExam = result.data
         this.recordTotal = result.record_total
         this.totalPage = result.total_page
@@ -337,9 +349,11 @@ export default {
           event.formattedTime = a;
         })
         // console.log(this.listExam)
+        this.loadingShow = false
       }
     },
     async getResultByPage (page) {
+      this.loadingShow = true
       try
       {
         this.userId = decodeTokenStudent().data.id
@@ -347,6 +361,7 @@ export default {
         if (!result)
         {
           alert('Có lỗi trong quá trình lấy dữ liệu')
+          this.loadingShow = false
         }
         this.listExam = result.data
         this.listExam.forEach((event) => {
@@ -355,14 +370,16 @@ export default {
           var a = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}` // Định dạng thành mm:ss
           event.formattedTime = a;
         })
+        this.loadingShow = false
       } catch (Error)
       {
+        this.loadingShow = false
         alert(Error)
       }
     },
     async changePage (page) {
       this.currentPage = page
-      console.log(this.currentPage)
+      // console.log(this.currentPage)
       await this.getResultByPage(page)
     }
   }
@@ -373,6 +390,7 @@ export default {
   background-color: deepskyblue;
   color: white;
 }
+
 .card {
   --main-color: #000;
   --submain-color: #78858F;
@@ -454,5 +472,226 @@ export default {
 .card__btn-solid:hover {
   background: var(--bg-color);
   color: var(--main-color);
+}
+
+
+/* loading */
+.pl {
+  width: 3em;
+  height: 3em;
+}
+
+.pl__ring {
+  animation: ringA 2s linear infinite;
+}
+
+.pl__ring--a {
+  stroke: orange;
+}
+
+.pl__ring--b {
+  animation-name: ringB;
+  stroke: blue;
+}
+
+.pl__ring--c {
+  animation-name: ringC;
+  stroke: greenyellow;
+}
+
+.pl__ring--d {
+  animation-name: ringD;
+  stroke: red;
+}
+
+/* Animations */
+@keyframes ringA {
+
+  from,
+  4% {
+    stroke-dasharray: 0 660;
+    stroke-width: 20;
+    stroke-dashoffset: -330;
+  }
+
+  12% {
+    stroke-dasharray: 60 600;
+    stroke-width: 30;
+    stroke-dashoffset: -335;
+  }
+
+  32% {
+    stroke-dasharray: 60 600;
+    stroke-width: 30;
+    stroke-dashoffset: -595;
+  }
+
+  40%,
+  54% {
+    stroke-dasharray: 0 660;
+    stroke-width: 20;
+    stroke-dashoffset: -660;
+  }
+
+  62% {
+    stroke-dasharray: 60 600;
+    stroke-width: 30;
+    stroke-dashoffset: -665;
+  }
+
+  82% {
+    stroke-dasharray: 60 600;
+    stroke-width: 30;
+    stroke-dashoffset: -925;
+  }
+
+  90%,
+  to {
+    stroke-dasharray: 0 660;
+    stroke-width: 20;
+    stroke-dashoffset: -990;
+  }
+}
+
+@keyframes ringB {
+
+  from,
+  12% {
+    stroke-dasharray: 0 220;
+    stroke-width: 20;
+    stroke-dashoffset: -110;
+  }
+
+  20% {
+    stroke-dasharray: 20 200;
+    stroke-width: 30;
+    stroke-dashoffset: -115;
+  }
+
+  40% {
+    stroke-dasharray: 20 200;
+    stroke-width: 30;
+    stroke-dashoffset: -195;
+  }
+
+  48%,
+  62% {
+    stroke-dasharray: 0 220;
+    stroke-width: 20;
+    stroke-dashoffset: -220;
+  }
+
+  70% {
+    stroke-dasharray: 20 200;
+    stroke-width: 30;
+    stroke-dashoffset: -225;
+  }
+
+  90% {
+    stroke-dasharray: 20 200;
+    stroke-width: 30;
+    stroke-dashoffset: -305;
+  }
+
+  98%,
+  to {
+    stroke-dasharray: 0 220;
+    stroke-width: 20;
+    stroke-dashoffset: -330;
+  }
+}
+
+@keyframes ringC {
+  from {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: 0;
+  }
+
+  8% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -5;
+  }
+
+  28% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -175;
+  }
+
+  36%,
+  58% {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: -220;
+  }
+
+  66% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -225;
+  }
+
+  86% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -395;
+  }
+
+  94%,
+  to {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: -440;
+  }
+}
+
+@keyframes ringD {
+
+  from,
+  8% {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: 0;
+  }
+
+  16% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -5;
+  }
+
+  36% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -175;
+  }
+
+  44%,
+  50% {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: -220;
+  }
+
+  58% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -225;
+  }
+
+  78% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -395;
+  }
+
+  86%,
+  to {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: -440;
+  }
 }
 </style>
